@@ -1,4 +1,5 @@
 #include "Translator.h"
+#include <stdio.h>
 
 
 BitBoard fenToBitBoard(const char* fen){
@@ -98,6 +99,50 @@ BitBoard fenToBitBoard(const char* fen){
 
     } while(curr != ' ');
 
+
+    // after consuming the first space we have arrived at the character that is either 'b' or 'w'
+    curr = *(fen + count);
+    position.whiteToMove = (curr == 'w') ? (unsigned char)1 : (unsigned char)0;
+    count += 2;
+
+    // now we look for castling rights
+    do{
+        curr = *(fen + count);
+
+        switch(curr){
+            case 'K':
+                position.castling = position.castling | (unsigned char)8;
+                break;
+            case 'Q':
+                position.castling = position.castling | (unsigned char)4;
+                break;
+            case 'k':
+                position.castling = position.castling | (unsigned char)2;
+                break;
+            case 'q':
+                position.castling = position.castling | (unsigned char)1;
+                break;
+            case '-':
+                break;
+        }
+
+        count ++;
+
+
+    }while(curr != ' ');
+
+    // now check if there is an en passant square
+    curr = *(fen + count);
+
+    if(curr == '-'){ 
+        count += 2;
+        // do nothing because enPassant is initialized to 0
+    }
+    else{
+        int square = (7 - (curr - 'a')) + ((*(fen + count + 1) - '0') - 1) * 8;
+        position.enPassant = (Bint)1 << square;
+        count += 3;
+    }
 
 
 
