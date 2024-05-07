@@ -182,8 +182,6 @@ BitBoard fenToBitBoard(const char* fen){
     bufPos = 0;
     while(1){
 
-        printf("lolol");
-
         curr = *(fen + count);
         count++;
 
@@ -429,7 +427,40 @@ void bitBoardToFen(BitBoard board, char* fen){
     count++;
 
     // now add the halfmove count
+    unsigned char half = board.halfMoves, LSD;
+    int digits = 0;
+    unsigned char buf[10];
+    do{
+        LSD = half % 10;
+        buf[digits] = '0' + LSD;
+        digits++;
+        half = (half - LSD)/10;
+    }while(half > 0);
 
+    for(int i = 0; i < digits; i++){
+        *(fen + count) = buf[digits - 1 - i];
+        count++;
+    }
+
+
+    // add the fifth space
+    *(fen + count) = ' ';
+    count++;
+
+    // now add the move count
+    unsigned short moves = board.moves;
+    digits = 0;
+    do{
+        LSD = moves % 10;
+        buf[digits] = '0' + LSD;
+        digits++;
+        moves = (moves - LSD)/10;
+    }while(half > 0);
+
+    for(int i = 0; i < digits; i++){
+        *(fen + count) = buf[digits - 1 - i];
+        count++;
+    }
 
     // finally we can add the string terminating character
     *(fen + count) = 0;

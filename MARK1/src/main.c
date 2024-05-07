@@ -138,7 +138,7 @@ int main(int argc, char** argv){
 
     bitBoardToFen(board, myFen);
 
-    printf("%s\n", myFen);
+    printf("%s\n%d\n", myFen, strcmp(myFen, fen));
 
 
     return 0;
