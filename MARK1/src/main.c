@@ -7,51 +7,51 @@
 void printBits(void* target, int numBits){
 
     if(numBits == 8){
-        unsigned char* tar = (unsigned char*)target;
+        unsigned char tar = *(unsigned char*)target;
         unsigned char mask = (unsigned char)1 << 7;
 
         for(int i = 0; i < 8; i++){
             if(i>0 && i%8 == 0){
                 printf(" ");
             }
-            printf("%u", !!(mask&*tar));
-            *tar = *tar<<1;
+            printf("%u", !!(mask&tar));
+            tar = tar<<1;
         }
     }
     else if(numBits == 16){
-        unsigned short* tar = (unsigned short*)target;
+        unsigned short tar = *(unsigned short*)target;
         unsigned short mask = (unsigned short)1 << 15;
 
         for(int i = 0; i < 16; i++){
             if(i>0 && i%8 == 0){
                 printf(" ");
             }
-            printf("%u", !!(mask&*tar));
-            *tar = *tar<<1;
+            printf("%u", !!(mask&tar));
+            tar = tar<<1;
         }
     }
     else if(numBits == 32){
-        unsigned int* tar = (unsigned int*)target;
+        unsigned int tar = *(unsigned int*)target;
         unsigned int mask = (unsigned int)1 << 31;
 
         for(int i = 0; i < 32; i++){
             if(i>0 && i%8 == 0){
                 printf(" ");
             }
-            printf("%u", !!(mask&*tar));
-            *tar = *tar<<1;
+            printf("%u", !!(mask&tar));
+            tar = tar<<1;
         }
     }
     else if(numBits == 64){
-        unsigned long* tar = (unsigned long*)target;
+        unsigned long tar = *(unsigned long*)target;
         unsigned long mask = (unsigned long)1 << 63;
 
         for(int i = 0; i < 64; i++){
             if(i>0 && i%8 == 0){
                 printf(" ");
             }
-            printf("%u", !!(mask&*tar));
-            *tar = *tar<<1;
+            printf("%u", !!(mask&tar));
+            tar = tar<<1;
         }
     }
 
@@ -124,7 +124,7 @@ void debugPrintBitBoard(BitBoard board){
 int main(int argc, char** argv){
 
 
-    char* fen = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2";
+    char* fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     BitBoard board = fenToBitBoard(fen);
 
@@ -133,6 +133,12 @@ int main(int argc, char** argv){
     char* valid = validBitBoard(board) ? "valid" : "invalid";
 
     printf("\n%s\n", valid);
+
+    char* myFen = malloc(100*sizeof(char));
+
+    bitBoardToFen(board, myFen);
+
+    printf("%s\n", myFen);
 
 
     return 0;
