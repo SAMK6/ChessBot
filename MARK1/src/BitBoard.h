@@ -39,7 +39,7 @@ typedef struct BitBoard{
 
     // bit 3 for white king, bit 2 for white queen, bit 1 for black king, bit 0 for black king, other bits unused for now
     unsigned char castling;
-    unsigned char halfMoves; // 50 move rule clock
+    unsigned char halfMoves; // 50 move rule clock, when it reaches 100 the game is a draw
 
     unsigned short moves; // move counter
 
@@ -51,6 +51,11 @@ typedef struct BitBoard{
 
 } BitBoard;
 
+
+// there are a few basic and easy checks we can do to increase confidence the bitboard is good
+// it should be noted that passing this check does NOT garuntee a valid board, only that it passed this sanity check
+int validBitBoard(BitBoard);
+
 /*
     the usual initialization of the bitboard will be all 0 values as follows
 
@@ -58,6 +63,6 @@ typedef struct BitBoard{
 
 */
 
-typedef unsigned long Bint; // Bint = board int, will be used frequently for setting bits
+typedef unsigned long Bint; // Bint == board int, will be used frequently for setting bits
 
 #endif

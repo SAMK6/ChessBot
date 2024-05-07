@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "BitBoard.h"
 #include "Translator.h"
 
 void printBits(void* target, int numBits){
@@ -128,6 +129,10 @@ int main(int argc, char** argv){
     BitBoard board = fenToBitBoard(fen);
 
     debugPrintBitBoard(board);
+
+    char* valid = validBitBoard(board) ? "valid" : "invalid";
+
+    printf("\n%s\n", valid);
 
 
     return 0;

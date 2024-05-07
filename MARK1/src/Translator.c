@@ -1,3 +1,4 @@
+#include "BitBoard.h"
 #include "Translator.h"
 #include <stdio.h>
 
@@ -8,7 +9,7 @@ BitBoard fenToBitBoard(const char* fen){
 
     int count = 0, pos = 63;
 
-    char curr;
+    unsigned char curr;
 
     do{
 
@@ -151,7 +152,56 @@ BitBoard fenToBitBoard(const char* fen){
         count += 3; // need to skip the two chars that denote the square and the next space
     }
 
-    
+    // now read the half move count
+    // gonna make a simple atoi to avoid including the whole stdlib for 2 function calls
+    unsigned char buf[10];
+    int bufPos = 0;
+    while(1){
+        
+        curr = *(fen + count);
+        count++;
+
+        if(curr == ' '){ // found the end of the number
+            break;
+        }
+        else{
+            buf[bufPos] = curr;
+        }
+
+        bufPos++;
+    }
+
+    unsigned char factor = 1;
+    for(int i = bufPos - 1; i >= 0; i--){
+        position.halfMoves += (buf[i] - '0') * factor;
+        factor = factor * 10;
+    }
+
+    // finally we read the whole moves count
+    bufPos = 0;
+    while(1){
+
+        printf("lolol");
+
+        curr = *(fen + count);
+        count++;
+
+        if(curr == 0){ // found the end of the number
+            break;
+        }
+        else{
+            buf[bufPos] = curr;
+        }
+
+        bufPos++;
+    }
+
+
+    unsigned short factor1 = 1;
+    for(int i = bufPos - 1; i >= 0; i--){
+        position.moves += (buf[i] - '0') * factor1;
+        factor1 = factor1 * 10;
+    }
 
     return position;
 
