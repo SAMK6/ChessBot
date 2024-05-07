@@ -106,10 +106,10 @@ void debugPrintBitBoard(BitBoard board){
     printf("castling:\n");
     printBits(&(board.castling), 8);
 
-    printf("halfMoves:\n");
+    printf("halfMoves: %d\n", board.halfMoves);
     printBits(&(board.halfMoves), 8);
 
-    printf("moves:\n");
+    printf("moves: %d\n", board.moves);
     printBits(&(board.moves), 16);
 
 
@@ -123,7 +123,7 @@ void debugPrintBitBoard(BitBoard board){
 int main(int argc, char** argv){
 
 
-    char* fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1";
+    char* fen = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2";
 
     BitBoard board = fenToBitBoard(fen);
 

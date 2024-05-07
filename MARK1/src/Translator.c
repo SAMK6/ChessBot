@@ -4,8 +4,6 @@
 
 BitBoard fenToBitBoard(const char* fen){
 
-    // first we process the actual board position until we have seen 7 '/' characters
-
     BitBoard position = {(Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (unsigned char)0, (unsigned char)0, (unsigned char)0, (unsigned short)0, (Bint)0};
 
     int count = 0, pos = 63;
@@ -91,7 +89,11 @@ BitBoard fenToBitBoard(const char* fen){
                 break;
             case '/':
                 break;
-            default: // there is a problem if we reach here
+            case ' ': 
+                // the last iteration of the while loop goes here
+                break;
+            default: 
+                // if we get here there is a problem so error handling goes here later
                 break;
         }
 
@@ -100,10 +102,10 @@ BitBoard fenToBitBoard(const char* fen){
     } while(curr != ' ');
 
 
-    // after consuming the first space we have arrived at the character that is either 'b' or 'w'
+    // after consuming the first space we have arrived at the character that is either 'b' or 'w' for which player is to move
     curr = *(fen + count);
     position.whiteToMove = (curr == 'w') ? (unsigned char)1 : (unsigned char)0;
-    count += 2;
+    count += 2; // consume the turn char and the next space
 
     // now we look for castling rights
     do{
@@ -124,10 +126,15 @@ BitBoard fenToBitBoard(const char* fen){
                 break;
             case '-':
                 break;
+            case ' ': 
+                // last iteration of the loop
+                break;
+            default: 
+                // error handling goes here later
+                break;
         }
 
         count ++;
-
 
     }while(curr != ' ');
 
@@ -136,15 +143,15 @@ BitBoard fenToBitBoard(const char* fen){
 
     if(curr == '-'){ 
         count += 2;
-        // do nothing because enPassant is initialized to 0
+        // there is no en passant so do nothing because enPassant is initialized to 0
     }
     else{
         int square = (7 - (curr - 'a')) + ((*(fen + count + 1) - '0') - 1) * 8;
         position.enPassant = (Bint)1 << square;
-        count += 3;
+        count += 3; // need to skip the two chars that denote the square and the next space
     }
 
-
+    
 
     return position;
 
