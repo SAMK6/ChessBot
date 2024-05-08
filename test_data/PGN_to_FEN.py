@@ -40,4 +40,4 @@ def extract_fen_from_pgn(pgn_file, numGames):
 
 # Example usage
 pgn_file = "lichess_jan_2013.pgn"
-extract_fen_from_pgn(pgn_file, 1000)
+extract_fen_from_pgn(pgn_file, 10000)

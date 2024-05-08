@@ -57,6 +57,13 @@ typedef struct BitBoard{
 // it should be noted that passing this check does NOT garuntee a valid board, only that it passed this sanity check
 int validBitBoard(BitBoard);
 
+
+// two functions for debug printing
+void printBits(void*, int);
+void debugPrintBitBoard(BitBoard);
+
+
+
 /*
     the usual initialization of the bitboard will be all 0 values as follows
 

@@ -26,26 +26,37 @@ int main(int argc, char** argv){
         return 0;
     }
 
-    int count = 1, wrong = 0;
-    
+    int count = 0, wrong = 0;
+
     while(fgets(fen, sizeof(fen), file) != NULL) {
         // Remove the newline character
         newline_ptr = strchr(fen, '\n');
         if (newline_ptr != NULL) {
             *newline_ptr = '\0';
         }
-        
+
         BitBoard board = fenToBitBoard(fen);
 
         char* myFen = malloc(100*sizeof(char));
 
         bitBoardToFen(board, myFen);
 
-        if(strcmp(fen, myFen)){
-            printf("%d\n", count);
+        if(strcmp(fen, myFen) || !validBitBoard(board)){
+
+            printf("Error with FEN: %d\n\n", count);
+
+            if(strcmp(fen, myFen)){
+                printf("input: %s\noutput: %s\n", fen, myFen);
+            }
+
+            if(!validBitBoard(board)){
+                debugPrintBitBoard(board);
+            }
+
+            printf("\n");
+
             wrong++;
 
-            printf("%s\n%s\n", fen, myFen);
         }
 
 
@@ -53,7 +64,7 @@ int main(int argc, char** argv){
 
     }
 
-    printf("\nwrong: %d\nFENs processed: %d\n", wrong, count);
+    printf("FENs processed: %d\nwrong: %d\n", count, wrong);
 
 
 

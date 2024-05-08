@@ -1,6 +1,5 @@
 #include "BitBoard.h"
 #include "Translator.h"
-#include <stdio.h>
 
 
 BitBoard fenToBitBoard(const char* fen){
@@ -41,51 +40,51 @@ BitBoard fenToBitBoard(const char* fen){
                 pos -= 8;
                 break;
             case 'K':
-                position.K = position.K | ((Bint)1 << pos);
+                position.K = position.K | (1ull << pos);
                 pos -= 1;
                 break;
             case 'Q':
-                position.Q = position.Q | ((Bint)1 << pos);
+                position.Q = position.Q | (1ull << pos);
                 pos -= 1;
                 break;
             case 'R':
-                position.R = position.R | ((Bint)1 << pos);
+                position.R = position.R | (1ull << pos);
                 pos -= 1;
                 break;
             case 'B':
-                position.B = position.B | ((Bint)1 << pos);
+                position.B = position.B | (1ull << pos);
                 pos -= 1;
                 break;
             case 'N':
-                position.N = position.N | ((Bint)1 << pos);
+                position.N = position.N | (1ull << pos);
                 pos -= 1;
                 break;
             case 'P':
-                position.P = position.P | ((Bint)1 << pos);
+                position.P = position.P | (1ull << pos);
                 pos -= 1;
                 break;
             case 'k':
-                position.k = position.k | ((Bint)1 << pos);
+                position.k = position.k | (1ull << pos);
                 pos -= 1;
                 break;
             case 'q':
-                position.q = position.q | ((Bint)1 << pos);
+                position.q = position.q | (1ull << pos);
                 pos -= 1;
                 break;
             case 'r':
-                position.r = position.r | ((Bint)1 << pos);
+                position.r = position.r | (1ull << pos);
                 pos -= 1;
                 break;
             case 'b':
-                position.b = position.b | ((Bint)1 << pos);
+                position.b = position.b | (1ull << pos);
                 pos -= 1;
                 break;
             case 'n':
-                position.n = position.n | ((Bint)1 << pos);
+                position.n = position.n | (1ull << pos);
                 pos -= 1;
                 break;
             case 'p':
-                position.p = position.p | ((Bint)1 << pos);
+                position.p = position.p | (1ull << pos);
                 pos -= 1;
                 break;
             case '/':
@@ -148,7 +147,7 @@ BitBoard fenToBitBoard(const char* fen){
     }
     else{
         int square = (7 - (curr - 'a')) + ((*(fen + count + 1) - '0') - 1) * 8;
-        position.enPassant = (Bint)1 << square;
+        position.enPassant = 1ull << square;
         count += 3; // need to skip the two chars that denote the square and the next space
     }
 
@@ -232,7 +231,7 @@ void bitBoardToFen(BitBoard board, char* fen){
         }
 
         // the mask for the square we care about this iteration
-        Bint mask = (Bint)1 << i;
+        Bint mask = 1ull << i;
         // now start seeing if/which peice is on this square
         if(board.K & mask){
             if(empty > 0){
