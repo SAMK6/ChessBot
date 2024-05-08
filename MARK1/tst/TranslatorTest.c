@@ -18,7 +18,7 @@ int main(int argc, char** argv){
     char *newline_ptr;
 
     // Open the file in read mode
-    file = fopen("Fens.txt", "r");
+    file = fopen("output.txt", "r");
 
     // Check if the file opened successfully
     if (file == NULL) {
@@ -53,7 +53,7 @@ int main(int argc, char** argv){
 
     }
 
-    printf("\n%d\n", wrong);
+    printf("\nwrong: %d\nFENs processed: %d\n", wrong, count);
 
 
 

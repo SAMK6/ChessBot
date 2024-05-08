@@ -17,6 +17,7 @@
     and the bitboard for the white pawns in the starting position is
     00000000 00000000 00000000 00000000 00000000 00000000 11111111 00000000
 */
+
 typedef struct BitBoard{
 
     unsigned long K; // white king
