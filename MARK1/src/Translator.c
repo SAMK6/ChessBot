@@ -205,6 +205,12 @@ BitBoard fenToBitBoard(const char* fen){
 
 }
 
+
+
+
+
+
+
 // fen should be pre allocated, probably 90 chars is enough but I'll use 100 to be safe and avoid weirdness
 void bitBoardToFen(BitBoard board, char* fen){
 
@@ -220,7 +226,8 @@ void bitBoardToFen(BitBoard board, char* fen){
                 *(fen + count) = '0' + empty;
                 empty = 0;
                 count++;
-            }            *(fen + count) = '/';
+            }            
+            *(fen + count) = '/';
             count ++;
         }
 
@@ -352,6 +359,11 @@ void bitBoardToFen(BitBoard board, char* fen){
         }
 
     }
+    if(empty > 0){ // this handle the edge case of when there are emoty squares trailing
+        *(fen + count) = '0' + empty;
+        empty = 0;
+        count++;
+    }
 
     // add the first space
     *(fen + count) = ' ';
@@ -448,14 +460,14 @@ void bitBoardToFen(BitBoard board, char* fen){
     count++;
 
     // now add the move count
-    unsigned short moves = board.moves;
+    unsigned short moves = board.moves, lsd;
     digits = 0;
     do{
-        LSD = moves % 10;
-        buf[digits] = '0' + LSD;
+        lsd = moves % 10;
+        buf[digits] = '0' + (unsigned char)lsd;
         digits++;
-        moves = (moves - LSD)/10;
-    }while(half > 0);
+        moves = (moves - (int)lsd)/10;
+    }while(moves > 0);
 
     for(int i = 0; i < digits; i++){
         *(fen + count) = buf[digits - 1 - i];
@@ -463,6 +475,6 @@ void bitBoardToFen(BitBoard board, char* fen){
     }
 
     // finally we can add the string terminating character
-    *(fen + count) = 0;
+    *(fen + count) = '\0';
 
 }

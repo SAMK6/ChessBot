@@ -124,7 +124,7 @@ void debugPrintBitBoard(BitBoard board){
 int main(int argc, char** argv){
 
 
-    char* fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    char* fen = "r1bq1rk1/ppp2pp1/5n1p/2bPp1N1/2P5/8/PPP1QPPP/RNB2RK1 w - - 0 10";
 
     BitBoard board = fenToBitBoard(fen);
 
