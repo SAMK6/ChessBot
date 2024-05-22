@@ -3,6 +3,7 @@
 #include <string.h>
 #include "BitBoard.h"
 #include "Translator.h"
+#include "MoveGenerator.h"
 
 
 int main(){
@@ -22,13 +23,7 @@ int main(){
 
     bitBoardToFen(board, myFen);
 
-    printf("%s\n%d\n", myFen, strcmp(myFen, fen));
-
-    Bint mask = (Bint)1 << 63;
-
-    printBits(&mask, 64);
-
-    printf("%lu\n", mask);
+    printf("%s\n%s\n%d\n", myFen, fen, strcmp(myFen, fen));
 
 
     return 0;

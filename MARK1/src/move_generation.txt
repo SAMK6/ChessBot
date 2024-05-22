@@ -1,0 +1,41 @@
+- moves need to be genrated lazily to avoid insane storage use
+- idea is to have 6 different functions to seperate the generation of moves by piece
+    - problem is that enumerating the moves and generating the moves is kind of the same so how do we keep track of the state
+    - simply counting the number of squares availible for certain types of peices doesn't work because of pins, and friendly pieces ocupying the squares, plus the square the a piece is on affectes the number of moves it has 
+    - need a different way to keep track of the moves that doesn't invlove counting beforehand
+        - maybe take advantage of the fact that bitboards are unsigned ints
+        - might have to research and use a masking technique
+
+
+- how to we make sure a move is valid simply based on relative position position generation (how do we stop knight G to A1 as whites opening move)
+
+
+### IDEAS ###
+
+- keeping track of the bitwise OR of all 12 bitboards will tell us where there are peices and where there are not, this will help in checking for pins, and peices that prevent castling etc
+    - we can hard code masks of positions that rooks, bishops, queens etc can be in to prevent castling, and then checking if there is a piece that MIGHT prevent castling becomes a bitwise AND
+
+- just loop over the squares and whevenver we ecounter a peices we consider all of its moves (maybe not a great order in which to consider moves but probably easiest to implement)
+    - in this case the square is the global state and each piece functions keeps track of which move for that piece it is considering
+    - the bitboard and the square would be inputs and the function would keep track of moves
+
+
+- another strategy is to have the piece functions just accept a starting and ending square, and they decide if the move is valid or not
+    - basically just generate each moves based on where each piece is and what type of piece it is, then the functions can check if they are valid
+    - we could generate every possible move as lazily as possible (for example generate 8 moves for a knight even if it is in the corner) then have a function to check if the move is valid, if it is return the move and if not return the null move (2-bit zero?)
+        - at each step we would have to check if the ending square is inside the board or not (different for every piece), then check to make sure that we are not capturing a friendly piece, then check to make sure the resulting position doesnt reveal the king to the opponent (was it pinned), then check if there was a piece in the way (uneccesary for knights, can use masks), if all checks pass and the move is valid then we need to add the metadata
+
+- it seems too hard to try and generate the moves in a smart order so it is probably better to generate them in a fast order and depend on a dynamic depth to decide how to search
+    - any move that seems unimportant can be searched to depth 1 maybe 2 (search extensions?)
+
+
+### IN-PROGRESS PSEUDOCODE ALG ###
+
+for i in 0..63
+
+    if there is no piece on square i then move on to the next iteration
+    else if there is a peice on square i then we start generating its moves
+        based on the piece type we generate possible squares it can move to based entirely on relative position and iterate over them
+            send the to and from square to the validity checking function to check if the move is valid and add the metadata
+            return the move from the validity checker and evaluate it
+

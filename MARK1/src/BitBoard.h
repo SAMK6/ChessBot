@@ -72,21 +72,4 @@ typedef unsigned long Bint; // Bint == board int, will be used frequently for se
 
 
 
-/*
-    Moves will be from-to notation with 4 bits for extra info
-    bits 0-5 are the from square, we can use these to bit shift and create the piece mask later
-    bits 6-11 are the to square, 
-    bit 12 represents whether or not the move is a capture
-    bit 13 represents whethere the move is a promotion or not
-    if bit 13 then bits 14-15 represent the piece the pawn is promoted to, 00 for knight, 01 for bishop, 10 for rook, 11 for queen
-    if ~bit 13 then bits 14-15 represent misc info, 00 for 
-
-    I originally had this idea but neglected to realise that bits 14-15 could still be used if the move is not a promotion,
-    after reading CPW (https://www.chessprogramming.org/Encoding_Moves) I realised bits 14-15 could be used either way and 
-    therefore my move representation is a simplified version of the table used in the article linked 
-*/
-typedef unsigned short Move;
-
-
-
 #endif
