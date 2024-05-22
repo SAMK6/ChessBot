@@ -1,5 +1,6 @@
 
 
+
 Description of the universal chess interface (UCI)    April  2006
 =================================================================
 
