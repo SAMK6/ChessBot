@@ -9,8 +9,8 @@
 
 /*
     Moves will be from-to notation with 4 bits for extra info
-    bits 0-5 are the from square, we can use these to bit shift and create the piece mask later
-    bits 6-11 are the to square, 
+    bits 0-5 are the start square, we can use these to bit shift and create the piece mask later
+    bits 6-11 are the end square, 
     bit 12 represents whether or not the move is a capture
     bit 13 represents whethere the move is a promotion or not
     if bit 13 is set then bits 14-15 represent the piece the pawn is promoted to, 00 for knight, 01 for bishop, 10 for rook, 11 for queen

@@ -210,7 +210,7 @@ BitBoard fenToBitBoard(const char* fen){
 
 
 
-// fen should be pre allocated, probably 90 chars is enough but I'll use 100 to be safe and avoid weirdness
+// fen should be pre allocated, probably 90 chars is enough but I'll use 100 to be safe
 void bitBoardToFen(BitBoard board, char* fen){
 
     int count = 0;

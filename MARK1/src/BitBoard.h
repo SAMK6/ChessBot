@@ -3,6 +3,82 @@
 
 // the bitboard uses "little endian" conventions so the 0-bit is the rightmost or least significant bit
 
+
+// define all the "squares"
+#define H1 1ull
+#define G1 2ull
+#define F1 4ull
+#define E1 8ull
+#define D1 16ull
+#define C1 32ull
+#define B1 64ull
+#define A1 128ull
+
+#define H2 256ull
+#define G2 512ull
+#define F2 1024ull
+#define E2 2048ull
+#define D2 4096ull
+#define C2 8192ull
+#define B2 16384ull
+#define A2 32768ull
+
+#define H3 65536ull
+#define G3 131072ull
+#define F3 262144ull
+#define E3 524288ull
+#define D3 1048576ull
+#define C3 2097152ull
+#define B3 4194304ull
+#define A3 8388608ull
+
+#define H4 16777216ull
+#define G4 33554432ull
+#define F4 67108864ull
+#define E4 134217728ull
+#define D4 268435456ull
+#define C4 536870912ull
+#define B4 1073741824ull
+#define A4 2147483648ull
+
+#define H5 4294967296ull
+#define G5 8589934592ull
+#define F5 17179869184ull
+#define E5 34359738368ull
+#define D5 68719476736ull
+#define C5 137438953472ull
+#define B5 274877906944ull
+#define A5 549755813888ull
+
+#define H6 1099511627776ull
+#define G6 2199023255552ull
+#define F6 4398046511104ull
+#define E6 8796093022208ull
+#define D6 17592186044416ull
+#define C6 35184372088832ull
+#define B6 70368744177664ull
+#define A6 140737488355328ull
+
+#define H7 281474976710656ull
+#define G7 562949953421312ull
+#define F7 1125899906842624ull
+#define E7 2251799813685248ull
+#define D7 4503599627370496ull
+#define C7 9007199254740992ull
+#define B7 18014398509481984ull
+#define A7 36028797018963968ull
+
+#define H8 72057594037927936ull
+#define G8 144115188075855872ull
+#define F8 288230376151711744ull
+#define E8 576460752303423488ull
+#define D8 1152921504606846976ull
+#define C8 2305843009213693952ull
+#define B8 4611686018427387904ull
+#define A8 9223372036854775808ull
+
+
+
 /* 
     INTERNAL BOARD REPRESENTATION
     the bitboard is meant to be fast and respect the spatial intuition of the chess board,

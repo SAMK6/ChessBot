@@ -63,6 +63,8 @@ int validBitBoard(BitBoard board){
 
 }
 
+
+// basic function to print the bits of any data, needs correct number of bits as input or will crash, for debugging
 void printBits(void* target, int numBits){
 
     if(numBits == 8){
@@ -118,6 +120,8 @@ void printBits(void* target, int numBits){
 
 }
 
+
+// uses printBits to show a whole bitboard, also for debugging and visualization
 void debugPrintBitBoard(BitBoard board){
 
     printf("white King:\n");
