@@ -15,7 +15,7 @@ int validBitBoard(BitBoard board){
     if(board.enPassant){
 
         Bint pawn;
-        if(board.enPassant > 2147483648ull){ // black pawn can be captured en passant
+        if(board.enPassant > A4){ // black pawn can be captured en passant
             pawn = board.enPassant >> 8;
 
             if(!((pawn & board.p) == pawn) || !board.whiteToMove){
@@ -35,22 +35,22 @@ int validBitBoard(BitBoard board){
     if(board.castling){
 
         if(board.castling & (unsigned short)8){ // white can castle kingside
-            if(!((board.K & 8ull) && (board.R & 1ull))){
+            if(!((board.K & E1) && (board.R & H1))){
                 return 0;
             }
         }
         if(board.castling & (unsigned short)4){ // white can castle queenside
-            if(!((board.K & 8ull) && (board.R & 128ull))){
+            if(!((board.K & E1) && (board.R & A1))){
                 return 0;
             }
         }
         if(board.castling & (unsigned short)2){ // black can castle kingside
-            if(!((board.k & 576460752303423488ull) && (board.r & 72057594037927936ull))){
+            if(!((board.k & E8) && (board.r & H8))){
                 return 0;
             }
         }
         if(board.castling & (unsigned short)1){ // black can castle queenside
-            if(!((board.k & 576460752303423488ull) && (board.r & 9223372036854775808ull))){
+            if(!((board.k & E8) && (board.r & A8))){
                 return 0;
             }
         }
@@ -64,60 +64,67 @@ int validBitBoard(BitBoard board){
 }
 
 
-// basic function to print the bits of any data, needs correct number of bits as input or will crash, for debugging
-void printBits(void* target, int numBits){
 
-    if(numBits == 8){
-        unsigned char tar = *(unsigned char*)target;
-        unsigned char mask = (unsigned char)1 << 7;
 
-        for(int i = 0; i < 8; i++){
-            if(i>0 && i%8 == 0){
-                printf(" ");
-            }
-            printf("%u", !!(mask&tar));
-            tar = tar<<1;
+void printBits8(unsigned char tar){
+
+    unsigned char mask = (unsigned char)1 << 7;
+
+    for(int i = 0; i < 8; i++){
+        if(i>0 && i%8 == 0){
+            printf(" ");
         }
-    }
-    else if(numBits == 16){
-        unsigned short tar = *(unsigned short*)target;
-        unsigned short mask = (unsigned short)1 << 15;
-
-        for(int i = 0; i < 16; i++){
-            if(i>0 && i%8 == 0){
-                printf(" ");
-            }
-            printf("%u", !!(mask&tar));
-            tar = tar<<1;
-        }
-    }
-    else if(numBits == 32){
-        unsigned int tar = *(unsigned int*)target;
-        unsigned int mask = (unsigned int)1 << 31;
-
-        for(int i = 0; i < 32; i++){
-            if(i>0 && i%8 == 0){
-                printf(" ");
-            }
-            printf("%u", !!(mask&tar));
-            tar = tar<<1;
-        }
-    }
-    else if(numBits == 64){
-        unsigned long tar = *(unsigned long*)target;
-        unsigned long mask = (unsigned long)1 << 63;
-
-        for(int i = 0; i < 64; i++){
-            if(i>0 && i%8 == 0){
-                printf(" ");
-            }
-            printf("%u", !!(mask&tar));
-            tar = tar<<1;
-        }
+        printf("%u", !!(mask&tar));
+        tar = tar<<1;
     }
 
     printf("\n");
+}
 
+void printBits16(unsigned short tar){
+
+    unsigned short mask = (unsigned short)1 << 15;
+
+    for(int i = 0; i < 16; i++){
+        if(i>0 && i%8 == 0){
+            printf(" ");
+        }
+        printf("%u", !!(mask&tar));
+        tar = tar<<1;
+    }
+
+    printf("\n");
+}
+
+
+void printBits32(unsigned int tar){
+
+    unsigned int mask = (unsigned int)1 << 31;
+
+    for(int i = 0; i < 32; i++){
+        if(i>0 && i%8 == 0){
+            printf(" ");
+        }
+        printf("%u", !!(mask&tar));
+        tar = tar<<1;
+    }
+
+    printf("\n");
+}
+
+
+void printBits64(unsigned long tar){
+    unsigned long mask = (unsigned long)1 << 63;
+
+    for(int i = 0; i < 64; i++){
+        if(i>0 && i%8 == 0){
+            printf(" ");
+        }
+        printf("%u", !!(mask&tar));
+        tar = tar<<1;
+    }
+
+    printf("\n");
 }
 
 
@@ -125,62 +132,105 @@ void printBits(void* target, int numBits){
 void debugPrintBitBoard(BitBoard board){
 
     printf("white King:\n");
-    printBits(&(board.K), 64);
+    printBits64(board.K);
 
     printf("white Queen:\n");
-    printBits(&(board.Q), 64);
+    printBits64(board.Q);
 
     printf("white Rooks:\n");
-    printBits(&(board.R), 64);
+    printBits64(board.R);
 
     printf("white Bishops:\n");
-    printBits(&(board.B), 64);
+    printBits64(board.B);
 
     printf("white Knights:\n");
-    printBits(&(board.N), 64);
+    printBits64(board.N);
 
     printf("white Pawns:\n");
-    printBits(&(board.P), 64);
+    printBits64(board.P);
 
 
     printf("\n");
 
 
     printf("black King:\n");
-    printBits(&(board.k), 64);
+    printBits64(board.k);
 
     printf("black Queen:\n");
-    printBits(&(board.q), 64);
+    printBits64(board.q);
 
     printf("black Rooks:\n");
-    printBits(&(board.r), 64);
+    printBits64(board.r);
 
     printf("black Bishops:\n");
-    printBits(&(board.b), 64);
+    printBits64(board.b);
 
     printf("black Knights:\n");
-    printBits(&(board.n), 64);
+    printBits64(board.n);
 
     printf("black Pawns:\n");
-    printBits(&(board.p), 64);
+    printBits64(board.p);
 
 
     printf("\n");
 
 
     printf("whiteToMove:\n");
-    printBits(&(board.whiteToMove), 8);
+    printBits8(board.whiteToMove);
 
     printf("castling:\n");
-    printBits(&(board.castling), 8);
+    printBits8(board.castling);
 
     printf("halfMoves: %d\n", board.halfMoves);
-    printBits(&(board.halfMoves), 8);
+    printBits8(board.halfMoves);
 
     printf("moves: %d\n", board.moves);
-    printBits(&(board.moves), 16);
+    printBits16(board.moves);
 
     printf("enPassant:\n");
-    printBits(&(board.enPassant), 64);
+    printBits64(board.enPassant);
+
+}
+
+
+int popcount8(unsigned char n){
+
+    n = (n & 0x55) + ((n >> 1) & 0x55);
+    n = (n & 0x33) + ((n >> 2) & 0x33);
+    n = (n & 0x0F) + ((n >> 4) & 0x0F);
+    return (int)n;
+
+}
+
+int popcount16(unsigned short n){
+
+    n = (n & 0x5555) + ((n >> 1) & 0x5555);
+    n = (n & 0x3333) + ((n >> 2) & 0x3333);
+    n = (n & 0x0F0F) + ((n >> 4) & 0x0F0F);
+    n = (n & 0x00FF) + ((n >> 8) & 0x00FF);
+    return(int)n;
+
+}
+
+int popcount32(unsigned int n){
+
+    n = (n & 0x55555555) + ((n >> 1) & 0x55555555);
+    n = (n & 0x33333333) + ((n >> 2) & 0x33333333);
+    n = (n & 0x0F0F0F0F) + ((n >> 4) & 0x0F0F0F0F);
+    n = (n & 0x00FF00FF) + ((n >> 8) & 0x00FF00FF);
+    n = (n & 0x0000FFFF) + ((n >> 16) & 0x0000FFFF);
+    return(int)n;
+
+}
+
+int popcount64(unsigned long n){
+
+    n = (n & 0x5555555555555555) + ((n >> 1) & 0x5555555555555555);
+    n = (n & 0x3333333333333333) + ((n >> 2) & 0x3333333333333333);
+    n = (n & 0x0F0F0F0F0F0F0F0F) + ((n >> 4) & 0x0F0F0F0F0F0F0F0F);
+    n = (n & 0x00FF00FF00FF00FF) + ((n >> 8) & 0x00FF00FF00FF00FF);
+    n = (n & 0x0000FFFF0000FFFF) + ((n >> 16) & 0x0000FFFF0000FFFF);
+    n = (n & 0x00000000FFFFFFFF) + ((n >> 32) & 0x00000000FFFFFFFF);
+    return(int)n;
 
 }

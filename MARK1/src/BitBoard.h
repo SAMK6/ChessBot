@@ -1,10 +1,8 @@
 #ifndef BITBOARD_H
 #define BITBOARD_H
 
-// the bitboard uses "little endian" conventions so the 0-bit is the rightmost or least significant bit
-
-
 // define all the "squares"
+// if this part seems unclear take a look at bitboardtest.c and it will become more clear
 #define H1 1ull
 #define G1 2ull
 #define F1 4ull
@@ -136,9 +134,18 @@ typedef struct BitBoard{
 // it should be noted that passing this check does NOT garuntee a valid board, only that it passed this sanity check
 int validBitBoard(BitBoard);
 
-// two functions for debug printing
-void printBits(void*, int);
+// functions for debug printing
+void printBits8(unsigned char);
+void printBits16(unsigned short);
+void printBits32(unsigned int);
+void printBits64(unsigned long);
 void debugPrintBitBoard(BitBoard);
+
+// popcount algorithms
+int popcount8(unsigned char);
+int popcount16(unsigned short);
+int popcount32(unsigned int);
+int popcount64(unsigned long);
 
 
 

@@ -10,6 +10,8 @@ BitBoard fenToBitBoard(const char* fen){
 
     unsigned char curr;
 
+
+    // first we loop over the board in the fen string and add peices accordingly
     do{
 
         curr = *(fen + count);
