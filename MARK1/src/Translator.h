@@ -3,6 +3,8 @@
 
 #include "BitBoard.h"
 
+// see https://www.chessprogramming.org/Forsyth-Edwards_Notation for info on FEN notation
+
 // takes in a FEN string, creates amd returns the coresspoding bitboards
 // fen string must be null terminated, other formats will casue issues
 BitBoard fenToBitBoard(const char*);

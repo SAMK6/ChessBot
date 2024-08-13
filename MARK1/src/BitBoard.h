@@ -75,7 +75,17 @@
 #define B8 4611686018427387904ull
 #define A8 9223372036854775808ull
 
+// struct that simply stores peice location data each bitboard has one for black and one for white
+typedef struct RawBoard{
 
+    unsigned long k; // king
+    unsigned long q; // queen
+    unsigned long r; // rooks
+    unsigned long b; // bishops
+    unsigned long n; // knights
+    unsigned long p; // pawns
+
+} RawBoard;
 
 /* 
     INTERNAL BOARD REPRESENTATION
@@ -91,25 +101,12 @@
     and the bitboard for the white pawns in the starting position is
     00000000 00000000 00000000 00000000 00000000 00000000 11111111 00000000
 
-    the usual initialization of the bitboard will be all 0 values as follows
-    BitBoard board = {(Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (unsigned char)0, (unsigned char)0, (unsigned char)0, (unsigned short)0, (Bint)0};
-
 */
 typedef struct BitBoard{
 
-    unsigned long K; // white king
-    unsigned long Q; // white queen
-    unsigned long R; // white rooks
-    unsigned long B; // white bishops
-    unsigned long N; // white knights
-    unsigned long P; // white pawns
-
-    unsigned long k; // black king
-    unsigned long q; // black queen
-    unsigned long r; // black rooks
-    unsigned long b; // black bishops
-    unsigned long n; // black knights
-    unsigned long p; // black pawns
+    // the locations of the peices
+    RawBoard black;
+    RawBoard white;
 
     // these next few may be amalgamated eventually
 
@@ -129,6 +126,11 @@ typedef struct BitBoard{
 
 } BitBoard;
 
+/*
+    the usual initialization of the bitboard will be all 0 values as follows
+    BitBoard board = {(Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (unsigned char)0, (unsigned char)0, (unsigned char)0, (unsigned short)0, (Bint)0};
+
+*/
 
 // there are a few basic and easy checks we can do to increase confidence the bitboard is good
 // it should be noted that passing this check does NOT garuntee a valid board, only that it passed this sanity check

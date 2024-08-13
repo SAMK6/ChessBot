@@ -42,51 +42,51 @@ BitBoard fenToBitBoard(const char* fen){
                 pos -= 8;
                 break;
             case 'K':
-                position.K = position.K | (1ull << pos);
+                position.white.k = position.white.k | (1ull << pos);
                 pos -= 1;
                 break;
             case 'Q':
-                position.Q = position.Q | (1ull << pos);
+                position.white.q = position.white.q | (1ull << pos);
                 pos -= 1;
                 break;
             case 'R':
-                position.R = position.R | (1ull << pos);
+                position.white.r = position.white.r | (1ull << pos);
                 pos -= 1;
                 break;
             case 'B':
-                position.B = position.B | (1ull << pos);
+                position.white.b = position.white.b | (1ull << pos);
                 pos -= 1;
                 break;
             case 'N':
-                position.N = position.N | (1ull << pos);
+                position.white.n = position.white.n | (1ull << pos);
                 pos -= 1;
                 break;
             case 'P':
-                position.P = position.P | (1ull << pos);
+                position.white.p = position.white.p | (1ull << pos);
                 pos -= 1;
                 break;
             case 'k':
-                position.k = position.k | (1ull << pos);
+                position.black.k = position.black.k | (1ull << pos);
                 pos -= 1;
                 break;
             case 'q':
-                position.q = position.q | (1ull << pos);
+                position.black.q = position.black.q | (1ull << pos);
                 pos -= 1;
                 break;
             case 'r':
-                position.r = position.r | (1ull << pos);
+                position.black.r = position.black.r | (1ull << pos);
                 pos -= 1;
                 break;
             case 'b':
-                position.b = position.b | (1ull << pos);
+                position.black.b = position.black.b | (1ull << pos);
                 pos -= 1;
                 break;
             case 'n':
-                position.n = position.n | (1ull << pos);
+                position.black.n = position.black.n | (1ull << pos);
                 pos -= 1;
                 break;
             case 'p':
-                position.p = position.p | (1ull << pos);
+                position.black.p = position.black.p | (1ull << pos);
                 pos -= 1;
                 break;
             case '/':
@@ -235,7 +235,7 @@ void bitBoardToFen(BitBoard board, char* fen){
         // the mask for the square we care about this iteration
         Bint mask = 1ull << i;
         // now start seeing if/which peice is on this square
-        if(board.K & mask){
+        if(board.white.k & mask){
             if(empty > 0){
                 *(fen + count) = '0' + empty;
                 empty = 0;
@@ -245,7 +245,7 @@ void bitBoardToFen(BitBoard board, char* fen){
             *(fen + count) = 'K';
             count++;
         }
-        else if(board.Q & mask){
+        else if(board.white.q & mask){
             if(empty > 0){
                 *(fen + count) = '0' + empty;
                 empty = 0;
@@ -255,7 +255,7 @@ void bitBoardToFen(BitBoard board, char* fen){
             *(fen + count) = 'Q';
             count++;
         }
-        else if(board.R & mask){
+        else if(board.white.r & mask){
             if(empty > 0){
                 *(fen + count) = '0' + empty;
                 empty = 0;
@@ -265,7 +265,7 @@ void bitBoardToFen(BitBoard board, char* fen){
             *(fen + count) = 'R';
             count++;
         }
-        else if(board.B & mask){
+        else if(board.white.b & mask){
             if(empty > 0){
                 *(fen + count) = '0' + empty;
                 empty = 0;
@@ -275,7 +275,7 @@ void bitBoardToFen(BitBoard board, char* fen){
             *(fen + count) = 'B';
             count++;
         }
-        else if(board.N & mask){
+        else if(board.white.n & mask){
             if(empty > 0){
                 *(fen + count) = '0' + empty;
                 empty = 0;
@@ -285,7 +285,7 @@ void bitBoardToFen(BitBoard board, char* fen){
             *(fen + count) = 'N';
             count++;
         }
-        else if(board.P & mask){
+        else if(board.white.p & mask){
             if(empty > 0){
                 *(fen + count) = '0' + empty;
                 empty = 0;
@@ -295,7 +295,7 @@ void bitBoardToFen(BitBoard board, char* fen){
             *(fen + count) = 'P';
             count++;
         }
-        else if(board.k & mask){
+        else if(board.black.k & mask){
             if(empty > 0){
                 *(fen + count) = '0' + empty;
                 empty = 0;
@@ -305,7 +305,7 @@ void bitBoardToFen(BitBoard board, char* fen){
             *(fen + count) = 'k';
             count++;
         }
-        else if(board.q & mask){
+        else if(board.black.q & mask){
             if(empty > 0){
                 *(fen + count) = '0' + empty;
                 empty = 0;
@@ -315,7 +315,7 @@ void bitBoardToFen(BitBoard board, char* fen){
             *(fen + count) = 'q';
             count++;
         }
-        else if(board.r & mask){
+        else if(board.black.r & mask){
             if(empty > 0){
                 *(fen + count) = '0' + empty;
                 empty = 0;
@@ -325,7 +325,7 @@ void bitBoardToFen(BitBoard board, char* fen){
             *(fen + count) = 'r';
             count++;
         }
-        else if(board.b & mask){
+        else if(board.black.b & mask){
             if(empty > 0){
                 *(fen + count) = '0' + empty;
                 empty = 0;
@@ -335,7 +335,7 @@ void bitBoardToFen(BitBoard board, char* fen){
             *(fen + count) = 'b';
             count++;
         }
-        else if(board.n & mask){
+        else if(board.black.n & mask){
             if(empty > 0){
                 *(fen + count) = '0' + empty;
                 empty = 0;
@@ -345,7 +345,7 @@ void bitBoardToFen(BitBoard board, char* fen){
             *(fen + count) = 'n';
             count++;
         }
-        else if(board.p & mask){
+        else if(board.black.p & mask){
             if(empty > 0){
                 *(fen + count) = '0' + empty;
                 empty = 0;

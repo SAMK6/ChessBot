@@ -30,6 +30,6 @@
 
 typedef unsigned short Move;
 
-Move** generateMoves(BitBoard);
+void generateMoves(BitBoard, Move*); // functions receives a board and a preallocated array for the moves to be put into
 
 #endif

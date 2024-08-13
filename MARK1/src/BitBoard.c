@@ -2,10 +2,10 @@
 #include "BitBoard.h"
 
 
-int validBitBoard(BitBoard board){
+int validBitBoard(BitBoard board){ // this function is now a full check but rather some general sanity checks
 
     // first check is since there cannot be two peices on one squre the bitwise and of all the piece boards should be 0
-    Bint check = board.K & board.Q & board.R & board.B & board.N & board.P & board.k & board.q & board.r & board.b & board.n & board.p;
+    Bint check = board.white.k & board.white.q & board.white.r & board.white.b & board.white.n & board.white.p & board.black.k & board.black.q & board.black.r & board.black.b & board.black.n & board.black.p;
     if(check){
         return 0;
     }
@@ -18,14 +18,14 @@ int validBitBoard(BitBoard board){
         if(board.enPassant > A4){ // black pawn can be captured en passant
             pawn = board.enPassant >> 8;
 
-            if(!((pawn & board.p) == pawn) || !board.whiteToMove){
+            if(!((pawn & board.black.p) == pawn) || !board.whiteToMove){
                 return 0;
             }
         }
         else{ // white pawn can be captured en passant
             pawn = board.enPassant << 8;
 
-            if(!((pawn & board.P) == pawn) || board.whiteToMove){
+            if(!((pawn & board.white.p) == pawn) || board.whiteToMove){
                 return 0;
             }
         }
@@ -35,22 +35,22 @@ int validBitBoard(BitBoard board){
     if(board.castling){
 
         if(board.castling & (unsigned short)8){ // white can castle kingside
-            if(!((board.K & E1) && (board.R & H1))){
+            if(!((board.white.k & E1) && (board.white.r & H1))){
                 return 0;
             }
         }
         if(board.castling & (unsigned short)4){ // white can castle queenside
-            if(!((board.K & E1) && (board.R & A1))){
+            if(!((board.white.k & E1) && (board.white.r & A1))){
                 return 0;
             }
         }
         if(board.castling & (unsigned short)2){ // black can castle kingside
-            if(!((board.k & E8) && (board.r & H8))){
+            if(!((board.black.k & E8) && (board.black.r & H8))){
                 return 0;
             }
         }
         if(board.castling & (unsigned short)1){ // black can castle queenside
-            if(!((board.k & E8) && (board.r & A8))){
+            if(!((board.black.k & E8) && (board.black.r & A8))){
                 return 0;
             }
         }
@@ -128,48 +128,50 @@ void printBits64(unsigned long tar){
 }
 
 
+
+
 // uses printBits to show a whole bitboard, also for debugging and visualization
 void debugPrintBitBoard(BitBoard board){
 
     printf("white King:\n");
-    printBits64(board.K);
+    printBits64(board.white.k);
 
     printf("white Queen:\n");
-    printBits64(board.Q);
+    printBits64(board.white.q);
 
     printf("white Rooks:\n");
-    printBits64(board.R);
+    printBits64(board.white.r);
 
     printf("white Bishops:\n");
-    printBits64(board.B);
+    printBits64(board.white.b);
 
     printf("white Knights:\n");
-    printBits64(board.N);
+    printBits64(board.white.n);
 
     printf("white Pawns:\n");
-    printBits64(board.P);
+    printBits64(board.white.p);
 
 
     printf("\n");
 
 
     printf("black King:\n");
-    printBits64(board.k);
+    printBits64(board.black.k);
 
     printf("black Queen:\n");
-    printBits64(board.q);
+    printBits64(board.black.q);
 
     printf("black Rooks:\n");
-    printBits64(board.r);
+    printBits64(board.black.r);
 
     printf("black Bishops:\n");
-    printBits64(board.b);
+    printBits64(board.black.b);
 
     printf("black Knights:\n");
-    printBits64(board.n);
+    printBits64(board.black.n);
 
     printf("black Pawns:\n");
-    printBits64(board.p);
+    printBits64(board.black.p);
 
 
     printf("\n");
