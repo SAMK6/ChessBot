@@ -3,9 +3,6 @@
 
 #include "BitBoard.h"
 
-// function that takes in a bitboard and returns the possible moves in the position
-// generateMoves(BitBoard);
-
 
 /*
     Moves will be from-to notation with 4 bits for extra info
@@ -20,47 +17,19 @@
 
     I originally had this idea but didnt realise that bits 14-15 could still be used if the move is not a promotion,
     after reading CPW (https://www.chessprogramming.org/Encoding_Moves) I realised bits 14-15 could be used either way and 
-    therefore my move representation is a simplified version of the table used in the article linked (maybe with bits reversed I cant tell)
+    therefore my move representation is a simplified version of the table used in the article linked
 */
+
+
+// gonna define masks to get specific parts of the move object
+#define startMask 63 // first 6 bits (0-5)
+#define endMask 4032 // second 6 bits (6-11)
+#define isCaptureMask 4096 // 12th bit
+#define isPromoMask 8192 // 13th bit
+#define miscMask 49152 // final two bits
+
 typedef unsigned short Move;
 
-
-// lazily generate king moves
-Move genKingMoves(unsigned char);
-
-// lazily generate queen moves
-Move genQueenMoves(unsigned char);
-
-// lazily generate rook moves
-Move genRookMoves(unsigned char);
-
-// lazily generate bishop moves
-Move genBishopMoves(unsigned char);
-
-// lazily generate knight moves
-Move genKnightMoves(unsigned char);
-
-// lazily generate pawn moves
-Move genPawnMoves(unsigned char);
-
-
-
-// check a king move for validity
-Move checkKingMove(BitBoard, Move);
-
-// check a queen move for validity
-Move checkQueenMove(BitBoard, Move);
-
-// check a rook move for validity
-Move checkRookMove(BitBoard, Move);
-
-// check a bishop move for validity
-Move checkBishopMove(BitBoard, Move);
-
-// check a knight move for validity
-Move checkKnightMove(BitBoard, Move);
-
-// check a pawn move for validity
-Move checkPawnMove(BitBoard, Move);
+Move** generateMoves(BitBoard);
 
 #endif

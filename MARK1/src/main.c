@@ -23,8 +23,13 @@ int main(){
 
     bitBoardToFen(board, myFen);
 
-    printf("%s\n%s\n%d\n", myFen, fen, strcmp(myFen, fen));
+    printf("%s\n%s\n%d\n\n", myFen, fen, strcmp(myFen, fen));
 
+    printBits16(startMask);
+    printBits16(endMask);
+    printBits16(isCaptureMask);
+    printBits16(isPromoMask);
+    printBits16(miscMask);
 
     return 0;
 
