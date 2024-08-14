@@ -31,6 +31,10 @@ int main(){
     printBits16(isPromoMask);
     printBits16(miscMask);
 
+    printf("\n");
+
+    printBitoard64(board.black.p);
+
     return 0;
 
 }

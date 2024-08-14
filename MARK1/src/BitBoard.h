@@ -141,6 +141,7 @@ void printBits8(unsigned char);
 void printBits16(unsigned short);
 void printBits32(unsigned int);
 void printBits64(unsigned long);
+void printBitoard64(unsigned long);
 void debugPrintBitBoard(BitBoard);
 
 // popcount algorithms

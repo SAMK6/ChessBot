@@ -31,5 +31,8 @@
 typedef unsigned short Move;
 
 void generateMoves(BitBoard, Move*); // functions receives a board and a preallocated array for the moves to be put into
+void generateMovesBlack(BitBoard, Move*);
+void generateMovesWhite(BitBoard, Move*);
+
 
 #endif

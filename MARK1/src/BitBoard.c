@@ -127,6 +127,20 @@ void printBits64(unsigned long tar){
     printf("\n");
 }
 
+void printBitoard64(unsigned long tar){
+    unsigned long mask = (unsigned long)1 << 63;
+
+    for(int i = 0; i < 64; i++){
+        if(i>0 && i%8 == 0){
+            printf("\n");
+        }
+        printf("%u", !!(mask&tar));
+        tar = tar<<1;
+    }
+
+    printf("\n");
+}
+
 
 
 
