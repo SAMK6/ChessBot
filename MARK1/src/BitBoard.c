@@ -14,20 +14,27 @@ int validBitBoard(BitBoard board){ // this function is now a full check but rath
     // and depending on which peice can be captured en passant we check it is the correct players turn
     if(board.enPassant){
 
+        if(popcount64(board.enPassant) > 1){
+            return 0; // only 1 bit should ever be set
+        }
+
         Bint pawn;
-        if(board.enPassant > A4){ // black pawn can be captured en passant
+        if(board.enPassant > A5 && board.enPassant < H7){ // black pawn can be captured en passant
             pawn = board.enPassant >> 8;
 
             if(!((pawn & board.black.p) == pawn) || !board.whiteToMove){
                 return 0;
             }
         }
-        else{ // white pawn can be captured en passant
+        else if(board.enPassant > A2 && board.enPassant < H4){ // white pawn can be captured en passant
             pawn = board.enPassant << 8;
 
             if(!((pawn & board.white.p) == pawn) || board.whiteToMove){
                 return 0;
             }
+        }
+        else{
+            return 0; // invalid en passant squre
         }
     }
 

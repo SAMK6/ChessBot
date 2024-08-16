@@ -29,7 +29,7 @@ void generateMovesWhite(BitBoard board, Move* moves){
     Bint pawnMask = H2; // white pawns cant be on the first rank
     for(int i = 0; i < 55; i ++){
 
-        if(pawnMask & friendlyPieces.p){ // we found a pawn
+        if(pawnMask & friendlyPieces.p){ // we found a pawn check which moves it can make
 
             
 
