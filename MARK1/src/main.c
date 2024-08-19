@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include "BitBoard.h"
 #include "Translator.h"
 #include "MoveGenerator.h"
@@ -9,7 +10,7 @@
 int main(){
 
 
-    char* fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    char* fen = "r1bqkb1r/p1n1p1p1/2pn4/1p1p1p1p/1P1P1P1P/2P5/P1N1PNP1/R1BQKB1R w KQkq - 1 12";
 
     BitBoard board = fenToBitBoard(fen);
 
@@ -34,6 +35,14 @@ int main(){
     printf("\n");
 
     printBitoard64(board.black.p);
+    
+    printf("\n");
+
+    printBitoard64(generateKnightMask(F1num));
+
+    printf("\n");
+
+
 
     return 0;
 

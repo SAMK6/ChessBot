@@ -1,6 +1,7 @@
 #ifndef MOVEGENERATOR_H
 #define MOVEGENERATOR_H
 
+#include <stdint.h>
 #include "BitBoard.h"
 
 
@@ -28,11 +29,19 @@
 #define isPromoMask 8192 // 13th bit
 #define miscMask 49152 // final two bits
 
-typedef unsigned short Move;
+typedef uint16_t Move;
 
 void generateMoves(BitBoard, Move*); // functions receives a board and a preallocated array for the moves to be put into
 void generateMovesBlack(BitBoard, Move*);
 void generateMovesWhite(BitBoard, Move*);
+
+// functions that generate a no assumptions mask of the squares that a pieces could go to given an input square
+uint64_t generateRookMask(uint8_t); 
+uint64_t generateBishopMask(uint8_t);
+uint64_t generateKnightMask(uint8_t);
+uint64_t generateQueenMask(uint8_t);
+uint64_t generateKingMask(uint8_t);
+
 
 
 #endif

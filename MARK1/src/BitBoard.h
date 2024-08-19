@@ -1,6 +1,10 @@
 #ifndef BITBOARD_H
 #define BITBOARD_H
 
+#include <stdint.h>
+
+
+
 // define all the "squares"
 // if this part seems unclear take a look at bitboardtest.c and it will become more clear
 #define H1 1ull
@@ -75,15 +79,89 @@
 #define B8 4611686018427387904ull
 #define A8 9223372036854775808ull
 
+// define all the square numbers
+
+#define H1num ((uint8_t)0)
+#define G1num ((uint8_t)1)
+#define F1num ((uint8_t)2)
+#define E1num ((uint8_t)3)
+#define D1num ((uint8_t)4)
+#define C1num ((uint8_t)5)
+#define B1num ((uint8_t)6)
+#define A1num ((uint8_t)7)
+
+#define H2num ((uint8_t)8)
+#define G2num ((uint8_t)9)
+#define F2num ((uint8_t)10)
+#define E2num ((uint8_t)11)
+#define D2num ((uint8_t)12)
+#define C2num ((uint8_t)13)
+#define B2num ((uint8_t)14)
+#define A2num ((uint8_t)15)
+
+#define H3num ((uint8_t)16)
+#define G3num ((uint8_t)17)
+#define F3num ((uint8_t)18)
+#define E3num ((uint8_t)19)
+#define D3num ((uint8_t)20)
+#define C3num ((uint8_t)21)
+#define B3num ((uint8_t)22)
+#define A3num ((uint8_t)23)
+
+#define H4num ((uint8_t)24)
+#define G4num ((uint8_t)25)
+#define F4num ((uint8_t)26)
+#define E4num ((uint8_t)27)
+#define D4num ((uint8_t)28)
+#define C4num ((uint8_t)29)
+#define B4num ((uint8_t)30)
+#define A4num ((uint8_t)31)
+
+#define H5num ((uint8_t)32)
+#define G5num ((uint8_t)33)
+#define F5num ((uint8_t)34)
+#define E5num ((uint8_t)35)
+#define D5num ((uint8_t)36)
+#define C5num ((uint8_t)37)
+#define B5num ((uint8_t)38)
+#define A5num ((uint8_t)39)
+
+#define H6num ((uint8_t)40)
+#define G6num ((uint8_t)41)
+#define F6num ((uint8_t)42)
+#define E6num ((uint8_t)43)
+#define D6num ((uint8_t)44)
+#define C6num ((uint8_t)45)
+#define B6num ((uint8_t)46)
+#define A6num ((uint8_t)47)
+
+#define H7num ((uint8_t)48)
+#define G7num ((uint8_t)49)
+#define F7num ((uint8_t)50)
+#define E7num ((uint8_t)51)
+#define D7num ((uint8_t)52)
+#define C7num ((uint8_t)53)
+#define B7num ((uint8_t)54)
+#define A7num ((uint8_t)55)
+
+#define H8num ((uint8_t)56)
+#define G8num ((uint8_t)57)
+#define F8num ((uint8_t)58)
+#define E8num ((uint8_t)59)
+#define D8num ((uint8_t)60)
+#define C8num ((uint8_t)61)
+#define B8num ((uint8_t)62)
+#define A8num ((uint8_t)63)
+
 // struct that simply stores peice location data each bitboard has one for black and one for white
 typedef struct RawBoard{
 
-    unsigned long k; // king
-    unsigned long q; // queen
-    unsigned long r; // rooks
-    unsigned long b; // bishops
-    unsigned long n; // knights
-    unsigned long p; // pawns
+    uint64_t k; // king
+    uint64_t q; // queen
+    uint64_t r; // rooks
+    uint64_t b; // bishops
+    uint64_t n; // knights
+    uint64_t p; // pawns
 
 } RawBoard;
 
@@ -110,25 +188,25 @@ typedef struct BitBoard{
 
     // these next few may be amalgamated eventually
 
-    unsigned char whiteToMove; // 0 if it is blacks turn and nonzero otherwise
+    uint8_t whiteToMove; // 0 if it is blacks turn and nonzero otherwise
 
     // bit 3 for white king, bit 2 for white queen, bit 1 for black king, bit 0 for black king, other bits unused for now
-    unsigned char castling;
-    unsigned char halfMoves; // 50 move rule clock, when it reaches 100 the game is a draw
+    uint8_t castling;
+    uint8_t halfMoves; // 50 move rule clock, when it reaches 100 the game is a draw
 
-    unsigned short moves; // move counter
+    uint16_t moves; // move counter
 
 
     // even though 0 is a real squre we will use 0 to mean en passant is not possible since en passant on h1 is impossible 
     // non zero values here are assumed to be valid en passant squares
-    unsigned long enPassant;
+    uint64_t enPassant;
 
 
 } BitBoard;
 
 /*
     the usual initialization of the bitboard will be all 0 values as follows
-    BitBoard board = {(Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (unsigned char)0, (unsigned char)0, (unsigned char)0, (unsigned short)0, (Bint)0};
+    BitBoard board = {(uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint8_t)0, (uint8_t)0, (uint8_t)0, (uint16_t)0, (uint64_t)0};
 
 */
 
@@ -137,24 +215,18 @@ typedef struct BitBoard{
 int validBitBoard(BitBoard);
 
 // functions for debug printing
-void printBits8(unsigned char);
-void printBits16(unsigned short);
-void printBits32(unsigned int);
-void printBits64(unsigned long);
-void printBitoard64(unsigned long);
+void printBits8(uint8_t);
+void printBits16(uint16_t);
+void printBits32(uint32_t);
+void printBits64(uint64_t);
+void printBitoard64(uint64_t);
 void debugPrintBitBoard(BitBoard);
 
 // popcount algorithms
-int popcount8(unsigned char);
-int popcount16(unsigned short);
-int popcount32(unsigned int);
-int popcount64(unsigned long);
-
-
-
-
-typedef unsigned long Bint; // Bint == board int, will be used frequently for setting bits
-
+int popcount8(uint8_t);
+int popcount16(uint16_t);
+int popcount32(uint32_t);
+int popcount64(uint64_t);
 
 
 

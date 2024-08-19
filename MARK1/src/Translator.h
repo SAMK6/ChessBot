@@ -1,6 +1,7 @@
 #ifndef TRANSLATOR_H
 #define TRANSLATOR_H
 
+#include <stdint.h>
 #include "BitBoard.h"
 
 // see https://www.chessprogramming.org/Forsyth-Edwards_Notation for info on FEN notation

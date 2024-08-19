@@ -1,11 +1,12 @@
 #include <stdio.h>
+#include <stdint.h>
 #include "BitBoard.h"
 
 
 int validBitBoard(BitBoard board){ // this function is now a full check but rather some general sanity checks
 
     // first check is since there cannot be two peices on one squre the bitwise and of all the piece boards should be 0
-    Bint check = board.white.k & board.white.q & board.white.r & board.white.b & board.white.n & board.white.p & board.black.k & board.black.q & board.black.r & board.black.b & board.black.n & board.black.p;
+    uint64_t check = board.white.k & board.white.q & board.white.r & board.white.b & board.white.n & board.white.p & board.black.k & board.black.q & board.black.r & board.black.b & board.black.n & board.black.p;
     if(check){
         return 0;
     }
@@ -18,7 +19,7 @@ int validBitBoard(BitBoard board){ // this function is now a full check but rath
             return 0; // only 1 bit should ever be set
         }
 
-        Bint pawn;
+        uint64_t pawn;
         if(board.enPassant > A5 && board.enPassant < H7){ // black pawn can be captured en passant
             pawn = board.enPassant >> 8;
 
@@ -41,22 +42,22 @@ int validBitBoard(BitBoard board){ // this function is now a full check but rath
     // finally we can check that if castling is allowed the rooks and kings are in the proper position
     if(board.castling){
 
-        if(board.castling & (unsigned short)8){ // white can castle kingside
+        if(board.castling & (uint16_t)8){ // white can castle kingside
             if(!((board.white.k & E1) && (board.white.r & H1))){
                 return 0;
             }
         }
-        if(board.castling & (unsigned short)4){ // white can castle queenside
+        if(board.castling & (uint16_t)4){ // white can castle queenside
             if(!((board.white.k & E1) && (board.white.r & A1))){
                 return 0;
             }
         }
-        if(board.castling & (unsigned short)2){ // black can castle kingside
+        if(board.castling & (uint16_t)2){ // black can castle kingside
             if(!((board.black.k & E8) && (board.black.r & H8))){
                 return 0;
             }
         }
-        if(board.castling & (unsigned short)1){ // black can castle queenside
+        if(board.castling & (uint16_t)1){ // black can castle queenside
             if(!((board.black.k & E8) && (board.black.r & A8))){
                 return 0;
             }
@@ -73,9 +74,9 @@ int validBitBoard(BitBoard board){ // this function is now a full check but rath
 
 
 
-void printBits8(unsigned char tar){
+void printBits8(uint8_t tar){
 
-    unsigned char mask = (unsigned char)1 << 7;
+    uint8_t mask = (uint8_t)1 << 7;
 
     for(int i = 0; i < 8; i++){
         if(i>0 && i%8 == 0){
@@ -88,9 +89,9 @@ void printBits8(unsigned char tar){
     printf("\n");
 }
 
-void printBits16(unsigned short tar){
+void printBits16(uint16_t tar){
 
-    unsigned short mask = (unsigned short)1 << 15;
+    uint16_t mask = (uint16_t)1 << 15;
 
     for(int i = 0; i < 16; i++){
         if(i>0 && i%8 == 0){
@@ -104,9 +105,9 @@ void printBits16(unsigned short tar){
 }
 
 
-void printBits32(unsigned int tar){
+void printBits32(uint32_t tar){
 
-    unsigned int mask = (unsigned int)1 << 31;
+    uint32_t mask = (uint32_t)1 << 31;
 
     for(int i = 0; i < 32; i++){
         if(i>0 && i%8 == 0){
@@ -120,8 +121,8 @@ void printBits32(unsigned int tar){
 }
 
 
-void printBits64(unsigned long tar){
-    unsigned long mask = (unsigned long)1 << 63;
+void printBits64(uint64_t tar){
+    uint64_t mask = (uint64_t)1 << 63;
 
     for(int i = 0; i < 64; i++){
         if(i>0 && i%8 == 0){
@@ -134,8 +135,8 @@ void printBits64(unsigned long tar){
     printf("\n");
 }
 
-void printBitoard64(unsigned long tar){
-    unsigned long mask = (unsigned long)1 << 63;
+void printBitoard64(uint64_t tar){
+    uint64_t mask = (uint64_t)1 << 63;
 
     for(int i = 0; i < 64; i++){
         if(i>0 && i%8 == 0){
@@ -216,7 +217,7 @@ void debugPrintBitBoard(BitBoard board){
 }
 
 
-int popcount8(unsigned char n){
+int popcount8(uint8_t n){
 
     n = (n & 0x55) + ((n >> 1) & 0x55);
     n = (n & 0x33) + ((n >> 2) & 0x33);
@@ -225,7 +226,7 @@ int popcount8(unsigned char n){
 
 }
 
-int popcount16(unsigned short n){
+int popcount16(uint16_t n){
 
     n = (n & 0x5555) + ((n >> 1) & 0x5555);
     n = (n & 0x3333) + ((n >> 2) & 0x3333);
@@ -235,7 +236,7 @@ int popcount16(unsigned short n){
 
 }
 
-int popcount32(unsigned int n){
+int popcount32(uint32_t n){
 
     n = (n & 0x55555555) + ((n >> 1) & 0x55555555);
     n = (n & 0x33333333) + ((n >> 2) & 0x33333333);
@@ -246,7 +247,7 @@ int popcount32(unsigned int n){
 
 }
 
-int popcount64(unsigned long n){
+int popcount64(uint64_t n){
 
     n = (n & 0x5555555555555555) + ((n >> 1) & 0x5555555555555555);
     n = (n & 0x3333333333333333) + ((n >> 2) & 0x3333333333333333);

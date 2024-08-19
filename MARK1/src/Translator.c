@@ -1,14 +1,15 @@
+#include <stdint.h>
 #include "BitBoard.h"
 #include "Translator.h"
 
 
 BitBoard fenToBitBoard(const char* fen){
 
-    BitBoard position = {(Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (Bint)0, (unsigned char)0, (unsigned char)0, (unsigned char)0, (unsigned short)0, (Bint)0};
+    BitBoard position = {(uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint8_t)0, (uint8_t)0, (uint8_t)0, (uint16_t)0, (uint64_t)0};
 
     int count = 0, pos = 63;
 
-    unsigned char curr;
+    char curr;
 
 
     // first we loop over the board in the fen string and add peices accordingly
@@ -106,7 +107,7 @@ BitBoard fenToBitBoard(const char* fen){
 
     // after consuming the first space we have arrived at the character that is either 'b' or 'w' for which player is to move
     curr = *(fen + count);
-    position.whiteToMove = (curr == 'w') ? (unsigned char)1 : (unsigned char)0;
+    position.whiteToMove = (curr == 'w') ? (uint8_t)1 : (uint8_t)0;
     count += 2; // consume the turn char and the next space
 
     // now we look for castling rights
@@ -115,16 +116,16 @@ BitBoard fenToBitBoard(const char* fen){
 
         switch(curr){
             case 'K':
-                position.castling = position.castling | (unsigned char)8;
+                position.castling = position.castling | (uint8_t)8;
                 break;
             case 'Q':
-                position.castling = position.castling | (unsigned char)4;
+                position.castling = position.castling | (uint8_t)4;
                 break;
             case 'k':
-                position.castling = position.castling | (unsigned char)2;
+                position.castling = position.castling | (uint8_t)2;
                 break;
             case 'q':
-                position.castling = position.castling | (unsigned char)1;
+                position.castling = position.castling | (uint8_t)1;
                 break;
             case '-':
                 break;
@@ -155,7 +156,7 @@ BitBoard fenToBitBoard(const char* fen){
 
     // now read the half move count
     // gonna make a simple atoi to avoid including the whole stdlib for 2 function calls
-    unsigned char buf[10];
+    uint8_t buf[10];
     int bufPos = 0;
     while(1){
         
@@ -172,7 +173,7 @@ BitBoard fenToBitBoard(const char* fen){
         bufPos++;
     }
 
-    unsigned char factor = 1;
+    uint8_t factor = 1;
     for(int i = bufPos - 1; i >= 0; i--){
         position.halfMoves += (buf[i] - '0') * factor;
         factor = factor * 10;
@@ -196,7 +197,7 @@ BitBoard fenToBitBoard(const char* fen){
         bufPos++;
     }
 
-    unsigned short factor1 = 1;
+    uint16_t factor1 = 1;
     for(int i = bufPos - 1; i >= 0; i--){
         position.moves += (buf[i] - '0') * factor1;
         factor1 = factor1 * 10;
@@ -216,7 +217,7 @@ BitBoard fenToBitBoard(const char* fen){
 void bitBoardToFen(BitBoard board, char* fen){
 
     int count = 0;
-    unsigned char empty = 0;
+    uint8_t empty = 0;
 
     // gonna loop over each bit of each peice board to write the position
     for(int i = 63; i >= 0; i--){
@@ -233,7 +234,7 @@ void bitBoardToFen(BitBoard board, char* fen){
         }
 
         // the mask for the square we care about this iteration
-        Bint mask = 1ull << i;
+        uint64_t mask = 1ull << i;
         // now start seeing if/which peice is on this square
         if(board.white.k & mask){
             if(empty > 0){
@@ -383,20 +384,20 @@ void bitBoardToFen(BitBoard board, char* fen){
     count++;
 
     // now add castling info
-    unsigned char castle = board.castling;
-    if(castle & (unsigned char)8){ // white can castle kingside
+    uint8_t castle = board.castling;
+    if(castle & (uint8_t)8){ // white can castle kingside
         *(fen + count) = 'K';
         count++;
     }
-    if(castle & (unsigned char)4){ // white can castle queenside
+    if(castle & (uint8_t)4){ // white can castle queenside
         *(fen + count) = 'Q';
         count++;
     }
-    if(castle & (unsigned char)2){ // black can castle kingside
+    if(castle & (uint8_t)2){ // black can castle kingside
         *(fen + count) = 'k';
         count++;
     }
-    if(castle & (unsigned char)1){ // black can castle queenside
+    if(castle & (uint8_t)1){ // black can castle queenside
         *(fen + count) = 'q';
         count++;
     }
@@ -412,7 +413,7 @@ void bitBoardToFen(BitBoard board, char* fen){
     // now add en passant info
     if(board.enPassant){
 
-        Bint passant = board.enPassant;
+        uint64_t passant = board.enPassant;
         char file = 'h', rank = '1';
 
         while(passant > 255){ // find the rank
@@ -440,9 +441,9 @@ void bitBoardToFen(BitBoard board, char* fen){
     count++;
 
     // now add the halfmove count
-    unsigned char half = board.halfMoves, LSD;
+    uint8_t half = board.halfMoves, LSD;
     int digits = 0;
-    unsigned char buf[10];
+    uint8_t buf[10];
     do{
         LSD = half % 10;
         buf[digits] = '0' + LSD;
@@ -461,11 +462,11 @@ void bitBoardToFen(BitBoard board, char* fen){
     count++;
 
     // now add the move count
-    unsigned short moves = board.moves, lsd;
+    uint16_t moves = board.moves, lsd;
     digits = 0;
     do{
         lsd = moves % 10;
-        buf[digits] = '0' + (unsigned char)lsd;
+        buf[digits] = '0' + (uint8_t)lsd;
         digits++;
         moves = (moves - (int)lsd)/10;
     }while(moves > 0);
