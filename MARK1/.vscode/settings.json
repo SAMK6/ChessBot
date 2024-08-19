@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "translator.h": "c",
-        "bitboard.h": "c"
-    }
-}
