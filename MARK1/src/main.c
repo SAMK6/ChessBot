@@ -10,7 +10,7 @@
 int main(){
 
 
-    char* fen = "r1bqkb1r/p1n1p1p1/2pn4/1p1p1p1p/1P1P1P1P/2P5/P1N1PNP1/R1BQKB1R w KQkq - 1 12";
+    char* fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     BitBoard board = fenToBitBoard(fen);
 
@@ -38,7 +38,7 @@ int main(){
     
     printf("\n");
 
-    printBitoard64(generateKnightMask(F1num));
+    printBitoard64(generateKnightMask(G1num, (board.white.p | board.white.n | board.white.b | board.white.r | board.white.q | board.white.k)));
 
     printf("\n");
 

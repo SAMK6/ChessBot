@@ -3,7 +3,7 @@
 #include "BitBoard.h"
 #include "MoveGenerator.h"
 
-uint64_t generateRookMask(uint8_t square){
+uint64_t generateRookMask(uint8_t square, RawBoard friendly, RawBoard enemy){
 
     uint64_t mask = 0ull;
 
@@ -28,7 +28,7 @@ uint64_t generateRookMask(uint8_t square){
 
 }
 
-uint64_t generateBishopMask(uint8_t square){
+uint64_t generateBishopMask(uint8_t square, RawBoard friendly, RawBoard enemy){
 
     uint64_t mask = 0ull;
     uint64_t pos = (uint64_t)1 << square;
@@ -81,7 +81,7 @@ uint64_t generateBishopMask(uint8_t square){
 
 }
 
-uint64_t generateKnightMask(uint8_t square){
+uint64_t generateKnightMask(uint8_t square, uint64_t friendlyPieces){
 
     uint64_t mask = 0ull;
     uint64_t pos = (uint64_t)1 << square;
@@ -91,6 +91,8 @@ uint64_t generateKnightMask(uint8_t square){
 
     printf("\n\n%d:%d\n\n", rank, file);
 
+
+    // each of these staementas makes sure the knight is far enough away from the edge of the board for any of its 8 possible moves
     if(rank < (uint8_t)7 && file < (uint8_t)6) mask = mask | (pos << (uint8_t)10);
 
     if(rank < (uint8_t)6 && file < (uint8_t)7) mask = mask | (pos << (uint8_t)17);
@@ -107,17 +109,20 @@ uint64_t generateKnightMask(uint8_t square){
 
     if(rank > (uint8_t)0 && file < (uint8_t)6) mask = mask | (pos >> (uint8_t)6);
 
+    // make sure a friendly peices doesnt occupy the square
+    mask = mask & ~friendlyPieces;
+
     return mask;
 
 }
 
-uint64_t generateQueenMask(uint8_t square){
+uint64_t generateQueenMask(uint8_t square, RawBoard friendly, RawBoard enemy){
 
-    return generateRookMask(square) | generateBishopMask(square);
+    return generateRookMask(square, friendly, enemy) | generateBishopMask(square, friendly, enemy);
 
 }
 
-uint64_t generateKingMask(uint8_t square){
+uint64_t generateKingMask(uint8_t square, RawBoard friendly, RawBoard enemy){
 
     uint64_t mask = 0ull;
     uint64_t pos = (uint64_t)1 << square;
@@ -159,37 +164,34 @@ uint64_t generateKingMask(uint8_t square){
 
 }
 
+/*
 
+    the general movegen strat will be to obtain a mask for the given piece,
+    check if that piece is pinned to the king, obtain a movement mask for the peice, 
+    depening on if it is pinned to the king and which squares are taken by friendly pieces we determine the possible moves
 
-void generateMovesWhite(BitBoard board, Move* moves){
+*/
+
+void generateMovesWhite(BitBoard *board, Move *moves){
 
     // a board that simply has the position of all oponnent pieces
-    uint64_t opBoard = board.black.k | board.black.q | board.black.r | board.black.b | board.black.n | board.black.p;
-    uint64_t myBoard = board.white.k | board.white.q | board.white.r | board.white.b | board.white.n | board.white.p;
+    uint64_t opBoard = board->black.k | board->black.q | board->black.r | board->black.b | board->black.n | board->black.p;
+    // a board that contains all friendly pieces
+    uint64_t myBoard = board->white.k | board->white.q | board->white.r | board->white.b | board->white.n | board->white.p;
+    // a board that contains all pieces
     uint64_t wholeBoard = opBoard | myBoard;
 
-    RawBoard friendlyPieces = board.white;
+
+    RawBoard friendlyPieces = board->white;
+    RawBoard enemyPieces = board->black;
 
     int pos = 0; // where in the movelist to put moves
 
-    // first we generate pawn moves
-    uint64_t pawnMask = H2; // white pawns cant be on the first rank
-    for(int i = 0; i < 55; i ++){
-
-        if(pawnMask & friendlyPieces.p){ // we found a pawn check which moves it can make
-
-            
-
-        }
-
-        pawnMask << 1;
-
-    }
 
 
 }
 
-void generateMovesBlack(BitBoard board, Move* moves){
+void generateMovesBlack(BitBoard *board, Move *moves){
 
 
 
@@ -197,9 +199,9 @@ void generateMovesBlack(BitBoard board, Move* moves){
     
 }
 
-void generateMoves(BitBoard board, Move* moves){
+void generateMoves(BitBoard *board, Move *moves){
 
-    if(board.whiteToMove){
+    if(board->whiteToMove){
         generateMovesWhite(board, moves);
     }
     else{
