@@ -219,7 +219,7 @@ void printBits8(uint8_t);
 void printBits16(uint16_t);
 void printBits32(uint32_t);
 void printBits64(uint64_t);
-void printBitoard64(uint64_t);
+void printBitBoard64(uint64_t);
 void debugPrintBitBoard(BitBoard);
 
 // popcount algorithms

@@ -5,6 +5,7 @@
 #include "BitBoard.h"
 #include "Translator.h"
 #include "MoveGenerator.h"
+#include "BitMasks.h"
 
 
 int main(){
@@ -32,16 +33,15 @@ int main(){
     printBits16(isPromoMask);
     printBits16(miscMask);
 
-    printf("\n");
+    printf("\n\n");
 
-    printBitoard64(board.black.p);
-    
-    printf("\n");
+    printf("GENERATING KING MASKS\n");
 
-    printBitoard64(generateKnightMask(G1num, (board.white.p | board.white.n | board.white.b | board.white.r | board.white.q | board.white.k)));
+    for(uint8_t i = 0; i < (uint8_t)64; i++){
 
-    printf("\n");
+        printBitBoard64(basicKnightMasks[i]);
 
+    }
 
 
     return 0;

@@ -135,7 +135,7 @@ void printBits64(uint64_t tar){
     printf("\n");
 }
 
-void printBitoard64(uint64_t tar){
+void printBitBoard64(uint64_t tar){
     uint64_t mask = (uint64_t)1 << 63;
 
     for(int i = 0; i < 64; i++){
@@ -146,7 +146,7 @@ void printBitoard64(uint64_t tar){
         tar = tar<<1;
     }
 
-    printf("\n");
+    printf("\n\n");
 }
 
 
@@ -156,44 +156,44 @@ void printBitoard64(uint64_t tar){
 void debugPrintBitBoard(BitBoard board){
 
     printf("white King:\n");
-    printBits64(board.white.k);
+    printBitBoard64(board.white.k);
 
     printf("white Queen:\n");
-    printBits64(board.white.q);
+    printBitBoard64(board.white.q);
 
     printf("white Rooks:\n");
-    printBits64(board.white.r);
+    printBitBoard64(board.white.r);
 
     printf("white Bishops:\n");
-    printBits64(board.white.b);
+    printBitBoard64(board.white.b);
 
     printf("white Knights:\n");
-    printBits64(board.white.n);
+    printBitBoard64(board.white.n);
 
     printf("white Pawns:\n");
-    printBits64(board.white.p);
+    printBitBoard64(board.white.p);
 
 
     printf("\n");
 
 
     printf("black King:\n");
-    printBits64(board.black.k);
+    printBitBoard64(board.black.k);
 
     printf("black Queen:\n");
-    printBits64(board.black.q);
+    printBitBoard64(board.black.q);
 
     printf("black Rooks:\n");
-    printBits64(board.black.r);
+    printBitBoard64(board.black.r);
 
     printf("black Bishops:\n");
-    printBits64(board.black.b);
+    printBitBoard64(board.black.b);
 
     printf("black Knights:\n");
-    printBits64(board.black.n);
+    printBitBoard64(board.black.n);
 
     printf("black Pawns:\n");
-    printBits64(board.black.p);
+    printBitBoard64(board.black.p);
 
 
     printf("\n");
@@ -212,7 +212,7 @@ void debugPrintBitBoard(BitBoard board){
     printBits16(board.moves);
 
     printf("enPassant:\n");
-    printBits64(board.enPassant);
+    printBitBoard64(board.enPassant);
 
 }
 

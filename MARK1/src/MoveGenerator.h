@@ -31,14 +31,6 @@ typedef uint16_t Move;
 
 
 
-
-// functions that generate a no assumptions mask of the squares that a pieces could go to given an input square
-uint64_t generateRookMask(uint8_t, RawBoard, RawBoard); 
-uint64_t generateBishopMask(uint8_t, RawBoard, RawBoard);
-uint64_t generateKnightMask(uint8_t, uint64_t); // since knights can jump all we need is which squares are occupied by friendly peices
-uint64_t generateQueenMask(uint8_t, RawBoard, RawBoard);
-uint64_t generateKingMask(uint8_t, RawBoard, RawBoard);
-
 void generateMoves(BitBoard*, Move*); // functions receives a board and a preallocated array for the moves to be put into
 void generateMovesBlack(BitBoard*, Move*);
 void generateMovesWhite(BitBoard*, Move*);
