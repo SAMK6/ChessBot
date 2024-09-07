@@ -11,7 +11,7 @@
 int main(){
 
 
-    char* fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    char* fen = "r2r2k1/pp2bpp1/2q1pn1p/6B1/8/2P5/PP2QPPP/1B1R1RK1 w - - 0 17";
 
     BitBoard board = fenToBitBoard(fen);
 
@@ -35,13 +35,13 @@ int main(){
 
     printf("\n\n");
 
-    printf("GENERATING KING MASKS\n");
+    uint64_t allPieces = board.black.k | board.black.q | board.black.r | board.black.b | board.black.n | board.black.p | board.white.k | board.white.q | board.white.r | board.white.b | board.white.n | board.white.p;
 
-    for(uint8_t i = 0; i < (uint8_t)64; i++){
+    printBitBoard64(allPieces);
 
-        printBitBoard64(basicKnightMasks[i]);
+    uint64_t attacks = generateRookAttacks(E5num, allPieces);
 
-    }
+    printBitBoard64(attacks);
 
 
     return 0;

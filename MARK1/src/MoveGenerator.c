@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "BitBoard.h"
 #include "MoveGenerator.h"
-
+#include "BitMasks.h"
 
 
 /*
