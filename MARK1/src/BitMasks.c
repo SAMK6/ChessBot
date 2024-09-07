@@ -433,14 +433,70 @@ uint64_t generateKingMask(uint8_t square){
 
 uint64_t generateBishopAttacks(uint8_t square, uint64_t pieces){
 
-    return 1ull;
+    uint64_t blockers = pieces & basicBishopMasks[square];
+    
+    uint64_t mask = 0ull;
+    uint64_t pos = (uint64_t)1 << square;
 
+    int rank = (int)(square / (uint8_t)8);
+    int file = (int)(square % (uint8_t)8);
+
+    // add the attacked squares to the top left
+    int offset = 1;
+    while(rank + offset < 8 && file + offset < 8){
+
+        mask |= pos << (9 * offset);
+
+        if((pos << (9 * offset)) & blockers) break;
+
+        offset++;
+
+    }
+
+    // add the attacked squares to the top right
+    offset = 1;
+    while(rank + offset < 8 && file - offset >= 0){
+
+        mask |= pos << (7 * offset);
+
+        if((pos << (7 * offset)) & blockers) break;
+
+        offset++;
+
+    }
+
+    // add the attacked squares to the bottom right
+    offset = 1;
+    while(rank - offset >= 0 && file - offset >= 0){
+
+        mask |= pos >> (9 * offset);
+
+        if((pos >> (9 * offset)) & blockers) break;
+
+        offset++;
+
+    }
+
+    // add the attacked squares to the bottom left
+    offset = 1;
+    while(rank - offset >= 0 && file + offset < 8){
+
+        mask |= pos >> (7 * offset);
+
+        if((pos >> (7 * offset)) & blockers) break;
+
+        offset++;
+
+    }
+    
+    return mask;
+    
 }
 
 uint64_t generateRookAttacks(uint8_t square, uint64_t pieces){
 
     uint64_t blockers = pieces & basicRookMasks[square];
-    
+
     uint64_t mask = 0ull;
     uint64_t pos = (uint64_t)1 << square;
 

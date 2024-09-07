@@ -39,7 +39,7 @@ int main(){
 
     printBitBoard64(allPieces);
 
-    uint64_t attacks = generateRookAttacks(E5num, allPieces);
+    uint64_t attacks = generateBishopAttacks(D2num, allPieces);
 
     printBitBoard64(attacks);
 
