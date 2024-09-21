@@ -11,7 +11,7 @@
 int main(){
 
 
-    char* fen = "r2r2k1/pp2bpp1/2q1pn1p/6B1/8/2P5/PP2QPPP/1B1R1RK1 w - - 0 17";
+    char* fen = "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2";
 
     BitBoard board = fenToBitBoard(fen);
 
@@ -27,21 +27,30 @@ int main(){
 
     printf("%s\n%s\n%d\n\n", myFen, fen, strcmp(myFen, fen));
 
+    printf("startMask: ");
     printBits16(startMask);
+    printf("endMask: ");
     printBits16(endMask);
+    printf("captureMask: ");
     printBits16(isCaptureMask);
+    printf("promoMask: ");
     printBits16(isPromoMask);
+    printf("miscMask: ");
     printBits16(miscMask);
+    printf("pieceMask: ");
+    printBits16(pieceMask);
 
     printf("\n\n");
 
-    uint64_t allPieces = board.black.k | board.black.q | board.black.r | board.black.b | board.black.n | board.black.p | board.white.k | board.white.q | board.white.r | board.white.b | board.white.n | board.white.p;
+    Move move = ((uint16_t)0) | ((uint16_t)1 << 6) | ((uint16_t)0 << 12);
 
-    printBitBoard64(allPieces);
+    char *movedFen = (char*)malloc(150*sizeof(char));
 
-    uint64_t attacks = generateBishopAttacks(D2num, allPieces);
+    BitBoard newBoard = makeMove(board, move, 'R');
 
-    printBitBoard64(attacks);
+    bitBoardToFen(newBoard, movedFen);
+
+    printf("%s\n", movedFen);
 
 
     return 0;

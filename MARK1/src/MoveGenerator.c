@@ -23,7 +23,8 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
     uint64_t endSquare = 1ull << ((move & endMask) >> 6);
     uint16_t isCapture = move & isCaptureMask;
     uint16_t isPromo = move & isPromoMask;
-    uint16_t misc = (move & miscMask) >> 14;
+    uint16_t misc = (move & miscMask) >> 12;
+    uint16_t promoPiece = (move & pieceMask) >> 12;
 
     // choce the appropriate pieces for the move
     switch(piece){
@@ -98,12 +99,13 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
         
         uint64_t notEndSquare;
 
-        if(!isPromo && misc == (uint16_t)1){ // this is an enpassant capture
-            if(friendlyPieces == &board.black){ // we are playing as black
-                notEndSquare = ~(endSquare << 8);
-            }
-            else{ // we are playing as white
+        if(misc == (uint16_t)5){ // this is an enpassant capture
+
+            if(board.whiteToMove){ // we are playing as white
                 notEndSquare = ~(endSquare >> 8);
+            }
+            else{ // we are playing as black
+                notEndSquare = ~(endSquare << 8);
             }
         }
         else{
@@ -122,7 +124,7 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
         
         *movedPiece &= ~endSquare; // first remove the pawn
 
-        switch(misc){ // now based on the misc code add the piece we are promoting to
+        switch(promoPiece){ // now based on the piece code add the piece we are promoting to
 
             case (uint16_t)0:
                 friendlyPieces->n |= endSquare;
@@ -141,6 +143,58 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
 
         }
     }
+
+    // update the other data starting with move counter
+    if(!board.whiteToMove){ // if it was black that just moved we update the move counter
+        board.moves++;
+    }
+
+    // update the halfmove clock according to if the move was a pawn move capture or neither
+    if(piece == 'p' || piece == 'P' || isCapture){
+        board.halfMoves = 0;
+    }
+    else{
+        board.halfMoves++;
+    }
+
+    // update the en passant square
+    if(misc == (uint16_t)1){
+        if(board.whiteToMove){ // white just pushed a pawn 2 spaces
+            board.enPassant = endSquare >> 8;
+        }
+        else{ // black just pushed a pawn 2 spaces
+            board.enPassant = endSquare << 8;
+        }
+    }
+    else{
+        board.enPassant = 0ull;
+    }
+
+    // update castling rights
+    if(board.castling){ // if noone can castle castling rights don't need to be updated
+        if(piece == 'K'){
+            board.castling &= ~(12ull);
+        }
+        else if(piece == 'k'){
+            board.castling &= ~(3ull);
+        }
+        else if(startSquare == H1){
+            board.castling &= ~(8ull);
+        }
+        else if(startSquare == A1){
+            board.castling &= ~(4ull);
+        }
+        else if(startSquare == H8){
+            board.castling &= ~(2ull);
+        }
+        else if(startSquare == A8){
+            board.castling &= ~(1ull);
+        }
+
+    }
+    
+    // finally we switch the player to move
+    board.whiteToMove = !board.whiteToMove;
 
     return board;
 

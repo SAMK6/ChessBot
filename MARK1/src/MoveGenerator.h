@@ -9,10 +9,23 @@
     Moves will be from-to notation with 4 bits for extra info
     bits 0-5 are the start square, we can use these to bit shift and create the piece mask later
     bits 6-11 are the end square, 
-    bit 12 represents whether or not the move is a capture
-    bit 13 represents whethere the move is a promotion or not
-    if bit 13 is set then bits 14-15 represent the piece the pawn is promoted to, 00 for knight, 01 for bishop, 10 for rook, 11 for queen
-    if bit 13 is unset then bits 14-15 represent misc info, 00 for nothing, 01 for the move is enPassant
+    the remaining 4 bits are as follows:
+        0 for quiet moves
+        1 for double pawn push
+        2 for kingside castle
+        3 for queenside castle
+        4 for captures
+        5 for en passant captures
+        8 for knight promo
+        9 for bishop promo
+        10 for rook promo
+        11 for queen promo
+        12 for knight promo-capture
+        13 for bishop promo-capture
+        14 for rook promo-capture
+        15 for queen promo-capture
+
+    need a use for 6 and 7 (maybe checks)
 
     the nullmove is all zeros
 
@@ -25,9 +38,10 @@ typedef uint16_t Move;
 // gonna define masks to get specific parts of the move object
 #define startMask (Move)63 // first 6 bits (0-5)
 #define endMask (Move)4032 // second 6 bits (6-11)
-#define isCaptureMask (Move)4096 // 12th bit
-#define isPromoMask (Move)8192 // 13th bit
-#define miscMask (Move)49152 // final two bits
+#define isCaptureMask (Move)16384 // 14th bit
+#define isPromoMask (Move)32768 // 15th bit
+#define pieceMask (Move)12288 // bits 12 and 13
+#define miscMask (Move)61440 // bits 12-15
 
 BitBoard makeMove(BitBoard, Move, char);
 

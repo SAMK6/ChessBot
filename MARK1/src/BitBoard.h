@@ -190,11 +190,11 @@ typedef struct BitBoard{
 
     uint8_t whiteToMove; // 0 if it is blacks turn and nonzero otherwise
 
-    // bit 3 for white king, bit 2 for white queen, bit 1 for black king, bit 0 for black king, other bits unused for now
-    uint8_t castling;
-    uint8_t halfMoves; // 50 move rule clock, when it reaches 100 the game is a draw
+    uint8_t castling;// bit 3 for white king, bit 2 for white queen, bit 1 for black king, bit 0 for black queen, (this matches FEN order) other bits unused for now
 
-    uint16_t moves; // move counter
+    uint8_t halfMoves; // 50 move rule clock, when it reaches 100 the player whose turn it is can claim a draw
+
+    uint16_t moves; // move counter incremented after blacks mov
 
 
     // even though 0 is a real squre we will use 0 to mean en passant is not possible since en passant on h1 is impossible 
