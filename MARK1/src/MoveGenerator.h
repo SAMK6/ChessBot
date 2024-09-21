@@ -12,13 +12,13 @@
     bit 12 represents whether or not the move is a capture
     bit 13 represents whethere the move is a promotion or not
     if bit 13 is set then bits 14-15 represent the piece the pawn is promoted to, 00 for knight, 01 for bishop, 10 for rook, 11 for queen
-    if bit 13 is unset then bits 14-15 represent misc info, 00 for 
+    if bit 13 is unset then bits 14-15 represent misc info, 00 for nothing, 01 for the move is enPassant
 
     the nullmove is all zeros
 
     I originally had this idea but didnt realise that bits 14-15 could still be used if the move is not a promotion,
     after reading CPW (https://www.chessprogramming.org/Encoding_Moves) I realised bits 14-15 could be used either way and 
-    therefore my move representation is a simplified version of the table used in the article linked
+    therefore my move representation is a modified version of the table used in the article linked
 */
 typedef uint16_t Move;
 
@@ -29,7 +29,7 @@ typedef uint16_t Move;
 #define isPromoMask (Move)8192 // 13th bit
 #define miscMask (Move)49152 // final two bits
 
-
+BitBoard makeMove(BitBoard, Move, char);
 
 void generateMoves(BitBoard*, Move*); // functions receives a board and a preallocated array for the moves to be put into
 void generateMovesBlack(BitBoard*, Move*);
