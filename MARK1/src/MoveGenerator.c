@@ -21,10 +21,11 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
     // break the move down into its parts
     uint64_t startSquare = 1ull << (move & startMask);
     uint64_t endSquare = 1ull << ((move & endMask) >> 6);
+    uint64_t moveMask = startSquare | endSquare;
     uint16_t isCapture = move & isCaptureMask;
     uint16_t isPromo = move & isPromoMask;
-    uint16_t misc = (move & miscMask) >> 12;
     uint16_t promoPiece = (move & pieceMask) >> 12;
+    uint16_t misc = (move & miscMask) >> 12;
 
     // choce the appropriate pieces for the move
     switch(piece){
@@ -92,8 +93,30 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
             break;
     }
 
-    *movedPiece &= ~startSquare; // toggle the start squre bit to 0
-    *movedPiece |= endSquare; // toggle the end bit square to 1
+    // the move mask has a 1 on the start and end square and 0s everywhere else, 
+    // so XORing it with the bitboard of the moved piece toggels off the start bit where the piece started 
+    // and toggles on the end square where the piece ends
+    *movedPiece ^= moveMask;
+
+    // now if the move was a castling move we have to also move the appropriate rook
+    // use the predefined masks for this since there are only 4 castling moves
+    if(misc == (uint16_t)2){ // kingside castle
+        if(piece == 'K'){
+            friendlyPieces->r ^= whiteKingsideCastle;
+        }
+        else{
+            friendlyPieces->r ^= blackKingsideCastle;
+        }
+    }
+
+    if(misc == (uint16_t)3){ // queenside castle
+        if(piece == 'K'){
+            friendlyPieces->r ^= whiteQueensideCastle;
+        }
+        else{
+            friendlyPieces->r ^= blackQueensideCastle;
+        }
+    }
 
     if(isCapture){ // if the move is a capture we have to remove the enemy piece from the square
         
@@ -112,6 +135,8 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
             notEndSquare = ~endSquare;
         }
 
+        // we can simply turn off this bit for every enemy piece because there cant be a piece there 
+        // and this avoids control flow which would end up being more work overall
         enemyPieces->k &= notEndSquare;
         enemyPieces->q &= notEndSquare;
         enemyPieces->r &= notEndSquare;
@@ -157,7 +182,7 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
         board.halfMoves++;
     }
 
-    // update the en passant square
+    // update the en passant square if it was a double pawn push
     if(misc == (uint16_t)1){
         if(board.whiteToMove){ // white just pushed a pawn 2 spaces
             board.enPassant = endSquare >> 8;
@@ -173,22 +198,22 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
     // update castling rights
     if(board.castling){ // if noone can castle castling rights don't need to be updated
         if(piece == 'K'){
-            board.castling &= ~(12ull);
+            board.castling &= ~((uint8_t)12);
         }
         else if(piece == 'k'){
-            board.castling &= ~(3ull);
+            board.castling &= ~((uint8_t)3);
         }
         else if(startSquare == H1){
-            board.castling &= ~(8ull);
+            board.castling &= ~((uint8_t)8);
         }
         else if(startSquare == A1){
-            board.castling &= ~(4ull);
+            board.castling &= ~((uint8_t)4);
         }
         else if(startSquare == H8){
-            board.castling &= ~(2ull);
+            board.castling &= ~((uint8_t)2);
         }
         else if(startSquare == A8){
-            board.castling &= ~(1ull);
+            board.castling &= ~((uint8_t)1);
         }
 
     }

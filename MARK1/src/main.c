@@ -39,7 +39,14 @@ int main(){
     printBits16(miscMask);
     printf("pieceMask: ");
     printBits16(pieceMask);
-
+    printf("white Kingside castle\n");
+    printBitBoard64(whiteKingsideCastle);
+    printf("white queenside castle\n");
+    printBitBoard64(whiteQueensideCastle);
+    printf("black kingside castle\n");
+    printBitBoard64(blackKingsideCastle);
+    printf("black queenside castle\n");
+    printBitBoard64(blackQueensideCastle);
     printf("\n\n");
 
     Move move = ((uint16_t)0) | ((uint16_t)1 << 6) | ((uint16_t)0 << 12);
@@ -52,6 +59,7 @@ int main(){
 
     printf("%s\n", movedFen);
 
+    
 
     return 0;
 

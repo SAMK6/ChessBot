@@ -9,7 +9,7 @@
     Moves will be from-to notation with 4 bits for extra info
     bits 0-5 are the start square, we can use these to bit shift and create the piece mask later
     bits 6-11 are the end square, 
-    the remaining 4 bits are as follows:
+    the remaining 4 bits are as follows (misc codes):
         0 for quiet moves
         1 for double pawn push
         2 for kingside castle
@@ -42,6 +42,12 @@ typedef uint16_t Move;
 #define isPromoMask (Move)32768 // 15th bit
 #define pieceMask (Move)12288 // bits 12 and 13
 #define miscMask (Move)61440 // bits 12-15
+
+// define masks used to move the rooks during castling moves
+#define whiteKingsideCastle 5ull
+#define whiteQueensideCastle 144ull
+#define blackKingsideCastle 360287970189639680ull
+#define blackQueensideCastle 10376293541461622784ull
 
 BitBoard makeMove(BitBoard, Move, char);
 
