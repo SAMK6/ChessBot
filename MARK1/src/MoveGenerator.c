@@ -170,9 +170,8 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
     }
 
     // update the other data starting with move counter
-    if(!board.whiteToMove){ // if it was black that just moved we update the move counter
-        board.moves++;
-    }
+    
+    board.moves += board.whiteToMove ? 0 : 1; // if it was black that just moved we update the move counter
 
     // update the halfmove clock according to if the move was a pawn move capture or neither
     if(piece == 'p' || piece == 'P' || isCapture){

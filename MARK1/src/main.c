@@ -11,7 +11,7 @@
 int main(){
 
 
-    char* fen = "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2";
+    char* fen = "rn2k2r/pp3pb1/3qp1p1/2p5/1P1PpPPp/2P1P2P/P3Q1K1/RNB2R2 b kq b3 0 15";
 
     BitBoard board = fenToBitBoard(fen);
 
@@ -49,11 +49,11 @@ int main(){
     printBitBoard64(blackQueensideCastle);
     printf("\n\n");
 
-    Move move = ((uint16_t)0) | ((uint16_t)1 << 6) | ((uint16_t)0 << 12);
+    Move move = buildMove(59,57,2);
 
     char *movedFen = (char*)malloc(150*sizeof(char));
 
-    BitBoard newBoard = makeMove(board, move, 'R');
+    BitBoard newBoard = makeMove(board, move, 'k');
 
     bitBoardToFen(newBoard, movedFen);
 

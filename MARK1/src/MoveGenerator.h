@@ -35,6 +35,8 @@
 */
 typedef uint16_t Move;
 
+#define buildMove(from, to, code) (Move)((uint16_t)from | ((uint16_t)to << 6) | ((uint16_t)code << 12))
+
 // gonna define masks to get specific parts of the move object
 #define startMask (Move)63 // first 6 bits (0-5)
 #define endMask (Move)4032 // second 6 bits (6-11)
