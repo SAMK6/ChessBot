@@ -34,6 +34,12 @@
     therefore my move representation is a modified version of the table used in the article linked
 */
 typedef uint16_t Move;
+typedef struct MoveBoard{ // this struct holds a bitboard and the move that created it
+    
+    Move move;
+    BitBoard board;
+
+} MoveBoard;
 
 #define buildMove(from, to, code) (Move)((uint16_t)from | ((uint16_t)to << 6) | ((uint16_t)code << 12))
 
@@ -51,10 +57,9 @@ typedef uint16_t Move;
 #define blackKingsideCastle 360287970189639680ull
 #define blackQueensideCastle 10376293541461622784ull
 
-BitBoard makeMove(BitBoard, Move, char);
-
-void generateMoves(BitBoard*, Move*); // functions receives a board and a preallocated array for the moves to be put into
-void generateMovesBlack(BitBoard*, Move*);
-void generateMovesWhite(BitBoard*, Move*);
+BitBoard makeMove(BitBoard, Move, char); // makes a move and returns the new bitboard
+int canKingBeCaptured(BitBoard*); // checks if the oponents king can be captured in the current position
+int generateMovesBlack(BitBoard*, MoveBoard*);
+int generateMovesWhite(BitBoard*, MoveBoard*);
 
 #endif

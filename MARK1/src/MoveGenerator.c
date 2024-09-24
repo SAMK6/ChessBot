@@ -246,7 +246,34 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
 
 }
 
-void generateMovesWhite(BitBoard *board, Move *moves){
+int isKingSafe(BitBoard *board){
+
+    uint64_t targetKing = board->whiteToMove ? board->black.k : board->white.k;
+    RawBoard *friendlyPieces = board->whiteToMove ? &board->white : &board->black;
+    RawBoard *enemyPieces = board->whiteToMove ? &board->black : &board->white;
+
+    uint64_t wholeBoard = enemyPieces->p | enemyPieces->n | enemyPieces->b | enemyPieces->r | enemyPieces->q | enemyPieces->k | friendlyPieces->p | friendlyPieces->n | friendlyPieces->b | friendlyPieces->r | friendlyPieces->q | friendlyPieces->k;
+
+    uint8_t kingPos = __bulitin_ctzll(targetKing);
+
+    if(basicKnightMasks[kingPos] & friendlyPieces->n) return 0; // check if we can take the king with a knight
+
+    uint64_t bishopAttacks = generateBishopAttacks(kingPos, wholeBoard);
+    if(bishopAttacks & friendlyPieces->b) return 0; // check if we can take the king with a bishop
+
+    uint64_t rookAttacks = generateRookAttacks(kingPos, wholeBoard);
+    if(rookAttacks & friendlyPieces->r) return 0; // check if we can take the king with a rook
+
+    if((rookAttacks | bishopAttacks) & friendlyPieces->q) return 0; // check if we can take the king with a queen
+
+    uint64_t pawnAttacks = board->whiteToMove ? generatePawnMaskBlack(kingPos) : generatePawnMaskWhite(kingPos);
+    if(pawnAttacks & friendlyPieces->p) return 0;
+
+    return 1;
+
+}
+
+int generateMovesWhite(BitBoard *board, MoveBoard *moves){
 
     // a board that simply has the position of all oponnent pieces
     uint64_t opBoard = board->black.k | board->black.q | board->black.r | board->black.b | board->black.n | board->black.p;
@@ -261,44 +288,68 @@ void generateMovesWhite(BitBoard *board, Move *moves){
 
     int pos = 0; // where in the movelist to put moves
 
-    /*
-        check for pawn moves in 5 stages,
-        first pawns that are on their staring square so we have to check for two squre moves,
-        then check the 3rd and 4th ranks normal pawn moves and captures
-        then check the 5th rank where en passant captures become possible
-        then pawns that are on the 6th rank so we only check normal pawn moves
-        then finally pawns that are on the 7th rank so we also generate promotions
-    */
-    int i = 8;
-    for(; i < 16; i++){ // pawns on the 2nd rank
-        if((1ull << i) & friendlyPieces.p){ // we found a pawn, generate its legal moves
 
-            if((1ull << (i + 8)) & wholeBoard){ // there is a piece blocking the pawn it cannot move forward
-                
+    uint64_t currentSquare;
+    for(uint8_t i = 0; i < 64; i++){
+
+        currentSquare = 1ull << i;
+
+        if(currentSquare & friendlyPieces.p){ // found a pawn
+
+            if(!((currentSquare << 8) & wholeBoard)){ // there is nothing stopping a single pawn push
+                if(i < (uint8_t)48){ // no promotion
+                    
+                    (moves + pos)->move = buildMove(i, i + 8, 0);
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    pos++;
+
+                }
+                else{
+
+                    (moves + pos)->move = buildMove(i, i + 8, 8);
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    pos++;
+
+                    (moves + pos)->move = buildMove(i, i + 8, 9);
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    pos++;
+
+                    (moves + pos)->move = buildMove(i, i + 8, 10);
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    pos++;
+
+                    (moves + pos)->move = buildMove(i, i + 8, 11);
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    pos++;
+                }
             }
 
         }
+        else if(currentSquare & friendlyPieces.n){ // found a knight
+
+        }
+        else if(currentSquare & friendlyPieces.b){ // found a bishop
+
+        }
+        else if(currentSquare & friendlyPieces.r){ // found a rook
+
+        }
+        else if(currentSquare & friendlyPieces.q){ // found a queen
+
+        }
+        else if(currentSquare & friendlyPieces.k){ // found a king
+
+        }
+
     }
 
 
 }
 
-void generateMovesBlack(BitBoard *board, Move *moves){
+int generateMovesBlack(BitBoard *board, MoveBoard *moves){
 
 
 
 
     
-}
-
-void generateMoves(BitBoard *board, Move *moves){
-
-    if(board->whiteToMove){
-        generateMovesWhite(board, moves);
-    }
-    else{
-        generateMovesBlack(board, moves);
-    }
-
-
 }

@@ -430,6 +430,34 @@ uint64_t generateKingMask(uint8_t square){
 
 }
 
+uint64_t generatePawnMaskBlack(uint8_t square){
+
+    uint64_t mask = 0ull;
+
+    uint8_t file = square % (uint8_t)8;
+
+    if(file < 7) mask |= (1ull << square) >> 7;
+
+    if(file > 0) mask |= (1ull << square) >> 9;
+
+    return mask;
+
+}
+
+uint64_t generatePawnMaskWhite(uint8_t square){
+
+    uint64_t mask = 0ull;
+
+    uint8_t file = square % (uint8_t)8;
+
+    if(file < 7) mask |= (1ull << square) << 9;
+
+    if(file > 0) mask |= (1ull << square) << 7;
+
+    return mask;
+
+}
+
 uint64_t generateBishopAttacks(uint8_t square, uint64_t pieces){
 
     uint64_t blockers = pieces & basicBishopMasks[square];
