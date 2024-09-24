@@ -16,7 +16,9 @@ int main(int argc, char** argv){
 
     FILE *fp;
 
-    fp = popen("bash -c 'source ../../test_data/chessENV/bin/activate && python3 ../../test_data/move_maker_test_data.py output.txt'", "r");
+    fp = popen("bash -c 'source ../../test_data/chessENV/bin/activate && python3 ../../test_data/move_maker_test_data.py translator_test_data.txt'", "r");
+    // fp = fopen("move_maker_data.txt", "r");
+
 
     if(fp == NULL){
         printf("error opening");

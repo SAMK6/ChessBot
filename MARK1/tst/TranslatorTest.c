@@ -18,7 +18,7 @@ int main(int argc, char** argv){
     char *newline_ptr;
 
     // Open the file in read mode
-    file = fopen("output.txt", "r");
+    file = fopen("translator_test_data.txt", "r");
 
     // Check if the file opened successfully
     if (file == NULL) {

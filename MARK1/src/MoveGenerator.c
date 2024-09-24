@@ -96,6 +96,8 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
             break;
     }
 
+    uint64_t enemyRooks = enemyPieces->r;
+
     // the move mask has a 1 on the start and end square and 0s everywhere else, 
     // so XORing it with the bitboard of the moved piece toggels off the start bit where the piece started 
     // and toggles on the end square where the piece ends
@@ -146,6 +148,23 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
         enemyPieces->b &= notEndSquare;
         enemyPieces->n &= notEndSquare;
         enemyPieces->p &= notEndSquare;
+
+        // since we are already checking if the move is a capture move here and the board has been updated
+        // we will also check if it was a rook that was captured and update castling rights
+        if(enemyRooks != enemyPieces->r){ // an enemy rook was captured
+            if(endSquare == H1){
+                board.castling &= ~((uint8_t)8);
+            }
+            else if(endSquare == A1){
+                board.castling &= ~((uint8_t)4);
+            }
+            else if(endSquare == H8){
+                board.castling &= ~((uint8_t)2);
+            }
+            else if(endSquare == A8){
+                board.castling &= ~((uint8_t)1);
+            }
+        }
     }
 
     if(isPromo){ // if the move is a promo we have to add a new piece and remove the pawn from the end of the board
