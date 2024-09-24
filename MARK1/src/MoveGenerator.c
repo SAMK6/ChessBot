@@ -13,6 +13,9 @@
 
 */
 
+
+// just found a new bug where if a rook is captured before that rook or the king moves
+// the side who had it's rook captired will not loose castling privledges even though it should
 BitBoard makeMove(BitBoard board, Move move, char piece){
 
     RawBoard *friendlyPieces, *enemyPieces;

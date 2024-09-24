@@ -1,5 +1,6 @@
 import chess.pgn
 import random
+import sys
 
 def square_translator(square):
     file = 7 - chess.square_file(square)
@@ -87,14 +88,19 @@ def get_moved_piece(board, move):
         
     return None
 
-with open("Seb_Fens.txt") as f:
+
+if len(sys.argv) < 2:
+    print("No parameter was passed!")
+    exit
+else:
+    input_file = sys.argv[1]
+
+with open(input_file) as f:
     for line in f:
 
         # strip the bad stuff off the FENs
         FEN = line.strip('\ufeff')
         FEN = FEN.strip('\n')
-
-        print(FEN)
 
         # set the board state
         board = chess.Board()
@@ -104,7 +110,13 @@ with open("Seb_Fens.txt") as f:
         moves = [i for i in board.legal_moves]
         
         # choose a random move
-        move = random.choice(moves)
+        if(len(moves) == 0):
+            continue
+        else:
+            move = random.choice(moves)
+            
+        
+        print(FEN)
 
         # calculate the move code
         fromSquare = square_translator(move.from_square)
