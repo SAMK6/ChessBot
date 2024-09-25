@@ -11,7 +11,7 @@
 int main(){
 
 
-    char* fen = "rn2k2r/pp3pb1/3qp1p1/2p5/1P1PpPPp/2P1P2P/P3Q1K1/RNB2R2 b kq b3 0 15";
+    char* fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     BitBoard board = fenToBitBoard(fen);
 
@@ -59,7 +59,11 @@ int main(){
 
     printf("%s\n", movedFen);
 
-    
+    MoveBoard *moves = (MoveBoard*)malloc(100 * sizeof(MoveBoard));
+
+    int numMoves = generateMovesWhite(&board, moves);
+
+    printf("%d\n", numMoves);
 
     return 0;
 

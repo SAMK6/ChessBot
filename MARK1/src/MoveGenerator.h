@@ -52,13 +52,14 @@ typedef struct MoveBoard{ // this struct holds a bitboard and the move that crea
 #define miscMask (Move)61440 // bits 12-15
 
 // define masks used to move the rooks during castling moves
+// NOT USED AS MASKS TO CHECK CASTLING RIGHTS
 #define whiteKingsideCastle 5ull
 #define whiteQueensideCastle 144ull
 #define blackKingsideCastle 360287970189639680ull
 #define blackQueensideCastle 10376293541461622784ull
 
 BitBoard makeMove(BitBoard, Move, char); // makes a move and returns the new bitboard
-int canKingBeCaptured(BitBoard*); // checks if the oponents king can be captured in the current position
+int isSquareAttacked(BitBoard*, uint8_t);
 int generateMovesBlack(BitBoard*, MoveBoard*);
 int generateMovesWhite(BitBoard*, MoveBoard*);
 
