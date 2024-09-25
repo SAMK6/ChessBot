@@ -266,30 +266,29 @@ int isSquareAttacked(BitBoard *board, uint8_t square){
     uint64_t pawnAttacks = board->whiteToMove ? generatePawnMaskBlack(square) : generatePawnMaskWhite(square);
     if(pawnAttacks & friendlyPieces->p) return 1;
 
+    if(basicKingMasks[square] & friendlyPieces->k) return 1;
+
     return 0;
 
 }
 
 int generateMovesWhite(BitBoard *board, MoveBoard *moves){
-
-    // a board that simply has the position of all oponnent pieces
-    uint64_t opBoard = board->black.k | board->black.q | board->black.r | board->black.b | board->black.n | board->black.p;
-    // a board that contains all friendly pieces
-    uint64_t myBoard = board->white.k | board->white.q | board->white.r | board->white.b | board->white.n | board->white.p;
-    // a board that contains all pieces
-    uint64_t wholeBoard = opBoard | myBoard;
-
-
+    
     RawBoard friendlyPieces = board->white;
     RawBoard enemyPieces = board->black;
+
+    // a board that simply has the position of all oponnent pieces
+    uint64_t opBoard = enemyPieces.k | enemyPieces.q | enemyPieces.r | enemyPieces.b | enemyPieces.n | enemyPieces.p;
+    // a board that contains all friendly pieces
+    uint64_t myBoard = friendlyPieces.k | friendlyPieces.q | friendlyPieces.r | friendlyPieces.b | friendlyPieces.n | friendlyPieces.p;
+    // a board that contains all pieces
+    uint64_t wholeBoard = opBoard | myBoard;
 
     int pos = 0; // where in the movelist to put moves
 
 
-    uint64_t currentSquare;
+    uint64_t currentSquare = 1ull;
     for(uint8_t square = 0; square < 64; square++){
-
-        currentSquare = 1ull << square;
 
         if(currentSquare & friendlyPieces.p){ // found a pawn
 
@@ -331,8 +330,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
 
             // check if we can capture with the pawn
             uint64_t pawnCaptures = generatePawnMaskWhite(square) & opBoard;
-            int zeros = __builtin_ctzll(pawnCaptures);
-            int capturePos = zeros;
+            int capturePos = __builtin_ctzll(pawnCaptures);
             while(pawnCaptures){
                 if(capturePos < 56){
                     (moves + pos)->move = buildMove(square, capturePos, 4);
@@ -357,9 +355,8 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
                     pos++;
                 }
 
-                pawnCaptures >>= zeros + 1;
-                zeros = __builtin_ctzll(pawnCaptures);
-                capturePos += zeros + 1;
+                pawnCaptures ^= (1ull << capturePos);
+                capturePos = __builtin_ctzll(pawnCaptures);
             }
 
             // finally check enpassant captures
@@ -374,94 +371,84 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
         else if(currentSquare & friendlyPieces.n){ // found a knight
 
             uint64_t knightMoves = basicKnightMasks[square] & ~myBoard;
-            int zeros = __builtin_ctzll(knightMoves);
-            int capturePos = zeros;
+            int capturePos = __builtin_ctzll(knightMoves);
             while(knightMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
                 (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'N');
                 pos++;
 
-                knightMoves >>= zeros + 1;
-                zeros = __builtin_ctzll(knightMoves);
-                capturePos += zeros + 1;
+                knightMoves ^= (1ull << capturePos);
+                capturePos = __builtin_ctzll(knightMoves);
             }
 
         }
         else if(currentSquare & friendlyPieces.b){ // found a bishop
 
             uint64_t bishopMoves = generateBishopAttacks(square, wholeBoard) & ~myBoard;
-            int zeros = __builtin_ctzll(bishopMoves);
-            int capturePos = zeros;
+            int capturePos = __builtin_ctzll(bishopMoves);
             while(bishopMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
                 (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'B');
                 pos++;
 
-                bishopMoves >>= zeros + 1;
-                zeros = __builtin_ctzll(bishopMoves);
-                capturePos += zeros + 1;
+                bishopMoves ^= (1ull << capturePos);
+                capturePos = __builtin_ctzll(bishopMoves);
             }
 
         }
         else if(currentSquare & friendlyPieces.r){ // found a rook
 
             uint64_t rookMoves = generateRookAttacks(square, wholeBoard) & ~myBoard;
-            int zeros = __builtin_ctzll(rookMoves);
-            int capturePos = zeros;
+            int capturePos = __builtin_ctzll(rookMoves);
             while(rookMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
                 (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'R');
                 pos++;
 
-                rookMoves >>= zeros + 1;
-                zeros = __builtin_ctzll(rookMoves);
-                capturePos += zeros + 1;
+                rookMoves ^= (1ull << capturePos);
+                capturePos = __builtin_ctzll(rookMoves);
             }
 
         }
         else if(currentSquare & friendlyPieces.q){ // found a queen
 
             uint64_t queenMoves = (generateBishopAttacks(square, wholeBoard) | generateRookAttacks(square, wholeBoard)) & ~myBoard;
-            int zeros = __builtin_ctzll(queenMoves);
-            int capturePos = zeros;
+            int capturePos = __builtin_ctzll(queenMoves);
             while(queenMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
                 (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'Q');
                 pos++;
 
-                queenMoves >>= zeros + 1;
-                zeros = __builtin_ctzll(queenMoves);
-                capturePos += zeros + 1;
+                queenMoves ^= (1ull << capturePos);
+                capturePos = __builtin_ctzll(queenMoves);
             }
 
         }
         else if(currentSquare & friendlyPieces.k){ // found a king
 
             uint64_t kingMoves = basicKingMasks[square] & ~myBoard;
-            int zeros = __builtin_ctzll(kingMoves);
-            int capturePos = zeros;
+            int capturePos = __builtin_ctzll(kingMoves);
             while(kingMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'Q');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'K');
                 pos++;
 
-                kingMoves >>= zeros + 1;
-                zeros = __builtin_ctzll(kingMoves);
-                capturePos += zeros + 1;
+                kingMoves ^= (1ull << capturePos);
+                capturePos = __builtin_ctzll(kingMoves);
             }
 
             // also have to check for castling moves
-            if(board->castling & (uint16_t)8){ // white has the right to castle kingside
+            if(!(6ull & wholeBoard) && (board->castling & (uint16_t)8)){ // white has the right to castle kingside
 
                 BitBoard temp = *board;
                 temp.whiteToMove = 0;
 
-                if(!(6ull & wholeBoard) && !isSquareAttacked(&temp, G1) && !isSquareAttacked(&temp, F1)){
+                if(!isSquareAttacked(&temp, E1num) && !isSquareAttacked(&temp, G1num) && !isSquareAttacked(&temp, F1num)){
                     (moves + pos)->move = buildMove(square, G1num, 2);
                     (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'K');
                     pos++;
@@ -469,11 +456,11 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
 
             }
 
-            if(board->castling & (uint16_t)4){ // white has the right to castle queenside
+            if(!(112ull & wholeBoard) && (board->castling & (uint16_t)4)){ // white has the right to castle queenside
                 BitBoard temp = *board;
                 temp.whiteToMove = 0;
 
-                if(!(48ull & wholeBoard) && !isSquareAttacked(&temp, D1) && !isSquareAttacked(&temp, C1)){
+                if(!isSquareAttacked(&temp, E1num) && !isSquareAttacked(&temp, D1num) && !isSquareAttacked(&temp, C1num)){
                     (moves + pos)->move = buildMove(square, C1num, 3);
                     (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'K');
                     pos++;
@@ -481,6 +468,8 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             }
 
         }
+
+        currentSquare <<= 1;
 
     }
 

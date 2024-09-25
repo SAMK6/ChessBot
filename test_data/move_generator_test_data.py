@@ -19,4 +19,6 @@ with open(input_file) as f:
         board.set_fen(FEN)
 
         print(FEN)
-        print(board.legal_moves.count)
+        print(board.legal_moves.count())
+
+        

@@ -11,7 +11,7 @@
 int main(){
 
 
-    char* fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    char* fen = "r5k1/1P3pp1/8/7p/8/8/6KP/r2R4 w - - 0 36";
 
     BitBoard board = fenToBitBoard(fen);
 
@@ -51,7 +51,7 @@ int main(){
 
     Move move = buildMove(59,57,2);
 
-    char *movedFen = (char*)malloc(150*sizeof(char));
+    char *movedFen = (char*)malloc(300 *sizeof(char));
 
     BitBoard newBoard = makeMove(board, move, 'k');
 
@@ -59,11 +59,38 @@ int main(){
 
     printf("%s\n", movedFen);
 
+
+
+
     MoveBoard *moves = (MoveBoard*)malloc(100 * sizeof(MoveBoard));
 
     int numMoves = generateMovesWhite(&board, moves);
 
-    printf("%d\n", numMoves);
+    int actualTotal = numMoves;
+
+    MoveBoard position;
+    for(int i = 0; i < numMoves; i++){
+
+        position = *(moves + i);
+        position.board.whiteToMove = 0;
+
+        uint64_t king = position.board.white.k;
+        uint8_t kingPos = __builtin_ctzll(king);
+
+        if(isSquareAttacked(&(position.board), kingPos)){
+            actualTotal--;
+        }
+        else{
+            uint16_t from = position.move & startMask, to = (position.move & endMask) >> 6;
+            printf("from: %d\nto: %d\n\n", from, to);
+        }
+
+
+
+    }
+
+    printf("%d\n", actualTotal);
+
 
     return 0;
 
