@@ -76,7 +76,6 @@ int main(int argc, char** argv){
 
 
     printf("\n\nTESTING MOVE GENERATOR\n");
-    // fp = popen("bash -c 'source ../../test_data/chessENV/bin/activate && python3 ../../test_data/move_generator_test_data.py translator_test_data.txt'", "r");
     fp = fopen("move_generator_data.txt", "r");
 
 
@@ -105,15 +104,13 @@ int main(int argc, char** argv){
 
         inputBoard = fenToBitBoard(inputFEN);
 
-        if(!inputBoard.whiteToMove) continue;
-
         MoveBoard *moves = (MoveBoard*)malloc(400 * sizeof(MoveBoard));
 
         if(moves == NULL) continue;
 
         processed++;
 
-        numMovesMine = generateMovesWhite(&inputBoard, moves);
+        numMovesMine = inputBoard.whiteToMove ? generateMovesWhite(&inputBoard, moves) : generateMovesBlack(&inputBoard, moves);
         
         numMovesGen = numMovesMine;
 
@@ -121,9 +118,8 @@ int main(int argc, char** argv){
         for(int i = 0; i < numMovesMine; i++){
 
             position = *(moves + i);
-            position.board.whiteToMove = 0;
 
-            uint64_t king = position.board.white.k;
+            uint64_t king =  position.board.whiteToMove ? position.board.black.k : position.board.white.k;
             uint8_t kingPos = __builtin_ctzll(king);
 
             if(isSquareAttacked(&(position.board), kingPos)){
