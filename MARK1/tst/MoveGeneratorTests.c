@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stddef.h>
+#include "../src/BitBoard.h"
 #include "../src/Translator.h"
 #include "../src/MoveGenerator.h"
 
@@ -11,6 +13,8 @@ int main(int argc, char** argv){
     uint16_t move;
 
     char piece;
+
+    size_t offset;
 
     BitBoard inputBoard, movedBoard;
 
@@ -49,11 +53,51 @@ int main(int argc, char** argv){
 
         movedFEN[strlen(movedFEN) - 1] = '\0';
 
+        switch(piece){
+            case 'p':
+                offset = offsetof(BitBoard, black.p);
+                break;
+            case 'n':
+                offset = offsetof(BitBoard, black.n);
+                break;
+            case 'b':
+                offset = offsetof(BitBoard, black.b);
+                break;
+            case 'r':
+                offset = offsetof(BitBoard, black.r);
+                break;
+            case 'q':
+                offset = offsetof(BitBoard, black.q);
+                break;
+            case 'k':
+                offset = offsetof(BitBoard, black.k);
+                break;
+            case 'P':
+                offset = offsetof(BitBoard, white.p);
+                break;
+            case 'N':
+                offset = offsetof(BitBoard, white.n);
+                break;
+            case 'B':
+                offset = offsetof(BitBoard, white.b);
+                break;
+            case 'R':
+                offset = offsetof(BitBoard, white.r);
+                break;
+            case 'Q':
+                offset = offsetof(BitBoard, white.q);
+                break;
+            case 'K':
+                offset = offsetof(BitBoard, white.k);
+                break;
+
+        }
+
         processed ++;
 
         inputBoard = fenToBitBoard(inputFEN);
 
-        movedBoard = makeMove(inputBoard, move, piece);
+        movedBoard = makeMove(inputBoard, move, offset);
 
         bitBoardToFen(movedBoard, ourFEN);
 

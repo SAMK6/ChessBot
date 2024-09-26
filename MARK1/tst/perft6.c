@@ -31,7 +31,7 @@ int main(){
 
     BitBoard board = fenToBitBoard(FEN);
 
-    uint64_t perftRes = perft(board, 6);
+    uint64_t perftRes = perft(board, 7);
 
     printf("%lu\n", perftRes);
 

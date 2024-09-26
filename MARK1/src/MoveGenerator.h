@@ -58,7 +58,7 @@ typedef struct MoveBoard{ // this struct holds a bitboard and the move that crea
 #define blackKingsideCastle 360287970189639680ull
 #define blackQueensideCastle 10376293541461622784ull
 
-BitBoard makeMove(BitBoard, Move, char); // makes a move and returns the new bitboard
+BitBoard makeMove(BitBoard, Move, size_t); // makes a move and returns the new bitboard
 int isSquareAttacked(BitBoard*, uint8_t);
 int generateMovesBlack(BitBoard*, MoveBoard*);
 int generateMovesWhite(BitBoard*, MoveBoard*);

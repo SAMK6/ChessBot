@@ -58,7 +58,7 @@ int main(int argc, char** argv){
         ans = perft(board, i);
        
         if(ans != startPosition[i]){
-            printf("Error with start psoition\ninput: %d\nReturned: %lu\nShould have been: %lu\n", i, ans, startPosition[i]);
+            printf("Error with start position\ninput: %d\nReturned: %lu\nShould have been: %lu\n", i, ans, startPosition[i]);
             break;
         }
 

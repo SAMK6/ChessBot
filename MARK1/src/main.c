@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <stddef.h>
 #include "BitBoard.h"
 #include "Translator.h"
 #include "MoveGenerator.h"
@@ -53,11 +54,11 @@ int main(){
 
     char *movedFen = (char*)malloc(300 *sizeof(char));
 
-    BitBoard newBoard = makeMove(board, move, 'k');
+    //BitBoard newBoard = makeMove(board, move, 'k');
 
-    bitBoardToFen(newBoard, movedFen);
+    //bitBoardToFen(newBoard, movedFen);
 
-    printf("%s\n", movedFen);
+    //printf("%s\n", movedFen);
 
 
 
@@ -93,6 +94,10 @@ int main(){
         printf("%luull,\n", generatePawnMaskWhite((uint8_t)i));
 
     }
+
+
+
+    printf("%ld\n", offsetof(BitBoard, white.b));
 
 
 

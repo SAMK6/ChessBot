@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <stddef.h>
 #include "BitBoard.h"
 #include "MoveGenerator.h"
 #include "BitMasks.h"
@@ -16,10 +17,11 @@
 
 // just found a new bug where if a rook is captured before that rook or the king moves
 // the side who had it's rook captired will not loose castling privledges even though it should
-BitBoard makeMove(BitBoard board, Move move, char piece){
+BitBoard makeMove(BitBoard board, Move move, size_t offset){
 
     RawBoard *friendlyPieces, *enemyPieces;
-    uint64_t *movedPiece;
+
+    uint64_t *movedPiece = (uint64_t*)((char*)&board + offset);
 
     // break the move down into its parts
     uint64_t startSquare = 1ull << (move & startMask);
@@ -38,48 +40,6 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
         enemyPieces = &board.white;
     }
 
-    // choce the appropriate pieces for the move
-    switch(piece){
-        case 'K':
-            movedPiece = &friendlyPieces->k;
-            break;
-        case 'Q':
-            movedPiece = &friendlyPieces->q;
-            break;
-        case 'R':
-            movedPiece = &friendlyPieces->r;
-            break;
-        case 'B':
-            movedPiece = &friendlyPieces->b;
-            break;
-        case 'N':
-            movedPiece = &friendlyPieces->n;
-            break;
-        case 'P':
-            movedPiece = &friendlyPieces->p;
-            break;
-        case 'k':
-            movedPiece = &friendlyPieces->k;
-            break;
-        case 'q':
-            movedPiece = &friendlyPieces->q;
-            break;
-        case 'r':
-            movedPiece = &friendlyPieces->r;
-            break;
-        case 'b':
-            movedPiece = &friendlyPieces->b;
-            break;
-        case 'n':
-            movedPiece = &friendlyPieces->n;
-            break;
-        case 'p':
-            movedPiece = &friendlyPieces->p;
-            break;
-        default:
-            break;
-    }
-
     uint64_t enemyRooks = enemyPieces->r;
 
     // the move mask has a 1 on the start and end square and 0s everywhere else, 
@@ -90,21 +50,10 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
     // now if the move was a castling move we have to also move the appropriate rook
     // use the predefined masks for this since there are only 4 castling moves
     if(misc == (uint16_t)2){ // kingside castle
-        if(board.whiteToMove){
-            friendlyPieces->r ^= whiteKingsideCastle;
-        }
-        else{
-            friendlyPieces->r ^= blackKingsideCastle;
-        }
+        friendlyPieces->r ^= board.whiteToMove ? whiteKingsideCastle : blackKingsideCastle;
     }
-
-    if(misc == (uint16_t)3){ // queenside castle
-        if(board.whiteToMove){
-            friendlyPieces->r ^= whiteQueensideCastle;
-        }
-        else{
-            friendlyPieces->r ^= blackQueensideCastle;
-        }
+    else if(misc == (uint16_t)3){ // queenside castle
+        friendlyPieces->r ^= board.whiteToMove ? whiteQueensideCastle : blackQueensideCastle;
     }
 
     if(isCapture){ // if the move is a capture we have to remove the enemy piece from the square
@@ -112,13 +61,7 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
         uint64_t notEndSquare;
 
         if(misc == (uint16_t)5){ // this is an enpassant capture
-
-            if(board.whiteToMove){ // we are playing as white
-                notEndSquare = ~(endSquare >> 8);
-            }
-            else{ // we are playing as black
-                notEndSquare = ~(endSquare << 8);
-            }
+            notEndSquare = board.whiteToMove ? ~(endSquare >> 8) : ~(endSquare << 8);
         }
         else{
             notEndSquare = ~endSquare;
@@ -133,22 +76,6 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
         enemyPieces->n &= notEndSquare;
         enemyPieces->p &= notEndSquare;
 
-        // since we are already checking if the move is a capture move here and the board has been updated
-        // we will also check if it was a rook that was captured and update castling rights
-        if(enemyRooks != enemyPieces->r){ // an enemy rook was captured
-            if(endSquare == H1){
-                board.castling &= ~((uint8_t)8);
-            }
-            else if(endSquare == A1){
-                board.castling &= ~((uint8_t)4);
-            }
-            else if(endSquare == H8){
-                board.castling &= ~((uint8_t)2);
-            }
-            else if(endSquare == A8){
-                board.castling &= ~((uint8_t)1);
-            }
-        }
     }
 
     if(isPromo){ // if the move is a promo we have to add a new piece and remove the pawn from the end of the board
@@ -169,18 +96,15 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
             case (uint16_t)3:
                 friendlyPieces->q |= endSquare;
                 break;
-            default:
-                break;
 
         }
     }
 
     // update the other data starting with move counter
-    
     board.moves += board.whiteToMove ? 0 : 1; // if it was black that just moved we update the move counter
 
     // update the halfmove clock according to if the move was a pawn move capture or neither
-    if(piece == 'p' || piece == 'P' || isCapture){
+    if(*movedPiece == friendlyPieces->p || isCapture){
         board.halfMoves = 0;
     }
     else{
@@ -196,24 +120,11 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
     }
 
     // update castling rights
-    if(piece == 'K'){
-        board.castling &= ~((uint8_t)12);
-    }
-    else if(piece == 'k'){
-        board.castling &= ~((uint8_t)3);
-    }
-    else if(startSquare == H1){
-        board.castling &= ~((uint8_t)8);
-    }
-    else if(startSquare == A1){
-        board.castling &= ~((uint8_t)4);
-    }
-    else if(startSquare == H8){
-        board.castling &= ~((uint8_t)2);
-    }
-    else if(startSquare == A8){
-        board.castling &= ~((uint8_t)1);
-    }
+    if(*movedPiece == friendlyPieces->k) board.castling &= ~(board.whiteToMove ? (uint8_t)12 : (uint8_t)3);
+    if((board.white.r & H1) != H1) board.castling &= ~((uint8_t)8);
+    if((board.white.r & A1) != A1) board.castling &= ~((uint8_t)4);
+    if((board.black.r & H8) != H8) board.castling &= ~((uint8_t)2);
+    if((board.black.r & A8) != A8) board.castling &= ~((uint8_t)1);
 
     
     // finally we switch the player to move
@@ -227,23 +138,11 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
 int isSquareAttacked(BitBoard *board, uint8_t square){
 
     RawBoard *friendlyPieces = board->whiteToMove ? &board->white : &board->black;
-    RawBoard *enemyPieces = board->whiteToMove ? &board->black : &board->white;
-    uint64_t wholeBoard = enemyPieces->p | enemyPieces->n | enemyPieces->b | enemyPieces->r | enemyPieces->q | enemyPieces->k | friendlyPieces->p | friendlyPieces->n | friendlyPieces->b | friendlyPieces->r | friendlyPieces->q | friendlyPieces->k;
-
-    if(basicKnightMasks[square] & friendlyPieces->n) return 1; // check if we can take the king with a knight
-
-    uint64_t bishopAttacks = generateBishopAttacks(square, wholeBoard);
-    if(bishopAttacks & friendlyPieces->b) return 1; // check if we can take the king with a bishop
-
-    uint64_t rookAttacks = generateRookAttacks(square, wholeBoard);
-    if(rookAttacks & friendlyPieces->r) return 1; // check if we can take the king with a rook
-
-    if((rookAttacks | bishopAttacks) & friendlyPieces->q) return 1; // check if we can take the king with a queen
-
-    uint64_t pawnAttacks = board->whiteToMove ? basicPawnMasksBlack[square] : basicPawnMasksWhite[square];
-    if(pawnAttacks & friendlyPieces->p) return 1;
-
-    if(basicKingMasks[square] & friendlyPieces->k) return 1;
+    uint64_t wholeBoard = board->white.p | board->white.n | board->white.b | board->white.r | board->white.q | board->white.k | board->black.p | board->black.n | board->black.b | board->black.r | board->black.q | board->black.k;
+    
+    uint64_t bishopAttacks = generateBishopAttacks(square, wholeBoard), rookAttacks = generateRookAttacks(square, wholeBoard), pawnAttacks = board->whiteToMove ? basicPawnMasksBlack[square] : basicPawnMasksWhite[square];
+    
+    if(((rookAttacks | bishopAttacks) & friendlyPieces->q) || (rookAttacks & friendlyPieces->r) || (bishopAttacks & friendlyPieces->b) || (basicKnightMasks[square] & friendlyPieces->n) || (pawnAttacks & friendlyPieces->p) || (basicKingMasks[square] & friendlyPieces->k)) return 1;
 
     return 0;
 
@@ -272,12 +171,12 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
                 if(square < H7num){ // no promotion
                     
                     (moves + pos)->move = buildMove(square, (square + 8), 0);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     if(square < H3num && !((currentSquare << 16) & wholeBoard)){ // generate the double pawn push
                         (moves + pos)->move = buildMove(square, (square + 16), 1);
-                        (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                        (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                         pos++;
                     }
 
@@ -285,19 +184,19 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
                 else{
 
                     (moves + pos)->move = buildMove(square, (square + 8), 8);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     (moves + pos)->move = buildMove(square, (square + 8), 9);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     (moves + pos)->move = buildMove(square, (square + 8), 10);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     (moves + pos)->move = buildMove(square, (square + 8), 11);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
                 }
 
@@ -310,24 +209,24 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             while(pawnCaptures){
                 if(capturePos < 56){
                     (moves + pos)->move = buildMove(square, capturePos, 4);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
                 }
                 else{
                     (moves + pos)->move = buildMove(square, capturePos, 12);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     (moves + pos)->move = buildMove(square, capturePos, 13);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     (moves + pos)->move = buildMove(square, capturePos, 14);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     (moves + pos)->move = buildMove(square, capturePos, 15);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
                 }
 
@@ -339,7 +238,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             uint64_t enPassant = basicPawnMasksWhite[square] & board->enPassant;
             if(enPassant){
                 (moves + pos)->move = buildMove(square, __builtin_ctzll(enPassant), 5);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                 pos++;
             }
 
@@ -351,7 +250,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             while(knightMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'N');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.n));
                 pos++;
 
                 knightMoves ^= (1ull << capturePos);
@@ -366,7 +265,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             while(bishopMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'B');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.b));
                 pos++;
 
                 bishopMoves ^= (1ull << capturePos);
@@ -381,7 +280,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             while(rookMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'R');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.r));
                 pos++;
 
                 rookMoves ^= (1ull << capturePos);
@@ -396,7 +295,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             while(queenMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'Q');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.q));
                 pos++;
 
                 queenMoves ^= (1ull << capturePos);
@@ -411,7 +310,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             while(kingMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'K');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.k));
                 pos++;
 
                 kingMoves ^= (1ull << capturePos);
@@ -426,7 +325,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
 
                 if(!isSquareAttacked(&temp, E1num) && !isSquareAttacked(&temp, G1num) && !isSquareAttacked(&temp, F1num)){
                     (moves + pos)->move = buildMove(square, G1num, 2);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'K');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.k));
                     pos++;
                 }
 
@@ -438,7 +337,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
 
                 if(!isSquareAttacked(&temp, E1num) && !isSquareAttacked(&temp, D1num) && !isSquareAttacked(&temp, C1num)){
                     (moves + pos)->move = buildMove(square, C1num, 3);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'K');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.k));
                     pos++;
                 }
             }
@@ -479,12 +378,12 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
                 if(square > A2num){ // no promotion
                     
                     (moves + pos)->move = buildMove(square, (square - 8), 0);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     if(square > A6num && !((currentSquare >> 16) & wholeBoard)){ // generate the double pawn push
                         (moves + pos)->move = buildMove(square, (square - 16), 1);
-                        (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
+                        (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                         pos++;
                     }
 
@@ -492,19 +391,19 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
                 else{
 
                     (moves + pos)->move = buildMove(square, (square - 8), 8);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     (moves + pos)->move = buildMove(square, (square - 8), 9);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     (moves + pos)->move = buildMove(square, (square - 8), 10);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     (moves + pos)->move = buildMove(square, (square - 8), 11);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
                 }
 
@@ -517,24 +416,24 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             while(pawnCaptures){
                 if(capturePos > 7){
                     (moves + pos)->move = buildMove(square, capturePos, 4);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
                 }
                 else{
                     (moves + pos)->move = buildMove(square, capturePos, 12);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     (moves + pos)->move = buildMove(square, capturePos, 13);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     (moves + pos)->move = buildMove(square, capturePos, 14);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     (moves + pos)->move = buildMove(square, capturePos, 15);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
                 }
 
@@ -546,7 +445,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             uint64_t enPassant = basicPawnMasksBlack[square] & board->enPassant;
             if(enPassant){
                 (moves + pos)->move = buildMove(square, __builtin_ctzll(enPassant), 5);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                 pos++;
             }
 
@@ -558,7 +457,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             while(knightMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'n');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.n));
                 pos++;
 
                 knightMoves ^= (1ull << capturePos);
@@ -573,7 +472,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             while(bishopMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'b');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.b));
                 pos++;
 
                 bishopMoves ^= (1ull << capturePos);
@@ -588,7 +487,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             while(rookMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'r');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.r));
                 pos++;
 
                 rookMoves ^= (1ull << capturePos);
@@ -603,7 +502,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             while(queenMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'q');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.q));
                 pos++;
 
                 queenMoves ^= (1ull << capturePos);
@@ -618,7 +517,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             while(kingMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 (moves + pos)->move = buildMove(square, capturePos, code);
-                (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'k');
+                (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.k));
                 pos++;
 
                 kingMoves ^= (1ull << capturePos);
@@ -633,7 +532,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
 
                 if(!isSquareAttacked(&temp, E8num) && !isSquareAttacked(&temp, G8num) && !isSquareAttacked(&temp, F8num)){
                     (moves + pos)->move = buildMove(square, G8num, 2);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'k');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.k));
                     pos++;
                 }
 
@@ -645,7 +544,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
 
                 if(!isSquareAttacked(&temp, E8num) && !isSquareAttacked(&temp, D8num) && !isSquareAttacked(&temp, C8num)){
                     (moves + pos)->move = buildMove(square, C8num, 3);
-                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'k');
+                    (moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.k));
                     pos++;
                 }
             }
