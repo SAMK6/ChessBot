@@ -20,7 +20,7 @@ uint64_t perft(BitBoard board, int depth){
         uint8_t kingPos = (uint8_t)__builtin_ctzll(moves[i].board.whiteToMove ? moves[i].board.black.k : moves[i].board.white.k);
         if(!isSquareAttacked(&(moves[i].board), kingPos)) positions += (depth == 1) ? 1 : perft(moves[i].board, depth - 1);
     }
-  
+
     return positions;
 
 }
@@ -31,7 +31,7 @@ int main(){
 
     BitBoard board = fenToBitBoard(FEN);
 
-    uint64_t perftRes = perft(board, 7);
+    uint64_t perftRes = perft(board, 6);
 
     printf("%lu\n", perftRes);
 

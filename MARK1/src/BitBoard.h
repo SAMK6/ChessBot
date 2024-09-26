@@ -156,12 +156,12 @@
 // struct that simply stores peice location data each bitboard has one for black and one for white
 typedef struct RawBoard{
 
-    uint64_t k; // king
-    uint64_t q; // queen
-    uint64_t r; // rooks
-    uint64_t b; // bishops
-    uint64_t n; // knights
     uint64_t p; // pawns
+    uint64_t n; // knights
+    uint64_t b; // bishops
+    uint64_t r; // rooks
+    uint64_t q; // queen
+    uint64_t k; // king
 
 } RawBoard;
 
