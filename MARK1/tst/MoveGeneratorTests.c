@@ -10,7 +10,7 @@ int main(int argc, char** argv){
 
     char inputFEN[300], ourFEN[300], movedFEN[300];
 
-    uint16_t move;
+    uint32_t move;
 
     char piece;
 
@@ -42,7 +42,7 @@ int main(int argc, char** argv){
         inputFEN[strlen(inputFEN) - 1] = '\0';
 
         // Read the second line, expecting an integer followed by whitespace and then a char
-        if (fscanf(fp, "%hu %c\n", &move, &piece) != 2) {
+        if (fscanf(fp, "%u %c\n", &move, &piece) != 2) {
             break;
         }
 
@@ -55,40 +55,40 @@ int main(int argc, char** argv){
 
         switch(piece){
             case 'p':
-                offset = offsetof(BitBoard, black.p);
+                move |= 0 << 16;
                 break;
             case 'n':
-                offset = offsetof(BitBoard, black.n);
+                move |= 1 << 16;
                 break;
             case 'b':
-                offset = offsetof(BitBoard, black.b);
+                move |= 2 << 16;
                 break;
             case 'r':
-                offset = offsetof(BitBoard, black.r);
+                move |= 3 << 16;
                 break;
             case 'q':
-                offset = offsetof(BitBoard, black.q);
+                move |= 4 << 16;
                 break;
             case 'k':
-                offset = offsetof(BitBoard, black.k);
+                move |= 5 << 16;
                 break;
             case 'P':
-                offset = offsetof(BitBoard, white.p);
+                move |= 6 << 16;
                 break;
             case 'N':
-                offset = offsetof(BitBoard, white.n);
+                move |= 7 << 16;
                 break;
             case 'B':
-                offset = offsetof(BitBoard, white.b);
+                move |= 8 << 16;
                 break;
             case 'R':
-                offset = offsetof(BitBoard, white.r);
+                move |= 9 << 16;
                 break;
             case 'Q':
-                offset = offsetof(BitBoard, white.q);
+                move |= 10 << 16;
                 break;
             case 'K':
-                offset = offsetof(BitBoard, white.k);
+                move |= 11 << 16;
                 break;
 
         }
@@ -97,7 +97,7 @@ int main(int argc, char** argv){
 
         inputBoard = fenToBitBoard(inputFEN);
 
-        movedBoard = makeMove(inputBoard, move, offset);
+        movedBoard = makeMove(inputBoard, move);
 
         bitBoardToFen(movedBoard, ourFEN);
 
@@ -148,7 +148,7 @@ int main(int argc, char** argv){
 
         inputBoard = fenToBitBoard(inputFEN);
 
-        MoveBoard *moves = (MoveBoard*)malloc(400 * sizeof(MoveBoard));
+        Move *moves = (Move*)malloc(400 * sizeof(Move));
 
         if(moves == NULL) continue;
 
@@ -158,15 +158,16 @@ int main(int argc, char** argv){
         
         numMovesGen = numMovesMine;
 
-        MoveBoard position;
+        BitBoard position;
+
         for(int i = 0; i < numMovesMine; i++){
 
-            position = *(moves + i);
+            position = makeMove(inputBoard, *(moves + i));
 
-            uint64_t king =  position.board.whiteToMove ? position.board.black.k : position.board.white.k;
+            uint64_t king =  position.whiteToMove ? position.black.k : position.white.k;
             uint8_t kingPos = __builtin_ctzll(king);
 
-            if(isSquareAttacked(&(position.board), kingPos)){
+            if(isSquareAttacked(&(position), kingPos)){
                 numMovesGen--;
             }
 

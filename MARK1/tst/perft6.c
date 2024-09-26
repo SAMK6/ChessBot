@@ -11,16 +11,19 @@ uint64_t perft(BitBoard board, int depth){
 
     if(depth == 0) return 1ull;
 
-    MoveBoard moves[256];
+    Move moves[100];
     int numMoves = board.whiteToMove ? generateMovesWhite(&board, moves) : generateMovesBlack(&board, moves);
-
+    BitBoard newBoard;
     uint64_t positions = 0ull;
 
     for(int i = 0; i < numMoves; i++){
-        uint8_t kingPos = (uint8_t)__builtin_ctzll(moves[i].board.whiteToMove ? moves[i].board.black.k : moves[i].board.white.k);
-        if(!isSquareAttacked(&(moves[i].board), kingPos)) positions += (depth == 1) ? 1 : perft(moves[i].board, depth - 1);
-    }
+        
+        newBoard = makeMove(board, moves[i]);
+        uint8_t kingPos = (uint8_t)__builtin_ctzll(newBoard.whiteToMove ? newBoard.black.k : newBoard.white.k);
+        if(!isSquareAttacked(&(newBoard), kingPos)) positions += (depth == 1) ? 1 : perft(newBoard, depth - 1);
 
+    }
+  
     return positions;
 
 }
