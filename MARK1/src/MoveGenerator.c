@@ -23,7 +23,6 @@ BitBoard makeMove(BitBoard board, Move move){
     uint64_t startSquare = 1ull << (move & startMask);
     uint64_t endSquare = 1ull << ((move & endMask) >> 6);
     uint32_t isCapture = move & isCaptureMask;
-    uint32_t isPromo = move & isPromoMask;
     uint32_t promoPiece = (move & promoPieceMask) >> 12;
     uint32_t misc = (move & miscMask) >> 12;
     uint32_t piece = (move & pieceMask) >> 16;
@@ -72,7 +71,7 @@ BitBoard makeMove(BitBoard board, Move move){
 
     }
 
-    if(isPromo){ // if the move is a promo we have to add a new piece and remove the pawn from the end of the board
+    if(move & isPromoMask){ // if the move is a promo we have to add a new piece and remove the pawn from the end of the board
         
         *movedPiece &= ~endSquare; // first remove the pawn
 
@@ -165,12 +164,10 @@ int generateMovesWhite(BitBoard *board, Move *moves){
                 if(square < H7num){ // no promotion
                     
                     *(moves + pos) = buildMove(square, (square + 8), 0, 6);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     if(square < H3num && !((currentSquare << 16) & wholeBoard)){ // generate the double pawn push
                         *(moves + pos) = buildMove(square, (square + 16), 1, 6);
-                        //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                         pos++;
                     }
 
@@ -178,19 +175,15 @@ int generateMovesWhite(BitBoard *board, Move *moves){
                 else{
 
                     *(moves + pos) = buildMove(square, (square + 8), 8, 6);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     *(moves + pos) = buildMove(square, (square + 8), 9, 6);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     *(moves + pos) = buildMove(square, (square + 8), 10, 6);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     *(moves + pos) = buildMove(square, (square + 8), 11, 6);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
                 }
 
@@ -203,24 +196,19 @@ int generateMovesWhite(BitBoard *board, Move *moves){
             while(pawnCaptures){
                 if(capturePos < 56){
                     *(moves + pos) = buildMove(square, capturePos, 4, 6);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
                 }
                 else{
                     *(moves + pos) = buildMove(square, capturePos, 12, 6);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     *(moves + pos) = buildMove(square, capturePos, 13, 6);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     *(moves + pos) = buildMove(square, capturePos, 14, 6);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
 
                     *(moves + pos) = buildMove(square, capturePos, 15, 6);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                     pos++;
                 }
 
@@ -232,7 +220,6 @@ int generateMovesWhite(BitBoard *board, Move *moves){
             uint64_t enPassant = basicPawnMasksWhite[square] & board->enPassant;
             if(enPassant){
                 *(moves + pos) = buildMove(square, __builtin_ctzll(enPassant), 5, 6);
-                //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.p));
                 pos++;
             }
 
@@ -244,7 +231,6 @@ int generateMovesWhite(BitBoard *board, Move *moves){
             while(knightMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 *(moves + pos) = buildMove(square, capturePos, code, 7);
-                //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.n));
                 pos++;
 
                 knightMoves ^= (1ull << capturePos);
@@ -259,7 +245,6 @@ int generateMovesWhite(BitBoard *board, Move *moves){
             while(bishopMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 *(moves + pos) = buildMove(square, capturePos, code, 8);
-                //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.b));
                 pos++;
 
                 bishopMoves ^= (1ull << capturePos);
@@ -274,7 +259,6 @@ int generateMovesWhite(BitBoard *board, Move *moves){
             while(rookMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 *(moves + pos) = buildMove(square, capturePos, code, 9);
-                //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.r));
                 pos++;
 
                 rookMoves ^= (1ull << capturePos);
@@ -289,7 +273,6 @@ int generateMovesWhite(BitBoard *board, Move *moves){
             while(queenMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 *(moves + pos) = buildMove(square, capturePos, code, 10);
-                //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.q));
                 pos++;
 
                 queenMoves ^= (1ull << capturePos);
@@ -304,7 +287,6 @@ int generateMovesWhite(BitBoard *board, Move *moves){
             while(kingMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 *(moves + pos) = buildMove(square, capturePos, code, 11);
-                //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.k));
                 pos++;
 
                 kingMoves ^= (1ull << capturePos);
@@ -319,7 +301,6 @@ int generateMovesWhite(BitBoard *board, Move *moves){
 
                 if(!isSquareAttacked(&temp, E1num) && !isSquareAttacked(&temp, G1num) && !isSquareAttacked(&temp, F1num)){
                     *(moves + pos) = buildMove(square, G1num, 2, 11);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.k));
                     pos++;
                 }
 
@@ -331,7 +312,6 @@ int generateMovesWhite(BitBoard *board, Move *moves){
 
                 if(!isSquareAttacked(&temp, E1num) && !isSquareAttacked(&temp, D1num) && !isSquareAttacked(&temp, C1num)){
                     *(moves + pos) = buildMove(square, C1num, 3, 11);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, white.k));
                     pos++;
                 }
             }
@@ -372,12 +352,10 @@ int generateMovesBlack(BitBoard *board, Move *moves){
                 if(square > A2num){ // no promotion
                     
                     *(moves + pos) = buildMove(square, (square - 8), 0, 0);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     if(square > A6num && !((currentSquare >> 16) & wholeBoard)){ // generate the double pawn push
                         *(moves + pos) = buildMove(square, (square - 16), 1, 0);
-                        //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                         pos++;
                     }
 
@@ -385,19 +363,15 @@ int generateMovesBlack(BitBoard *board, Move *moves){
                 else{
 
                     *(moves + pos) = buildMove(square, (square - 8), 8, 0);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     *(moves + pos) = buildMove(square, (square - 8), 9, 0);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     *(moves + pos) = buildMove(square, (square - 8), 10, 0);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     *(moves + pos) = buildMove(square, (square - 8), 11, 0);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
                 }
 
@@ -410,24 +384,19 @@ int generateMovesBlack(BitBoard *board, Move *moves){
             while(pawnCaptures){
                 if(capturePos > 7){
                     *(moves + pos) = buildMove(square, capturePos, 4, 0);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
                 }
                 else{
                     *(moves + pos) = buildMove(square, capturePos, 12, 0);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     *(moves + pos) = buildMove(square, capturePos, 13, 0);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     *(moves + pos) = buildMove(square, capturePos, 14, 0);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
 
                     *(moves + pos) = buildMove(square, capturePos, 15, 0);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                     pos++;
                 }
 
@@ -439,7 +408,6 @@ int generateMovesBlack(BitBoard *board, Move *moves){
             uint64_t enPassant = basicPawnMasksBlack[square] & board->enPassant;
             if(enPassant){
                 *(moves + pos) = buildMove(square, __builtin_ctzll(enPassant), 5, 0);
-                //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.p));
                 pos++;
             }
 
@@ -451,7 +419,6 @@ int generateMovesBlack(BitBoard *board, Move *moves){
             while(knightMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 *(moves + pos) = buildMove(square, capturePos, code, 1);
-                //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.n));
                 pos++;
 
                 knightMoves ^= (1ull << capturePos);
@@ -466,7 +433,6 @@ int generateMovesBlack(BitBoard *board, Move *moves){
             while(bishopMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 *(moves + pos) = buildMove(square, capturePos, code, 2);
-                //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.b));
                 pos++;
 
                 bishopMoves ^= (1ull << capturePos);
@@ -481,7 +447,6 @@ int generateMovesBlack(BitBoard *board, Move *moves){
             while(rookMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 *(moves + pos) = buildMove(square, capturePos, code, 3);
-                //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.r));
                 pos++;
 
                 rookMoves ^= (1ull << capturePos);
@@ -496,7 +461,6 @@ int generateMovesBlack(BitBoard *board, Move *moves){
             while(queenMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 *(moves + pos) = buildMove(square, capturePos, code, 4);
-                //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.q));
                 pos++;
 
                 queenMoves ^= (1ull << capturePos);
@@ -511,7 +475,6 @@ int generateMovesBlack(BitBoard *board, Move *moves){
             while(kingMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
                 *(moves + pos) = buildMove(square, capturePos, code, 5);
-                //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.k));
                 pos++;
 
                 kingMoves ^= (1ull << capturePos);
@@ -526,7 +489,6 @@ int generateMovesBlack(BitBoard *board, Move *moves){
 
                 if(!isSquareAttacked(&temp, E8num) && !isSquareAttacked(&temp, G8num) && !isSquareAttacked(&temp, F8num)){
                     *(moves + pos) = buildMove(square, G8num, 2, 5);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.k));
                     pos++;
                 }
 
@@ -538,7 +500,6 @@ int generateMovesBlack(BitBoard *board, Move *moves){
 
                 if(!isSquareAttacked(&temp, E8num) && !isSquareAttacked(&temp, D8num) && !isSquareAttacked(&temp, C8num)){
                     *(moves + pos) = buildMove(square, C8num, 3, 5);
-                    //(moves + pos)->board = makeMove(*board, (moves + pos)->move, offsetof(BitBoard, black.k));
                     pos++;
                 }
             }

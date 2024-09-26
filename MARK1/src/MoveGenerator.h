@@ -6,10 +6,10 @@
 
 
 /*
-    Moves will be from-to notation with 4 bits for extra info
+    Moves will be from-to notation with 24 bits of extra info to be filled out as deemed needed
     bits 0-5 are the start square, we can use these to bit shift and create the piece mask later
     bits 6-11 are the end square, 
-    the remaining 4 bits are as follows (misc codes):
+    bits 12-15 are as follows (misc codes):
         0 for quiet moves
         1 for double pawn push
         2 for kingside castle
@@ -24,8 +24,6 @@
         13 for bishop promo-capture
         14 for rook promo-capture
         15 for queen promo-capture
-
-    need a use for 6 and 7 (maybe checks)
     bits 16-19 are used for which piece is moving
         0 for black pawn
         1 for black knight
