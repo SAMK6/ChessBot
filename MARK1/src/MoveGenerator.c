@@ -263,7 +263,7 @@ int isSquareAttacked(BitBoard *board, uint8_t square){
 
     if((rookAttacks | bishopAttacks) & friendlyPieces->q) return 1; // check if we can take the king with a queen
 
-    uint64_t pawnAttacks = board->whiteToMove ? generatePawnMaskBlack(square) : generatePawnMaskWhite(square);
+    uint64_t pawnAttacks = board->whiteToMove ? basicPawnMasksBlack[square] : basicPawnMasksWhite[square];
     if(pawnAttacks & friendlyPieces->p) return 1;
 
     if(basicKingMasks[square] & friendlyPieces->k) return 1;
@@ -273,24 +273,23 @@ int isSquareAttacked(BitBoard *board, uint8_t square){
 }
 
 int generateMovesWhite(BitBoard *board, MoveBoard *moves){
-    
-    RawBoard friendlyPieces = board->white;
-    RawBoard enemyPieces = board->black;
 
     // a board that simply has the position of all oponnent pieces
-    uint64_t opBoard = enemyPieces.k | enemyPieces.q | enemyPieces.r | enemyPieces.b | enemyPieces.n | enemyPieces.p;
+    uint64_t opBoard = board->black.k | board->black.q | board->black.r | board->black.b | board->black.n | board->black.p;
     // a board that contains all friendly pieces
-    uint64_t myBoard = friendlyPieces.k | friendlyPieces.q | friendlyPieces.r | friendlyPieces.b | friendlyPieces.n | friendlyPieces.p;
+    uint64_t myBoard = board->white.k | board->white.q | board->white.r | board->white.b | board->white.n | board->white.p;
     // a board that contains all pieces
     uint64_t wholeBoard = opBoard | myBoard;
 
     int pos = 0; // where in the movelist to put moves
 
 
-    uint64_t currentSquare = 1ull;
-    for(uint8_t square = 0; square < 64; square++){
+    uint64_t pieces = myBoard;
+    int square = __builtin_ctzll(pieces);
+    uint64_t currentSquare = 1ull << square;
+    while(pieces){
 
-        if(currentSquare & friendlyPieces.p){ // found a pawn
+        if(currentSquare & board->white.p){ // found a pawn
 
             if(!((currentSquare << 8) & wholeBoard)){ // there is nothing stopping a single pawn push
                 if(square < H7num){ // no promotion
@@ -329,7 +328,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             }
 
             // check if we can capture with the pawn
-            uint64_t pawnCaptures = generatePawnMaskWhite(square) & opBoard;
+            uint64_t pawnCaptures = basicPawnMasksWhite[square] & opBoard;
             int capturePos = __builtin_ctzll(pawnCaptures);
             while(pawnCaptures){
                 if(capturePos < 56){
@@ -360,7 +359,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             }
 
             // finally check enpassant captures
-            uint64_t enPassant = generatePawnMaskWhite(square) & board->enPassant;
+            uint64_t enPassant = basicPawnMasksWhite[square] & board->enPassant;
             if(enPassant){
                 (moves + pos)->move = buildMove(square, __builtin_ctzll(enPassant), 5);
                 (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'P');
@@ -368,7 +367,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             }
 
         }
-        else if(currentSquare & friendlyPieces.n){ // found a knight
+        else if(currentSquare & board->white.n){ // found a knight
 
             uint64_t knightMoves = basicKnightMasks[square] & ~myBoard;
             int capturePos = __builtin_ctzll(knightMoves);
@@ -383,7 +382,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             }
 
         }
-        else if(currentSquare & friendlyPieces.b){ // found a bishop
+        else if(currentSquare & board->white.b){ // found a bishop
 
             uint64_t bishopMoves = generateBishopAttacks(square, wholeBoard) & ~myBoard;
             int capturePos = __builtin_ctzll(bishopMoves);
@@ -398,7 +397,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             }
 
         }
-        else if(currentSquare & friendlyPieces.r){ // found a rook
+        else if(currentSquare & board->white.r){ // found a rook
 
             uint64_t rookMoves = generateRookAttacks(square, wholeBoard) & ~myBoard;
             int capturePos = __builtin_ctzll(rookMoves);
@@ -413,7 +412,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             }
 
         }
-        else if(currentSquare & friendlyPieces.q){ // found a queen
+        else if(currentSquare & board->white.q){ // found a queen
 
             uint64_t queenMoves = (generateBishopAttacks(square, wholeBoard) | generateRookAttacks(square, wholeBoard)) & ~myBoard;
             int capturePos = __builtin_ctzll(queenMoves);
@@ -428,7 +427,7 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
             }
 
         }
-        else if(currentSquare & friendlyPieces.k){ // found a king
+        else if(currentSquare & board->white.k){ // found a king
 
             uint64_t kingMoves = basicKingMasks[square] & ~myBoard;
             int capturePos = __builtin_ctzll(kingMoves);
@@ -469,7 +468,9 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
 
         }
 
-        currentSquare <<= 1;
+        pieces ^= currentSquare;
+        square = __builtin_ctzll(pieces);
+        currentSquare = 1ull << square;
 
     }
 
@@ -480,24 +481,22 @@ int generateMovesWhite(BitBoard *board, MoveBoard *moves){
 
 int generateMovesBlack(BitBoard *board, MoveBoard *moves){
 
-
-    RawBoard friendlyPieces = board->black;
-    RawBoard enemyPieces = board->white;
-
     // a board that simply has the position of all oponnent pieces
-    uint64_t opBoard = enemyPieces.k | enemyPieces.q | enemyPieces.r | enemyPieces.b | enemyPieces.n | enemyPieces.p;
+    uint64_t opBoard = board->white.k | board->white.q | board->white.r | board->white.b | board->white.n | board->white.p;
     // a board that contains all friendly pieces
-    uint64_t myBoard = friendlyPieces.k | friendlyPieces.q | friendlyPieces.r | friendlyPieces.b | friendlyPieces.n | friendlyPieces.p;
+    uint64_t myBoard = board->black.k | board->black.q | board->black.r | board->black.b | board->black.n | board->black.p;
     // a board that contains all pieces
     uint64_t wholeBoard = opBoard | myBoard;
 
     int pos = 0; // where in the movelist to put moves
 
 
-    uint64_t currentSquare = 9223372036854775808ull;
-    for(uint8_t square = 63; square < 64; square--){
+    uint64_t pieces = myBoard;
+    int square = 63 - __builtin_clzll(pieces);
+    uint64_t currentSquare = 1ull << square;
+    while(pieces){
 
-        if(currentSquare & friendlyPieces.p){ // found a pawn
+        if(currentSquare & board->black.p){ // found a pawn
 
             if(!((currentSquare >> 8) & wholeBoard)){ // there is nothing stopping a single pawn push
                 if(square > A2num){ // no promotion
@@ -536,7 +535,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             }
 
             // check if we can capture with the pawn
-            uint64_t pawnCaptures = generatePawnMaskBlack(square) & opBoard;
+            uint64_t pawnCaptures = basicPawnMasksBlack[square] & opBoard;
             int capturePos = __builtin_ctzll(pawnCaptures);
             while(pawnCaptures){
                 if(capturePos > 7){
@@ -567,7 +566,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             }
 
             // finally check enpassant captures
-            uint64_t enPassant = generatePawnMaskBlack(square) & board->enPassant;
+            uint64_t enPassant = basicPawnMasksBlack[square] & board->enPassant;
             if(enPassant){
                 (moves + pos)->move = buildMove(square, __builtin_ctzll(enPassant), 5);
                 (moves + pos)->board = makeMove(*board, (moves + pos)->move, 'p');
@@ -575,7 +574,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             }
 
         }
-        else if(currentSquare & friendlyPieces.n){ // found a knight
+        else if(currentSquare & board->black.n){ // found a knight
 
             uint64_t knightMoves = basicKnightMasks[square] & ~myBoard;
             int capturePos = __builtin_ctzll(knightMoves);
@@ -590,7 +589,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             }
 
         }
-        else if(currentSquare & friendlyPieces.b){ // found a bishop
+        else if(currentSquare & board->black.b){ // found a bishop
 
             uint64_t bishopMoves = generateBishopAttacks(square, wholeBoard) & ~myBoard;
             int capturePos = __builtin_ctzll(bishopMoves);
@@ -605,7 +604,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             }
 
         }
-        else if(currentSquare & friendlyPieces.r){ // found a rook
+        else if(currentSquare & board->black.r){ // found a rook
 
             uint64_t rookMoves = generateRookAttacks(square, wholeBoard) & ~myBoard;
             int capturePos = __builtin_ctzll(rookMoves);
@@ -620,7 +619,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             }
 
         }
-        else if(currentSquare & friendlyPieces.q){ // found a queen
+        else if(currentSquare & board->black.q){ // found a queen
 
             uint64_t queenMoves = (generateBishopAttacks(square, wholeBoard) | generateRookAttacks(square, wholeBoard)) & ~myBoard;
             int capturePos = __builtin_ctzll(queenMoves);
@@ -635,7 +634,7 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
             }
 
         }
-        else if(currentSquare & friendlyPieces.k){ // found a king
+        else if(currentSquare & board->black.k){ // found a king
 
             uint64_t kingMoves = basicKingMasks[square] & ~myBoard;
             int capturePos = __builtin_ctzll(kingMoves);
@@ -676,7 +675,9 @@ int generateMovesBlack(BitBoard *board, MoveBoard *moves){
 
         }
 
-        currentSquare >>= 1;
+        pieces ^= currentSquare;
+        square = 63 - __builtin_clzll(pieces);
+        currentSquare = 1ull << square;
 
     }
 

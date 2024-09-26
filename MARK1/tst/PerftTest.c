@@ -11,6 +11,7 @@
 
 /*
     test positions and results taken from CPW https://www.chessprogramming.org/Perft_Results
+    these tests serves as both performance and correcness tests
 */
 
 uint64_t startPosition[7] = {1ull, 20ull, 400ull, 8902ull, 197281ull, 4865609ull, 119060324ull};
@@ -38,10 +39,9 @@ uint64_t perft(BitBoard board, int depth){
 
     for(int i = 0; i < numMoves; i++){
         uint8_t kingPos = (uint8_t)__builtin_ctzll(moves[i].board.whiteToMove ? moves[i].board.black.k : moves[i].board.white.k);
-
-        if(!isSquareAttacked(&(moves[i].board), kingPos)) positions += perft(moves[i].board, depth - 1);
+        if(!isSquareAttacked(&(moves[i].board), kingPos)) positions += (depth == 1) ? 1 : perft(moves[i].board, depth - 1);
     }
-
+  
     return positions;
 
 }

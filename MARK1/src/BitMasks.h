@@ -8,6 +8,8 @@ extern uint64_t basicKnightMasks[64];
 extern uint64_t basicBishopMasks[64];
 extern uint64_t basicRookMasks[64];
 extern uint64_t basicKingMasks[64];
+extern uint64_t basicPawnMasksBlack[64];
+extern uint64_t basicPawnMasksWhite[64];
 
 // these functions generate a mask of possible squares a piece could go to
 // assumes an empty board and takes a number 0-63 as input starting square

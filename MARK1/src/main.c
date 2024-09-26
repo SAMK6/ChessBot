@@ -88,6 +88,12 @@ int main(){
 
     printf("%d\n", actualTotal);
 
+    for(int i = 0; i < 64; i++){
+
+        printf("%luull,\n", generatePawnMaskWhite((uint8_t)i));
+
+    }
+
 
 
     return 0;
