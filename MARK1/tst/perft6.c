@@ -27,15 +27,12 @@ uint64_t perft(BitBoard board, int depth){
 
 int main(){
 
-
     char *FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     BitBoard board = fenToBitBoard(FEN);
 
-    int perftRes = perft(board, 6);
+    uint64_t perftRes = perft(board, 7);
 
-    printf("%d\n", perftRes);
-
-
+    printf("%lu\n", perftRes);
 
 }
