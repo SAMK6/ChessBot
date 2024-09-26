@@ -24,72 +24,56 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
     // break the move down into its parts
     uint64_t startSquare = 1ull << (move & startMask);
     uint64_t endSquare = 1ull << ((move & endMask) >> 6);
-    uint64_t moveMask = startSquare | endSquare;
     uint16_t isCapture = move & isCaptureMask;
     uint16_t isPromo = move & isPromoMask;
     uint16_t promoPiece = (move & pieceMask) >> 12;
     uint16_t misc = (move & miscMask) >> 12;
 
+    if(board.whiteToMove){
+        friendlyPieces = &board.white;
+        enemyPieces = &board.black;
+    }
+    else{
+        friendlyPieces = &board.black;
+        enemyPieces = &board.white;
+    }
+
     // choce the appropriate pieces for the move
     switch(piece){
         case 'K':
-            friendlyPieces = &board.white;
-            enemyPieces = &board.black;
             movedPiece = &friendlyPieces->k;
             break;
         case 'Q':
-            friendlyPieces = &board.white;
-            enemyPieces = &board.black;
             movedPiece = &friendlyPieces->q;
             break;
         case 'R':
-            friendlyPieces = &board.white;
-            enemyPieces = &board.black;
             movedPiece = &friendlyPieces->r;
             break;
         case 'B':
-            friendlyPieces = &board.white;
-            enemyPieces = &board.black;
             movedPiece = &friendlyPieces->b;
             break;
         case 'N':
-            friendlyPieces = &board.white;
-            enemyPieces = &board.black;
             movedPiece = &friendlyPieces->n;
             break;
         case 'P':
-            friendlyPieces = &board.white;
-            enemyPieces = &board.black;
             movedPiece = &friendlyPieces->p;
             break;
         case 'k':
-            friendlyPieces = &board.black;
-            enemyPieces = &board.white;
             movedPiece = &friendlyPieces->k;
             break;
         case 'q':
-            friendlyPieces = &board.black;
-            enemyPieces = &board.white;
             movedPiece = &friendlyPieces->q;
             break;
         case 'r':
-            friendlyPieces = &board.black;
-            enemyPieces = &board.white;
             movedPiece = &friendlyPieces->r;
             break;
         case 'b':
-            friendlyPieces = &board.black;
-            enemyPieces = &board.white;
             movedPiece = &friendlyPieces->b;
             break;
         case 'n':
-            friendlyPieces = &board.black;
-            enemyPieces = &board.white;
             movedPiece = &friendlyPieces->n;
             break;
         case 'p':
-            friendlyPieces = &board.black;
-            enemyPieces = &board.white;
             movedPiece = &friendlyPieces->p;
             break;
         default:
@@ -101,12 +85,12 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
     // the move mask has a 1 on the start and end square and 0s everywhere else, 
     // so XORing it with the bitboard of the moved piece toggels off the start bit where the piece started 
     // and toggles on the end square where the piece ends
-    *movedPiece ^= moveMask;
+    *movedPiece ^= startSquare | endSquare;
 
     // now if the move was a castling move we have to also move the appropriate rook
     // use the predefined masks for this since there are only 4 castling moves
     if(misc == (uint16_t)2){ // kingside castle
-        if(piece == 'K'){
+        if(board.whiteToMove){
             friendlyPieces->r ^= whiteKingsideCastle;
         }
         else{
@@ -115,7 +99,7 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
     }
 
     if(misc == (uint16_t)3){ // queenside castle
-        if(piece == 'K'){
+        if(board.whiteToMove){
             friendlyPieces->r ^= whiteQueensideCastle;
         }
         else{
@@ -205,39 +189,32 @@ BitBoard makeMove(BitBoard board, Move move, char piece){
 
     // update the en passant square if it was a double pawn push
     if(misc == (uint16_t)1){
-        if(board.whiteToMove){ // white just pushed a pawn 2 spaces
-            board.enPassant = endSquare >> 8;
-        }
-        else{ // black just pushed a pawn 2 spaces
-            board.enPassant = endSquare << 8;
-        }
+        board.enPassant = board.whiteToMove ? endSquare >> 8 : endSquare << 8;
     }
     else{
         board.enPassant = 0ull;
     }
 
     // update castling rights
-    if(board.castling){ // if noone can castle castling rights don't need to be updated
-        if(piece == 'K'){
-            board.castling &= ~((uint8_t)12);
-        }
-        else if(piece == 'k'){
-            board.castling &= ~((uint8_t)3);
-        }
-        else if(startSquare == H1){
-            board.castling &= ~((uint8_t)8);
-        }
-        else if(startSquare == A1){
-            board.castling &= ~((uint8_t)4);
-        }
-        else if(startSquare == H8){
-            board.castling &= ~((uint8_t)2);
-        }
-        else if(startSquare == A8){
-            board.castling &= ~((uint8_t)1);
-        }
-
+    if(piece == 'K'){
+        board.castling &= ~((uint8_t)12);
     }
+    else if(piece == 'k'){
+        board.castling &= ~((uint8_t)3);
+    }
+    else if(startSquare == H1){
+        board.castling &= ~((uint8_t)8);
+    }
+    else if(startSquare == A1){
+        board.castling &= ~((uint8_t)4);
+    }
+    else if(startSquare == H8){
+        board.castling &= ~((uint8_t)2);
+    }
+    else if(startSquare == A8){
+        board.castling &= ~((uint8_t)1);
+    }
+
     
     // finally we switch the player to move
     board.whiteToMove = !board.whiteToMove;
