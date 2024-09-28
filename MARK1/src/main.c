@@ -50,38 +50,28 @@ int main(){
     printBitBoard64(blackQueensideCastle);
     printf("\n\n");
 
-    Move move = buildMove(59,57,2);
-
-    char *movedFen = (char*)malloc(300 *sizeof(char));
-
-    //BitBoard newBoard = makeMove(board, move, 'k');
-
-    //bitBoardToFen(newBoard, movedFen);
-
-    //printf("%s\n", movedFen);
 
 
 
-
-    MoveBoard *moves = (MoveBoard*)malloc(100 * sizeof(MoveBoard));
+    Move *moves = (Move*)malloc(100 * sizeof(Move));
 
     int numMoves = board.whiteToMove ? generateMovesWhite(&board, moves) : generateMovesBlack(&board, moves);
 
     int actualTotal = numMoves;
 
-    MoveBoard position;
+    BitBoard position;
     for(int i = 0; i < numMoves; i++){
 
-        position = *(moves + i);
+        position = makeMove(board, *(moves + i));
 
-        uint64_t king = position.board.whiteToMove ? position.board.black.k : position.board.white.k;
+        uint64_t king = position.whiteToMove ? position.black.k : position.white.k;
         uint8_t kingPos = __builtin_ctzll(king);
 
-        if(isSquareAttacked(&(position.board), kingPos)){
+        if(isSquareAttacked(&(position), kingPos)){
             actualTotal--;
         }
         else{
-            uint16_t from = position.move & startMask, to = (position.move & endMask) >> 6;
+            uint16_t from = *(moves + i) & startMask, to = (*(moves + i) & endMask) >> 6;
             printf("from: %d\nto: %d\n\n", from, to);
         }
 
@@ -91,14 +81,9 @@ int main(){
 
     for(int i = 0; i < 64; i++){
 
-        printf("%luull,\n", generatePawnMaskWhite((uint8_t)i));
+        printf("%luull,\n", generateBishopMask((uint8_t)i));
 
     }
-
-
-
-    printf("%ld\n", offsetof(BitBoard, white.b));
-
 
 
     return 0;
