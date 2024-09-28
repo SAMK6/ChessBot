@@ -5,6 +5,10 @@ hellomake:
 	gcc -o MoveGeneratorTest MoveGeneratorTests.c ../src/MoveGenerator.c ../src/BitBoard.c ../src/BitMasks.c ../src/Translator.c
 	gcc -o PerftTest PerftTest.c ../src/MoveGenerator.c ../src/BitBoard.c ../src/BitMasks.c ../src/Translator.c
 	gcc -o perft6 perft6.c ../src/MoveGenerator.c ../src/BitBoard.c ../src/BitMasks.c ../src/Translator.c
+
+optimize:
+	gcc -O3 -o PerftTest PerftTest.c ../src/MoveGenerator.c ../src/BitBoard.c ../src/BitMasks.c ../src/Translator.c
+	gcc -O3 -o perft6 perft6.c ../src/MoveGenerator.c ../src/BitBoard.c ../src/BitMasks.c ../src/Translator.c
 	
 clean:
 	rm BitBoardTest TranslatorTest BitMaskTest MoveGeneratorTest PerftTest perft6

@@ -29,17 +29,17 @@ int main(){
     printf("%s\n%s\n%d\n\n", myFen, fen, strcmp(myFen, fen));
 
     printf("startMask: ");
-    printBits16(startMask);
+    printBits32(startMask);
     printf("endMask: ");
-    printBits16(endMask);
+    printBits32(endMask);
     printf("captureMask: ");
-    printBits16(isCaptureMask);
+    printBits32(isCaptureMask);
     printf("promoMask: ");
-    printBits16(isPromoMask);
+    printBits32(isPromoMask);
     printf("miscMask: ");
-    printBits16(miscMask);
+    printBits32(miscMask);
     printf("pieceMask: ");
-    printBits16(pieceMask);
+    printBits32(pieceMask);
     printf("white Kingside castle\n");
     printBitBoard64(whiteKingsideCastle);
     printf("white queenside castle\n");
