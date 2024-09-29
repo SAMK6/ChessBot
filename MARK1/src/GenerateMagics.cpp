@@ -40,11 +40,11 @@ vector<int> patternIndicies(uint64_t board){
 
 // thie function generates all blocker bitboards for a square and then seperates them into a map
 // the maps keys are valid attack sets, and the values vectors of blocker boards that lead to that attack set
-map<uint64_t, vector<uint64_t>> seperateBlockers(uint8_t square, uint64_t pattern){
+map<uint64_t, vector<uint64_t> > seperateBlockers(uint8_t square, uint64_t pattern){
 
     uint64_t numPatterns = 1ull << __builtin_popcountll(pattern); // the number of blocker combos
     vector<int> indicies = patternIndicies(pattern); // the indicies of the bits in the pattern
-    map<uint64_t, vector<uint64_t>> patternMap;
+    map<uint64_t, vector<uint64_t> > patternMap;
     uint64_t attacks, blockers;
 
     // first we need to organize the different patterns into the attack masks they map to
@@ -68,7 +68,7 @@ map<uint64_t, vector<uint64_t>> seperateBlockers(uint8_t square, uint64_t patter
 
 uint64_t findMagics(uint8_t square, uint64_t pattern, int shift){
 
-    map<uint64_t, vector<uint64_t>> patternMap = seperateBlockers(square, pattern);
+    map<uint64_t, vector<uint64_t> > patternMap = seperateBlockers(square, pattern);
 
     // now we should have a map where a given attack pattern for the rook maps to a vector of all the blocker patterns that give that attack pattern
     // generate a random magic number aiming at a 13 bit address space
@@ -76,7 +76,7 @@ uint64_t findMagics(uint8_t square, uint64_t pattern, int shift){
     mt19937_64 gen(rd());
     uniform_int_distribution<uint64_t> dist(0, UINT64_MAX);
 
-    uint64_t randomSparse, key, spaces;
+    uint64_t randomSparse, key, total;
 
     map<int, uint64_t> keys = map<int, uint64_t>();
 
@@ -87,6 +87,7 @@ newMagic:
 
     // now we check if this number is magic
     for(const auto& pair : patternMap){
+        total = 0;
 
         for(const auto& blocks : pair.second){
 
@@ -95,8 +96,11 @@ newMagic:
                 if(keys[key] != pair.first) goto newMagic;
             }
             else{
-                keys[key] = pair.first;            
+                keys[key] = pair.first;
+                total++;         
             }
+
+            if(total > pair.second.size()/2 + 1) goto newMagic;
 
 
         }
@@ -109,22 +113,14 @@ newMagic:
 
 }
 
-int testMagic(uint8_t square, uint64_t pattern, uint64_t magic){
-
-    map<uint64_t, vector<uint64_t>> patternMap = seperateBlockers(square, pattern);
-
-
-
-    return 1;
-
-}
 
 
 int main(int argc, char** argv){
 
-    uint64_t board = generateRookMask(28);
+
+    uint64_t board = generateRookMask(63);
     
-    uint64_t magic = findMagics(28, board, 53);
+    uint64_t magic = findMagics(63, board, 48);
 
     printf("%lu\n", magic);
 
