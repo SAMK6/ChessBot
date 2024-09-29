@@ -3,8 +3,7 @@
 #include <stddef.h>
 #include "BitBoard.h"
 #include "MoveGenerator.h"
-#include "BitMasks.h"
-
+#include "Magics.h"
 
 /*
 
@@ -130,14 +129,20 @@ BitBoard makeMove(BitBoard board, Move move){
 // function that checks if square can be attacked by the player whose turn it is
 int isSquareAttacked(BitBoard *board, uint8_t square){
 
-    RawBoard *friendlyPieces = board->whiteToMove ? &board->white : &board->black;
+    RawBoard *friendlyPieces = ((RawBoard*)board + board->whiteToMove);
     uint64_t wholeBoard = board->white.p | board->white.n | board->white.b | board->white.r | board->white.q | board->white.k | board->black.p | board->black.n | board->black.b | board->black.r | board->black.q | board->black.k;
     
-    uint64_t bishopAttacks = generateBishopAttacks(square, wholeBoard), rookAttacks = generateRookAttacks(square, wholeBoard), pawnAttacks = board->whiteToMove ? basicPawnMasksBlack[square] : basicPawnMasksWhite[square];
+    uint64_t bishopAttacks = getBishopAttacks(square, wholeBoard), rookAttacks = getRookAttacks(square, wholeBoard), pawnAttacks = board->whiteToMove ? basicPawnMasksBlack[square] : basicPawnMasksWhite[square];
     
-    if(((rookAttacks | bishopAttacks) & friendlyPieces->q) || (rookAttacks & friendlyPieces->r) || (bishopAttacks & friendlyPieces->b) || (basicKnightMasks[square] & friendlyPieces->n) || (pawnAttacks & friendlyPieces->p) || (basicKingMasks[square] & friendlyPieces->k)) return 1;
 
-    return 0;
+    if(((rookAttacks | bishopAttacks) & friendlyPieces->q) || (rookAttacks & friendlyPieces->r) || (bishopAttacks & friendlyPieces->b) || (basicKnightMasks[square] & friendlyPieces->n) || (pawnAttacks & friendlyPieces->p) || (basicKingMasks[square] & friendlyPieces->k)){
+        return 1;
+    }
+    else{
+        return 0;
+    }
+
+
 
 }
 
@@ -240,7 +245,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
         }
         else if(currentSquare & board->white.b){ // found a bishop
 
-            uint64_t bishopMoves = generateBishopAttacks(square, wholeBoard) & ~myBoard;
+            uint64_t bishopMoves = getBishopAttacks(square, wholeBoard) & ~myBoard;
             int capturePos = __builtin_ctzll(bishopMoves);
             while(bishopMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
@@ -254,7 +259,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
         }
         else if(currentSquare & board->white.r){ // found a rook
 
-            uint64_t rookMoves = generateRookAttacks(square, wholeBoard) & ~myBoard;
+            uint64_t rookMoves = getRookAttacks(square, wholeBoard) & ~myBoard;
             int capturePos = __builtin_ctzll(rookMoves);
             while(rookMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
@@ -268,7 +273,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
         }
         else if(currentSquare & board->white.q){ // found a queen
 
-            uint64_t queenMoves = (generateBishopAttacks(square, wholeBoard) | generateRookAttacks(square, wholeBoard)) & ~myBoard;
+            uint64_t queenMoves = (getBishopAttacks(square, wholeBoard) | getRookAttacks(square, wholeBoard)) & ~myBoard;
             int capturePos = __builtin_ctzll(queenMoves);
             while(queenMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
@@ -428,7 +433,7 @@ int generateMovesBlack(BitBoard *board, Move *moves){
         }
         else if(currentSquare & board->black.b){ // found a bishop
 
-            uint64_t bishopMoves = generateBishopAttacks(square, wholeBoard) & ~myBoard;
+            uint64_t bishopMoves = getBishopAttacks(square, wholeBoard) & ~myBoard;
             int capturePos = __builtin_ctzll(bishopMoves);
             while(bishopMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
@@ -442,7 +447,7 @@ int generateMovesBlack(BitBoard *board, Move *moves){
         }
         else if(currentSquare & board->black.r){ // found a rook
 
-            uint64_t rookMoves = generateRookAttacks(square, wholeBoard) & ~myBoard;
+            uint64_t rookMoves = getRookAttacks(square, wholeBoard) & ~myBoard;
             int capturePos = __builtin_ctzll(rookMoves);
             while(rookMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;
@@ -456,7 +461,7 @@ int generateMovesBlack(BitBoard *board, Move *moves){
         }
         else if(currentSquare & board->black.q){ // found a queen
 
-            uint64_t queenMoves = (generateBishopAttacks(square, wholeBoard) | generateRookAttacks(square, wholeBoard)) & ~myBoard;
+            uint64_t queenMoves = (getBishopAttacks(square, wholeBoard) | getRookAttacks(square, wholeBoard)) & ~myBoard;
             int capturePos = __builtin_ctzll(queenMoves);
             while(queenMoves){
                 int code = ((1ull << capturePos) & opBoard) ? 4 : 0;

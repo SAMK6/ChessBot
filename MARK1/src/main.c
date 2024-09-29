@@ -77,15 +77,6 @@ int main(){
 
     }
 
-    printf("%d\n", actualTotal);
-
-    for(int i = 0; i < 64; i++){
-
-        printf("%luull,\n", generateBishopMask((uint8_t)i));
-
-    }
-
-
     return 0;
 
 }
