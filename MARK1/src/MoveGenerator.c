@@ -22,7 +22,6 @@ BitBoard makeMove(BitBoard board, Move move){
     uint64_t startSquare = 1ull << (move & startMask);
     uint64_t endSquare = 1ull << ((move & endMask) >> 6);
     uint32_t isCapture = move & isCaptureMask;
-    uint32_t promoPiece = (move & promoPieceMask) >> 12;
     uint32_t misc = (move & miscMask) >> 12;
     uint32_t piece = (move & pieceMask) >> 16;
 
@@ -73,23 +72,8 @@ BitBoard makeMove(BitBoard board, Move move){
     if(move & isPromoMask){ // if the move is a promo we have to add a new piece and remove the pawn from the end of the board
         
         *movedPiece &= ~endSquare; // first remove the pawn
+        *((uint64_t*)friendlyPieces + 1 + ((move & promoPieceMask) >> 12)) |= endSquare; // now add the promoted piece
 
-        switch(promoPiece){ // now based on the piece code add the piece we are promoting to
-
-            case (uint16_t)0:
-                friendlyPieces->n |= endSquare;
-                break;
-            case (uint16_t)1:
-                friendlyPieces->b |= endSquare;
-                break;
-            case (uint16_t)2:
-                friendlyPieces->r |= endSquare;
-                break;
-            case (uint16_t)3:
-                friendlyPieces->q |= endSquare;
-                break;
-
-        }
     }
 
     // update the other data starting with move counter
