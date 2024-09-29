@@ -2,6 +2,8 @@
 #include "BitMasks.h"
 
 
+// the functions in this file are replaced by the arrays in Magics.h but the functions stay for testing and just in case
+
 uint64_t generateRookMask(uint8_t square){
 
     uint64_t mask = 0ull;

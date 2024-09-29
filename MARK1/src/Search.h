@@ -6,7 +6,7 @@
 #include "BitBoard.h"
 
 
-int64_t search(BitBoard board);
+int64_t search(BitBoard);
 
 
 

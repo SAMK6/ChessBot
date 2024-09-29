@@ -4,7 +4,11 @@
 #include <stdint.h>
 #include "BitBoard.h"
 
-int64_t evaluate(BitBoard board);
+// the overall evaluation function
+int64_t evaluate(BitBoard);
+
+// returns the total value of black pieces minus the total value of black pieces
+int_fast8_t material(BitBoard);
 
 
 
