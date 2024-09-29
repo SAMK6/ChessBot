@@ -6,7 +6,6 @@
 #include "BitBoard.h"
 #include "Translator.h"
 #include "MoveGenerator.h"
-#include "BitMasks.h"
 
 
 int main(){

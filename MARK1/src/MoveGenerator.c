@@ -1,6 +1,5 @@
 #include <stdint.h>
 #include <stdio.h>
-#include <stddef.h>
 #include "BitBoard.h"
 #include "MoveGenerator.h"
 #include "Magics.h"
