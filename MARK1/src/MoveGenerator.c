@@ -135,14 +135,7 @@ int isSquareAttacked(BitBoard *board, uint8_t square){
     uint64_t bishopAttacks = getBishopAttacks(square, wholeBoard), rookAttacks = getRookAttacks(square, wholeBoard), pawnAttacks = board->whiteToMove ? basicPawnMasksBlack[square] : basicPawnMasksWhite[square];
     
 
-    if(((rookAttacks | bishopAttacks) & friendlyPieces->q) || (rookAttacks & friendlyPieces->r) || (bishopAttacks & friendlyPieces->b) || (basicKnightMasks[square] & friendlyPieces->n) || (pawnAttacks & friendlyPieces->p) || (basicKingMasks[square] & friendlyPieces->k)){
-        return 1;
-    }
-    else{
-        return 0;
-    }
-
-
+    return ((rookAttacks | bishopAttacks) & friendlyPieces->q) || (rookAttacks & friendlyPieces->r) || (bishopAttacks & friendlyPieces->b) || (basicKnightMasks[square] & friendlyPieces->n) || (pawnAttacks & friendlyPieces->p) || (basicKingMasks[square] & friendlyPieces->k);
 
 }
 
