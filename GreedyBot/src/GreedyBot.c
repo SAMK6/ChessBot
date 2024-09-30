@@ -7,7 +7,14 @@
 
 int main(int argc, char** argv){
 
-    char *FEN = "2r1rk2/1b1qpp1p/3p2p1/1ppP2P1/2P1RP2/1BPP3P/4Q3/4R1K1 b - - 0 29";
+    if(argc != 7) printf("Please enter a valid FEN\n");
+
+    char FEN[150];
+    
+    int fenSize = sprintf(FEN, "%s %s %s %s %s %s", argv[1], argv[2], argv[3], argv[4], argv[5], argv[6]);
+
+    if(fenSize > 149) printf("oops\n");
+    
     BitBoard board = fenToBitBoard(FEN);
 
     SearchResult move = search(board, 6);
