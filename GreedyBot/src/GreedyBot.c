@@ -17,8 +17,11 @@ int main(int argc, char** argv){
     
     BitBoard board = fenToBitBoard(FEN);
 
-    SearchResult move = search(board, 6);
+    SearchResult move = search(board, 4);
 
-    printf("%d to %d\n", move.bestMove & startMask, (move.bestMove & endMask) >> 6);
+    char UCImove[6];
+    moveToUCI(move.bestMove, UCImove);
+
+    printf("%d to %d\n%s\n", move.bestMove & startMask, (move.bestMove & endMask) >> 6, UCImove);
 
 }

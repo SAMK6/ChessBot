@@ -482,7 +482,42 @@ void bitBoardToFen(BitBoard board, char* fen){
 }
 
 
-void moveToUCI(uint32_t move){
+void moveToUCI(uint32_t move, char *UCImove){
+
+    uint32_t from = startMask & move;
+    uint32_t to = (endMask & move) >> 6;
+
+    uint32_t fromFile = 7 - (from % 8);
+    uint32_t fromRank = from / 8;
+
+    uint32_t toFile = 7 - (to % 8);
+    uint32_t toRank = to / 8;
+
+    *(UCImove) = 'a' + fromFile;
+    *(UCImove + 1) = '1' + fromRank;
+    *(UCImove + 2) = 'a' + toFile;
+    *(UCImove + 3) = '1' + toRank;
+
+    if(isPromoMask & move){
+        switch((move & promoPieceMask) >> 12){
+            case 0:
+                *(UCImove + 4) = 'n';
+                break;
+            case 1:
+                *(UCImove + 4) = 'b';
+                break;
+            case 2:
+                *(UCImove + 4) = 'r';
+                break;
+            case 3:
+                *(UCImove + 4) = 'q';
+                break;
+        }
+        *(UCImove + 5) = '\0';
+    }
+    else{
+        *(UCImove + 4) = '\0';
+    }
 
 
 }

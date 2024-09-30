@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "BitBoard.h"
 #include "Search.h"
 #include "Evaluate.h"
 #include "MoveGenerator.h"
@@ -17,9 +18,9 @@ SearchResult search(BitBoard board, int depth){
 
     uint64_t king =  *((uint64_t*)&board + 5 + 6 * !board.whiteToMove);
     uint8_t kingPos = __builtin_ctzll(king);
-
-    if(isSquareAttacked(&board, kingPos)){ // if the king can be captured this position is invalid we return negative infinity
-        result.evaluation = INT_FAST32_MIN;
+    // if the king can be captured this position is invalid we return infinity because capturing the king is the best move always
+    if(isSquareAttacked(&board, kingPos)){ 
+        result.evaluation = INT_FAST32_MAX;
         return result;
     }
 
