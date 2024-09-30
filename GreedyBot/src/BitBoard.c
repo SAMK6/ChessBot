@@ -15,7 +15,7 @@ int validBitBoard(BitBoard board){ // this function is now a full check but rath
     // and depending on which peice can be captured en passant we check it is the correct players turn
     if(board.enPassant){
 
-        if(popcount64(board.enPassant) > 1){
+        if(__builtin_popcountll(board.enPassant) > 1){
             return 0; // only 1 bit should ever be set
         }
 
@@ -213,48 +213,5 @@ void debugPrintBitBoard(BitBoard board){
 
     printf("enPassant:\n");
     printBitBoard64(board.enPassant);
-
-}
-
-
-int popcount8(uint8_t n){
-
-    n = (n & 0x55) + ((n >> 1) & 0x55);
-    n = (n & 0x33) + ((n >> 2) & 0x33);
-    n = (n & 0x0F) + ((n >> 4) & 0x0F);
-    return (int)n;
-
-}
-
-int popcount16(uint16_t n){
-
-    n = (n & 0x5555) + ((n >> 1) & 0x5555);
-    n = (n & 0x3333) + ((n >> 2) & 0x3333);
-    n = (n & 0x0F0F) + ((n >> 4) & 0x0F0F);
-    n = (n & 0x00FF) + ((n >> 8) & 0x00FF);
-    return(int)n;
-
-}
-
-int popcount32(uint32_t n){
-
-    n = (n & 0x55555555) + ((n >> 1) & 0x55555555);
-    n = (n & 0x33333333) + ((n >> 2) & 0x33333333);
-    n = (n & 0x0F0F0F0F) + ((n >> 4) & 0x0F0F0F0F);
-    n = (n & 0x00FF00FF) + ((n >> 8) & 0x00FF00FF);
-    n = (n & 0x0000FFFF) + ((n >> 16) & 0x0000FFFF);
-    return(int)n;
-
-}
-
-int popcount64(uint64_t n){
-
-    n = (n & 0x5555555555555555) + ((n >> 1) & 0x5555555555555555);
-    n = (n & 0x3333333333333333) + ((n >> 2) & 0x3333333333333333);
-    n = (n & 0x0F0F0F0F0F0F0F0F) + ((n >> 4) & 0x0F0F0F0F0F0F0F0F);
-    n = (n & 0x00FF00FF00FF00FF) + ((n >> 8) & 0x00FF00FF00FF00FF);
-    n = (n & 0x0000FFFF0000FFFF) + ((n >> 16) & 0x0000FFFF0000FFFF);
-    n = (n & 0x00000000FFFFFFFF) + ((n >> 32) & 0x00000000FFFFFFFF);
-    return(int)n;
 
 }

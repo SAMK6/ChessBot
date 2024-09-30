@@ -480,3 +480,9 @@ void bitBoardToFen(BitBoard board, char* fen){
     *(fen + count) = '\0';
 
 }
+
+
+void moveToUCI(uint32_t move){
+
+
+}

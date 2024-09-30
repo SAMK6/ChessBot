@@ -13,4 +13,6 @@ BitBoard fenToBitBoard(const char*);
 // takes in a bitBoard and turns it into a FEN string, pass in a dynamically alocated char array of size n and the null terminated FEN string is placed there
 void bitBoardToFen(BitBoard, char*);
 
+void moveToUCI(Move);
+
 #endif

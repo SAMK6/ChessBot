@@ -9,7 +9,4 @@ int64_t evaluate(BitBoard);
 
 
 
-
-
-
 #endif

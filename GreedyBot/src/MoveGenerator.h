@@ -45,18 +45,9 @@
     after reading CPW (https://www.chessprogramming.org/Encoding_Moves) I realised bits 14-15 could be used either way and 
     therefore my move representation is a extended version the encoding used in the article
 */
-typedef uint32_t Move;
+
 
 #define buildMove(from, to, code, piece) ((Move)from | ((Move)to << 6) | ((Move)code << 12) | ((Move)piece << 16))
-
-// gonna define masks to get specific parts of the move object
-#define startMask (Move)63 // first 6 bits (0-5)
-#define endMask (Move)4032 // second 6 bits (6-11)
-#define isCaptureMask (Move)16384 // 14th bit
-#define isPromoMask (Move)32768 // 15th bit
-#define promoPieceMask (Move)12288 // bits 12 and 13
-#define miscMask (Move)61440 // bits 12-15
-#define pieceMask (Move)983040 // bits 16-19
 
 // define masks used to move the rooks during castling moves
 // NOT USED AS MASKS TO CHECK CASTLING RIGHTS

@@ -204,11 +204,19 @@ typedef struct BitBoard{
 
 } BitBoard;
 
-/*
-    the usual initialization of the bitboard will be all 0 values as follows
-    BitBoard board = {(uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint64_t)0, (uint8_t)0, (uint8_t)0, (uint8_t)0, (uint16_t)0, (uint64_t)0};
 
-*/
+
+typedef uint32_t Move;
+
+// gonna define masks to get specific parts of the move object
+#define startMask (Move)63 // first 6 bits (0-5)
+#define endMask (Move)4032 // second 6 bits (6-11)
+#define isCaptureMask (Move)16384 // 14th bit
+#define isPromoMask (Move)32768 // 15th bit
+#define promoPieceMask (Move)12288 // bits 12 and 13
+#define miscMask (Move)61440 // bits 12-15
+#define pieceMask (Move)983040 // bits 16-19
+
 
 // there are a few basic and easy checks we can do to increase confidence the bitboard is good
 // it should be noted that passing this check does NOT garuntee a valid board, only that it passed this sanity check
@@ -221,13 +229,6 @@ void printBits32(uint32_t);
 void printBits64(uint64_t);
 void printBitBoard64(uint64_t);
 void debugPrintBitBoard(BitBoard);
-
-// popcount algorithms
-int popcount8(uint8_t);
-int popcount16(uint16_t);
-int popcount32(uint32_t);
-int popcount64(uint64_t);
-
 
 
 #endif
