@@ -25,6 +25,7 @@ BitBoard makeMove(BitBoard board, Move move){
     uint32_t piece = (move & pieceMask) >> 16;
 
     // these three lines depend on the BitBoard structure as it is on sept 26th 2024 at 5:17PM
+    // please forgive me for these sins
     uint64_t *movedPiece = ((uint64_t*)&board + piece);
     friendlyPieces = ((RawBoard*)&board + board.whiteToMove);
     enemyPieces = ((RawBoard*)&board + !board.whiteToMove);
@@ -71,7 +72,7 @@ BitBoard makeMove(BitBoard board, Move move){
     if(move & isPromoMask){ // if the move is a promo we have to add a new piece and remove the pawn from the end of the board
         
         *movedPiece &= ~endSquare; // first remove the pawn
-        *((uint64_t*)friendlyPieces + 1 + ((move & promoPieceMask) >> 12)) |= endSquare; // now add the promoted piece
+        *((uint64_t*)friendlyPieces + 1 + ((move & promoPieceMask) >> 12)) |= endSquare; // now add the promoted piece (another sin)
 
     }
 
@@ -153,7 +154,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
                     }
 
                 }
-                else{
+                else{ // promos
 
                     *(moves + pos) = buildMove(square, (square + 8), 8, 6);
                     pos++;
@@ -179,7 +180,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
                     *(moves + pos) = buildMove(square, capturePos, 4, 6);
                     pos++;
                 }
-                else{
+                else{ // promo captures
                     *(moves + pos) = buildMove(square, capturePos, 12, 6);
                     pos++;
 
@@ -341,7 +342,7 @@ int generateMovesBlack(BitBoard *board, Move *moves){
                     }
 
                 }
-                else{
+                else{ // promos
 
                     *(moves + pos) = buildMove(square, (square - 8), 8, 0);
                     pos++;
@@ -367,7 +368,7 @@ int generateMovesBlack(BitBoard *board, Move *moves){
                     *(moves + pos) = buildMove(square, capturePos, 4, 0);
                     pos++;
                 }
-                else{
+                else{ // promo captures
                     *(moves + pos) = buildMove(square, capturePos, 12, 0);
                     pos++;
 
