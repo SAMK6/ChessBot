@@ -49,6 +49,18 @@
 
 #define buildMove(from, to, code, piece) ((Move)from | ((Move)to << 6) | ((Move)code << 12) | ((Move)piece << 16))
 
+
+typedef uint32_t Move;
+
+// gonna define masks to get specific parts of the move object
+#define startMask (Move)63 // first 6 bits (0-5)
+#define endMask (Move)4032 // second 6 bits (6-11)
+#define isCaptureMask (Move)16384 // 14th bit
+#define isPromoMask (Move)32768 // 15th bit
+#define promoPieceMask (Move)12288 // bits 12 and 13
+#define miscMask (Move)61440 // bits 12-15
+#define pieceMask (Move)983040 // bits 16-19
+
 // define masks used to move the rooks during castling moves
 // NOT USED AS MASKS TO CHECK CASTLING RIGHTS
 #define whiteKingsideCastle 5ull
@@ -57,7 +69,6 @@
 #define blackQueensideCastle 10376293541461622784ull
 
 BitBoard makeMove(BitBoard, Move); // makes a move and returns the new bitboard
-int isSquareAttacked(BitBoard*, uint8_t);
 int generateMovesBlack(BitBoard*, Move*);
 int generateMovesWhite(BitBoard*, Move*);
 

@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
-#include "../src/BitBoard.h"
-#include "../src/Translator.h"
-#include "../src/MoveGenerator.h"
+#include "../src/core/BitBoard.h"
+#include "../src/core/Translator.h"
+#include "../src/core/MoveGenerator.h"
 
 int main(int argc, char** argv){
 
@@ -23,7 +23,7 @@ int main(int argc, char** argv){
         printf("TESTING MOVE MAKER\n");
 
     //fp = popen("bash -c 'source ../../test_data/chessENV/bin/activate && python3 ../../test_data/move_maker_test_data.py translator_test_data.txt'", "r");
-    fp = fopen("move_maker_data.txt", "r");
+    fp = fopen("data/move_maker_data.txt", "r");
 
 
     if(fp == NULL){
@@ -120,7 +120,7 @@ int main(int argc, char** argv){
 
 
     printf("\n\nTESTING MOVE GENERATOR\n");
-    fp = fopen("move_generator_data.txt", "r");
+    fp = fopen("data/move_generator_data.txt", "r");
 
 
     if(fp == NULL){

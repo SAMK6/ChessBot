@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "BitBoard.h"
+#include "MoveGenerator.h"
 #include "Translator.h"
 
 
@@ -482,7 +483,7 @@ void bitBoardToFen(BitBoard board, char* fen){
 }
 
 
-void moveToUCI(uint32_t move, char *UCImove){
+void moveToUCI(Move move, char *UCImove){
 
     uint32_t from = startMask & move;
     uint32_t to = (endMask & move) >> 6;

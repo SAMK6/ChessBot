@@ -1,9 +1,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../src/BitBoard.h"
-#include "../src/Translator.h"
-#include "../src/MoveGenerator.h"
+#include "../src/core/BitBoard.h"
+#include "../src/core/Translator.h"
+#include "../src/core/MoveGenerator.h"
 
 
 

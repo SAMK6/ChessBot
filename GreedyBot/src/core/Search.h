@@ -3,6 +3,7 @@
 
 
 #include <stdint.h>
+#include "MoveGenerator.h"
 #include "BitBoard.h"
 
 typedef struct SearchResult{

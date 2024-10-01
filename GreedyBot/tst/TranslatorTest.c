@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "../src/BitBoard.h"
-#include "../src/Translator.h"
+#include "../src/core/BitBoard.h"
+#include "../src/core/Translator.h"
 
 /*
     whatever FEN is at the first line of the input textfile will always fail because of txt file weirdness,
@@ -18,7 +18,7 @@ int main(int argc, char** argv){
     char *newline_ptr;
 
     // Open the file in read mode
-    file = fopen("translator_test_data.txt", "r");
+    file = fopen("data/translator_test_data.txt", "r");
 
     // Check if the file opened successfully
     if (file == NULL) {

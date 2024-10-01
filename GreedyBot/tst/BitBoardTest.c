@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "../src/BitBoard.h"
+#include "../src/core/BitBoard.h"
 
 
 int main(int argc, char** argv){

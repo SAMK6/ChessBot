@@ -5,7 +5,6 @@
 #include <vector>
 #include <map>
 #include <random>
-#include "BitBoard.h"
 #include "BitMasks.h"
 
 using namespace std;

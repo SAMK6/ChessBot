@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include "../src/Translator.h"
-#include "../src/BitBoard.h"
-#include "../src/Magics.h"
-#include "../src/BitMasks.h"
+#include "../src/core/Translator.h"
+#include "../src/core/BitBoard.h"
+#include "../src/core/Magics.h"
+#include "../src/generators/BitMasks.h"
 
 int main(){
 

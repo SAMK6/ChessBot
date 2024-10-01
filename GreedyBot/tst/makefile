@@ -1,15 +1,15 @@
 hellomake:
-	gcc -o BitBoardTest BitBoardTest.c ../src/BitBoard.c
-	gcc -o TranslatorTest TranslatorTest.c ../src/BitBoard.c ../src/Translator.c
-	gcc -o BitMaskTest BitMaskTests.c ../src/BitMasks.c
-	gcc -o MoveGeneratorTest MoveGeneratorTests.c ../src/MoveGenerator.c ../src/BitBoard.c ../src/Translator.c
-	gcc -o PerftTest PerftTest.c ../src/MoveGenerator.c ../src/BitBoard.c ../src/Translator.c
-	gcc -o perft6 perft6.c ../src/MoveGenerator.c ../src/BitBoard.c ../src/Translator.c
-	gcc -o MagicTests MagicTests.c ../src/BitBoard.c ../src/BitMasks.c ../src/Translator.c
+	gcc -o BitBoardTest BitBoardTest.c ../src/core/BitBoard.c ../src/core/Magics.c
+	gcc -o TranslatorTest TranslatorTest.c ../src/core/BitBoard.c ../src/core/Translator.c ../src/core/Magics.c
+	gcc -o BitMaskTest BitMaskTests.c ../src/generators/BitMasks.c ../src/core/Magics.c
+	gcc -o MoveGeneratorTest MoveGeneratorTests.c ../src/core/MoveGenerator.c ../src/core/BitBoard.c ../src/core/Translator.c ../src/core/Magics.c
+	gcc -o PerftTest PerftTest.c ../src/core/MoveGenerator.c ../src/core/BitBoard.c ../src/core/Translator.c ../src/core/Magics.c
+	gcc -o perft6 perft6.c ../src/core/MoveGenerator.c ../src/core/BitBoard.c ../src/core/Translator.c ../src/core/Magics.c
+	gcc -o MagicTests MagicTests.c ../src/core/BitBoard.c ../src/generators/BitMasks.c ../src/core/Translator.c ../src/core/Magics.c
 
 optimize:
-	gcc -O3 -o PerftTest PerftTest.c ../src/MoveGenerator.c ../src/BitBoard.c ../src/Translator.c
-	gcc -O3 -o perft6 perft6.c ../src/MoveGenerator.c ../src/BitBoard.c ../src/Translator.c
+	gcc -O3 -o perft6 perft6.c ../src/core/MoveGenerator.c ../src/core/BitBoard.c ../src/core/Translator.c ../src/core/Magics.c
+	gcc -O3 -o PerftTest PerftTest.c ../src/core/MoveGenerator.c ../src/core/BitBoard.c ../src/core/Translator.c ../src/core/Magics.c
 	
 clean:
 	rm BitBoardTest TranslatorTest BitMaskTest MoveGeneratorTest PerftTest perft6 MagicTests

@@ -2,6 +2,7 @@
 #define TRANSLATOR_H
 
 #include <stdint.h>
+#include "MoveGenerator.h"
 #include "BitBoard.h"
 
 // see https://www.chessprogramming.org/Forsyth-Edwards_Notation for info on FEN notation
@@ -14,5 +15,6 @@ BitBoard fenToBitBoard(const char*);
 void bitBoardToFen(BitBoard, char*);
 
 void moveToUCI(Move, char*);
+
 
 #endif

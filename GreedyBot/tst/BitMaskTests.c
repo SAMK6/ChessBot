@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../src/BitMasks.h"
-#include "../src/Magics.h"
+#include "../src/generators/BitMasks.h"
+#include "../src/core/Magics.h"
 
 
 int main(int argc, char** argv){

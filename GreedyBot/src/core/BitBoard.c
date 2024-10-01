@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "BitBoard.h"
+#include "Magics.h"
 
 
 int validBitBoard(BitBoard board){ // this function is now a full check but rather some general sanity checks
@@ -71,7 +72,18 @@ int validBitBoard(BitBoard board){ // this function is now a full check but rath
 
 }
 
+// function that checks if square can be attacked by the player whose turn it is
+int isSquareAttacked(BitBoard *board, uint8_t square){
 
+    RawBoard *friendlyPieces = ((RawBoard*)board + board->whiteToMove);
+    uint64_t wholeBoard = board->white.p | board->white.n | board->white.b | board->white.r | board->white.q | board->white.k | board->black.p | board->black.n | board->black.b | board->black.r | board->black.q | board->black.k;
+    
+    uint64_t bishopAttacks = getBishopAttacks(square, wholeBoard), rookAttacks = getRookAttacks(square, wholeBoard), pawnAttacks = board->whiteToMove ? basicPawnMasksBlack[square] : basicPawnMasksWhite[square];
+    
+
+    return ((rookAttacks | bishopAttacks) & friendlyPieces->q) || (rookAttacks & friendlyPieces->r) || (bishopAttacks & friendlyPieces->b) || (basicKnightMasks[square] & friendlyPieces->n) || (pawnAttacks & friendlyPieces->p) || (basicKingMasks[square] & friendlyPieces->k);
+
+}
 
 
 void printBits8(uint8_t tar){
