@@ -7,7 +7,9 @@ Learning about chess engines. Goal to eventually set my bot up with a lichess bo
 - Magic BitBoard move generation
 - 109 byte lightweight board state
 - copy/make move making scheme
-- testing with cutechess and custom tests
+- using `pthreads.h` and `regex.h` so will only support unix based systems for now (MacOS, Linux, etc)
+- testing with cutechess (integration testing) and custom tests (unit testing)
 
 ### TODO
 - UCI interface
+- improve makefiles
