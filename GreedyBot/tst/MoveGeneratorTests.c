@@ -97,7 +97,9 @@ int main(int argc, char** argv){
 
         inputBoard = fenToBitBoard(inputFEN);
 
-        movedBoard = makeMove(inputBoard, move);
+        movedBoard = inputBoard;
+
+        makeMove(&movedBoard, move);
 
         bitBoardToFen(movedBoard, ourFEN);
 
@@ -162,7 +164,9 @@ int main(int argc, char** argv){
 
         for(int i = 0; i < numMovesMine; i++){
 
-            position = makeMove(inputBoard, *(moves + i));
+            position = inputBoard;
+            
+            makeMove(&position, *(moves + i));
 
             uint64_t king =  position.whiteToMove ? position.black.k : position.white.k;
             uint8_t kingPos = __builtin_ctzll(king);

@@ -4,8 +4,5 @@ hellomake:
 test:
 	gcc -o test main.c Translator.c BitBoard.c MoveGenerator.c Magics.c
 
-debug:
-	gcc -g -o test main.c Translator.c BitBoard.c MoveGenerator.c Magics.c
-
 clean:
 	rm test GreedyBot

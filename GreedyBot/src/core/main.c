@@ -6,6 +6,7 @@
 #include "BitBoard.h"
 #include "Translator.h"
 #include "MoveGenerator.h"
+#include "Magics.h"
 
 
 int main(){
@@ -52,21 +53,23 @@ int main(){
 
 
 
-    Move *moves = (Move*)malloc(100 * sizeof(Move));
+    Move *moves = (Move*)malloc(1000 * sizeof(Move));
 
     int numMoves = board.whiteToMove ? generateMovesWhite(&board, moves) : generateMovesBlack(&board, moves);
 
     int actualTotal = numMoves;
+    BitBoard position = board;
 
-    BitBoard position;
     for(int i = 0; i < numMoves; i++){
 
-        position = makeMove(board, *(moves + i));
+        position = board;
+        
+        makeMove(&position, *(moves + i));
 
         uint64_t king = position.whiteToMove ? position.black.k : position.white.k;
         uint8_t kingPos = __builtin_ctzll(king);
 
-        if(isSquareAttacked(&(position), kingPos)){
+        if(isSquareAttacked(&position, kingPos)){
             actualTotal--;
         }
         else{

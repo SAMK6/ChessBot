@@ -28,10 +28,14 @@ SearchResult search(BitBoard board, int depth){
     Move moves[218];
     int numMoves = board.whiteToMove ? generateMovesWhite(&board, moves) : generateMovesBlack(&board, moves);
     SearchResult eval;
+    BitBoard newBoard;
 
     for(int i = 0; i < numMoves; i++){
 
-        eval = search(makeMove(board, moves[i]), depth - 1);
+        newBoard = board;
+        makeMove(&newBoard, moves[i]);
+
+        eval = search(newBoard, depth - 1);
         eval.evaluation *= -1;
 
         if(eval.evaluation > result.evaluation){

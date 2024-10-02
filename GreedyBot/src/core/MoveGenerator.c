@@ -13,7 +13,7 @@
 */
 
 
-BitBoard makeMove(BitBoard board, Move move){
+void makeMove(BitBoard *board, Move move){
 
     RawBoard *friendlyPieces, *enemyPieces;
 
@@ -26,9 +26,9 @@ BitBoard makeMove(BitBoard board, Move move){
 
     // these three lines depend on the BitBoard structure as it is on sept 26th 2024 at 5:17PM
     // please forgive me for these sins
-    uint64_t *movedPiece = ((uint64_t*)&board + piece);
-    friendlyPieces = ((RawBoard*)&board + board.whiteToMove);
-    enemyPieces = ((RawBoard*)&board + !board.whiteToMove);
+    uint64_t *movedPiece = ((uint64_t*)board + piece);
+    friendlyPieces = ((RawBoard*)board + board->whiteToMove);
+    enemyPieces = ((RawBoard*)board + !board->whiteToMove);
     
 
     uint64_t enemyRooks = enemyPieces->r;
@@ -41,10 +41,10 @@ BitBoard makeMove(BitBoard board, Move move){
     // now if the move was a castling move we have to also move the appropriate rook
     // use the predefined masks for this since there are only 4 castling moves
     if(misc == (uint16_t)2){ // kingside castle
-        friendlyPieces->r ^= board.whiteToMove ? whiteKingsideCastle : blackKingsideCastle;
+        friendlyPieces->r ^= board->whiteToMove ? whiteKingsideCastle : blackKingsideCastle;
     }
     else if(misc == (uint16_t)3){ // queenside castle
-        friendlyPieces->r ^= board.whiteToMove ? whiteQueensideCastle : blackQueensideCastle;
+        friendlyPieces->r ^= board->whiteToMove ? whiteQueensideCastle : blackQueensideCastle;
     }
 
     if(isCapture){ // if the move is a capture we have to remove the enemy piece from the square
@@ -52,7 +52,7 @@ BitBoard makeMove(BitBoard board, Move move){
         uint64_t notEndSquare;
 
         if(misc == (uint16_t)5){ // this is an enpassant capture
-            notEndSquare = board.whiteToMove ? ~(endSquare >> 8) : ~(endSquare << 8);
+            notEndSquare = board->whiteToMove ? ~(endSquare >> 8) : ~(endSquare << 8);
         }
         else{
             notEndSquare = ~endSquare;
@@ -77,36 +77,36 @@ BitBoard makeMove(BitBoard board, Move move){
     }
 
     // update the other data starting with move counter
-    board.moves += board.whiteToMove ? 0 : 1; // if it was black that just moved we update the move counter
+    if(!board->whiteToMove) (board->moves)++; // if it was black that just moved we update the move counter
 
     // update the halfmove clock according to if the move was a pawn move capture or neither
     if(*movedPiece == friendlyPieces->p || isCapture){
-        board.halfMoves = 0;
+        board->halfMoves = 0;
     }
     else{
-        board.halfMoves++;
+        board->halfMoves++;
     }
 
     // update the en passant square if it was a double pawn push
     if(misc == (uint16_t)1){
-        board.enPassant = board.whiteToMove ? endSquare >> 8 : endSquare << 8;
+        board->enPassant = board->whiteToMove ? endSquare >> 8 : endSquare << 8;
     }
     else{
-        board.enPassant = 0ull;
+        board->enPassant = 0ull;
     }
 
     // update castling rights
-    if(*movedPiece == friendlyPieces->k) board.castling &= ~(board.whiteToMove ? (uint8_t)12 : (uint8_t)3);
-    if((board.white.r & H1) != H1) board.castling &= ~((uint8_t)8);
-    if((board.white.r & A1) != A1) board.castling &= ~((uint8_t)4);
-    if((board.black.r & H8) != H8) board.castling &= ~((uint8_t)2);
-    if((board.black.r & A8) != A8) board.castling &= ~((uint8_t)1);
+    if(*movedPiece == friendlyPieces->k) board->castling &= ~(board->whiteToMove ? (uint8_t)12 : (uint8_t)3);
+    if((board->white.r & H1) != H1) board->castling &= ~((uint8_t)8);
+    if((board->white.r & A1) != A1) board->castling &= ~((uint8_t)4);
+    if((board->black.r & H8) != H8) board->castling &= ~((uint8_t)2);
+    if((board->black.r & A8) != A8) board->castling &= ~((uint8_t)1);
 
     
     // finally we switch the player to move
-    board.whiteToMove = !board.whiteToMove;
+    board->whiteToMove = !board->whiteToMove;
 
-    return board;
+    return;
 
 }
 
