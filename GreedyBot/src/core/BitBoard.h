@@ -192,7 +192,7 @@ typedef struct BitBoard{
 
     uint8_t castling;// bit 3 for white king, bit 2 for white queen, bit 1 for black king, bit 0 for black queen, (this matches FEN order) other bits unused for now
 
-    uint8_t halfMoves; // 50 move rule clock, when it reaches 100 the player whose turn it is can claim a draw
+    uint16_t halfMoves; // 50 move rule clock, when it reaches 100 the player whose turn it is can claim a draw
 
     uint16_t moves; // move counter incremented after blacks mov
 

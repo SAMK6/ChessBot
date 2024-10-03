@@ -58,7 +58,7 @@ int main(int argc, char** argv){
     uint64_t ans;
 
     printf("PERFT TESTS\n\n");
-    for(int i = 0; i <= 6; i++){
+    for(int i = 0; i < 7; i++){
 
         ans = perft(board, i);
        
@@ -71,7 +71,7 @@ int main(int argc, char** argv){
 
     board = fenToBitBoard(pos2);
 
-    for(int i = 0; i <= 5; i++){
+    for(int i = 0; i < 6; i++){
 
         ans = perft(board, i);
        
@@ -84,7 +84,7 @@ int main(int argc, char** argv){
     
     board = fenToBitBoard(pos3);
 
-    for(int i = 0; i <= 6; i++){
+    for(int i = 0; i < 7; i++){
 
         ans = perft(board, i);
        
@@ -97,7 +97,7 @@ int main(int argc, char** argv){
 
     board = fenToBitBoard(pos4);
 
-    for(int i = 0; i <= 6; i++){
+    for(int i = 0; i < 7; i++){
 
         ans = perft(board, i);
        
@@ -110,7 +110,7 @@ int main(int argc, char** argv){
 
     board = fenToBitBoard(pos5);
 
-    for(int i = 0; i <= 5; i++){
+    for(int i = 0; i < 6; i++){
 
         ans = perft(board, i);
        

@@ -77,7 +77,7 @@ void makeMove(BitBoard *board, Move move){
     }
 
     // update the other data starting with move counter
-    if(!board->whiteToMove) (board->moves)++; // if it was black that just moved we update the move counter
+    board->moves += (uint16_t)!board->whiteToMove; // if it was black that just moved we update the move counter
 
     // update the halfmove clock according to if the move was a pawn move capture or neither
     if(*movedPiece == friendlyPieces->p || isCapture){

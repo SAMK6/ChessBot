@@ -522,3 +522,130 @@ void moveToUCI(Move move, char *UCImove){
 
 
 }
+
+
+Move uciToMove(BitBoard* board, const char* move){
+
+    uint16_t fromFile = 7 - (move[0] - 'a');
+    uint16_t fromRank = (move[1] - '1');
+    uint16_t toFile = 7 - (move[2] - 'a');
+    uint16_t toRank = (move[3] - '1');
+
+    uint16_t fromSquare = fromFile + fromRank * 8;
+    uint16_t toSquare = toFile + toRank * 8;
+
+    uint16_t piece;
+    RawBoard *friendlyPieces = ((RawBoard*)board + board->whiteToMove);
+    RawBoard *enemyPieces = ((RawBoard*)board + !board->whiteToMove);
+    uint64_t fromSquarePosition = 1ull << fromSquare;
+
+    // figure out which piece is moving
+    if(friendlyPieces->p & fromSquarePosition){
+        piece = 0 + 6 * board->whiteToMove;
+    }
+    else if(friendlyPieces->n & fromSquarePosition){
+        piece = 1 + 6 * board->whiteToMove;
+    }
+    else if(friendlyPieces->b & fromSquarePosition){
+        piece = 2 + 6 * board->whiteToMove;
+    }
+    else if(friendlyPieces->r & fromSquarePosition){
+        piece = 3 + 6 * board->whiteToMove;
+    }
+    else if(friendlyPieces->q & fromSquarePosition){
+        piece = 4 + 6 * board->whiteToMove;
+    }
+    else if(friendlyPieces->k & fromSquarePosition){
+        piece = 5 + 6 * board->whiteToMove;
+    }
+
+    uint16_t code = 0;
+
+    switch(piece){
+        case 0: // black pawn
+
+            if(toSquare == fromSquare - 16){
+                code = 1;
+            }
+            else if((1ull << toSquare) & board->enPassant){
+                code = 5;
+            }
+            else if(move[4] != '\0'){
+                switch(move[4]){
+                    case 'n':
+                        code = 8;
+                        break;
+                    case 'b':
+                        code = 9;
+                        break;
+                    case 'r':
+                        code = 10;
+                        break;
+                    case 'q':
+                        code = 11;
+                        break;
+                }
+            }
+
+            break;
+        case 6: // white pawn
+
+            if(toSquare == fromSquare + 16){
+                code = 1;
+            }
+            else if((1ull << toSquare) & board->enPassant){
+                code = 5;
+            }
+            else if(move[4] != '\0'){
+                switch(move[4]){
+                    case 'n':
+                        code = 8;
+                        break;
+                    case 'b':
+                        code = 9;
+                        break;
+                    case 'r':
+                        code = 10;
+                        break;
+                    case 'q':
+                        code = 11;
+                        break;
+                }
+            }
+
+            break;
+        case 5: // black king
+
+            if(toSquare == fromSquare + 2){
+                code = 3;
+            }
+            else if(toSquare == fromSquare - 2){
+                code = 2;
+            }
+
+            break;
+        case 11: // white king
+
+            if(toSquare == fromSquare + 2){
+                code = 3;
+            }
+            else if(toSquare == fromSquare - 2){
+                code = 2;
+            }
+
+            break;
+        default: // any other piece
+
+            break;
+
+    }
+    
+
+    uint64_t opBoard = enemyPieces->p | enemyPieces->n | enemyPieces->b | enemyPieces->r | enemyPieces->q;
+
+    if(opBoard & (1ull << toSquare)) code += 4;
+
+    return buildMove(fromSquare, toSquare, code, piece);
+
+
+}
