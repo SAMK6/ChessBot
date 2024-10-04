@@ -104,9 +104,10 @@ int main(int argc, char** argv){
                 }
                 else if(!strcmp(tokens[i], "go")){
 
-                    SearchResult result = search(board, 5);
+                    Move result = bestMove(board);
+                    
                     char moveToPlay[6];
-                    moveToUCI(result.bestMove, moveToPlay);
+                    moveToUCI(result, moveToPlay);
 
                     printf("bestmove %s\n", moveToPlay);
 

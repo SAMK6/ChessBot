@@ -5,7 +5,7 @@
 #include "BitBoard.h"
 
 // the overall evaluation function
-int64_t evaluate(BitBoard);
+int_fast32_t evaluate(BitBoard*);
 
 
 

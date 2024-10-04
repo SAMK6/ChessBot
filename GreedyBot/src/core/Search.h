@@ -6,15 +6,9 @@
 #include "MoveGenerator.h"
 #include "BitBoard.h"
 
-typedef struct SearchResult{
+int_fast32_t search(BitBoard*, int);
 
-    int_fast32_t evaluation;
-    Move bestMove;
-
-} SearchResult;
-
-
-SearchResult search(BitBoard, int);
+Move bestMove(BitBoard);
 
 
 
