@@ -58,34 +58,34 @@ def classify_move(board, move):
 def get_moved_piece(board, move):
 
     piece = board.piece_at(move.from_square)
-    
-    if piece.color == chess.WHITE:
-        if piece.piece_type == chess.KING:
-            return 'K'
-        elif piece.piece_type == chess.QUEEN:
-            return 'Q'
-        elif piece.piece_type == chess.ROOK:
-            return 'R'
-        elif piece.piece_type == chess.BISHOP:
-            return 'B'
+
+    if piece.color == chess.BLACK:
+        if piece.piece_type == chess.PAWN:
+            return 0
         elif piece.piece_type == chess.KNIGHT:
-            return 'N'
-        elif piece.piece_type == chess.PAWN:
-            return 'P'
-    elif piece.color == chess.BLACK:
-        if piece.piece_type == chess.KING:
-            return 'k'
-        elif piece.piece_type == chess.QUEEN:
-            return 'q'
-        elif piece.piece_type == chess.ROOK:
-            return 'r'
+            return 1
         elif piece.piece_type == chess.BISHOP:
-            return 'b'
+            return 2
+        elif piece.piece_type == chess.ROOK:
+            return 3
+        elif piece.piece_type == chess.QUEEN:
+            return 4
+        elif piece.piece_type == chess.KING:
+            return 5
+    elif piece.color == chess.WHITE:
+        if piece.piece_type == chess.PAWN:
+            return 6
         elif piece.piece_type == chess.KNIGHT:
-            return 'n'
-        elif piece.piece_type == chess.PAWN:
-            return 'p'
-        
+            return 7
+        elif piece.piece_type == chess.BISHOP:
+            return 8
+        elif piece.piece_type == chess.ROOK:
+            return 9
+        elif piece.piece_type == chess.QUEEN:
+            return 10
+        elif piece.piece_type == chess.KING:
+            return 11
+
     return None
 
 
@@ -122,14 +122,14 @@ with open(input_file) as f:
         fromSquare = square_translator(move.from_square)
         toSquare = square_translator(move.to_square)
         misc = classify_move(board, move)
-
-        moveCode = fromSquare + toSquare * pow(2,6) + misc * pow(2,12)
-
-        # what piece is being moved
         piece = get_moved_piece(board, move)
 
+        moveCode = fromSquare + toSquare * pow(2,6) + misc * pow(2,12) + piece * pow(2, 16)
+
+        
+
         #print(fromSquare, toSquare, misc)
-        print(moveCode, piece)
+        print(moveCode)
 
         board.push(move)
         newFEN = board.fen(en_passant='fen')

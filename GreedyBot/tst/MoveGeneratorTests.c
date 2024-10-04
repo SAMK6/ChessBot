@@ -12,8 +12,6 @@ int main(int argc, char** argv){
 
     uint32_t move;
 
-    char piece;
-
     size_t offset;
 
     BitBoard inputBoard, movedBoard;
@@ -22,7 +20,7 @@ int main(int argc, char** argv){
 
         printf("TESTING MOVE MAKER\n");
 
-    //fp = popen("bash -c 'source ../../test_data/chessENV/bin/activate && python3 ../../test_data/move_maker_test_data.py translator_test_data.txt'", "r");
+    //fp = popen("bash -c 'source ../../test_data/chessENV/bin/activate && python3 ../../test_data/move_maker_test_data.py data/translator_test_data.txt'", "r");
     fp = fopen("data/move_maker_data.txt", "r");
 
 
@@ -42,7 +40,7 @@ int main(int argc, char** argv){
         inputFEN[strlen(inputFEN) - 1] = '\0';
 
         // Read the second line, expecting an integer followed by whitespace and then a char
-        if (fscanf(fp, "%u %c\n", &move, &piece) != 2) {
+        if (fscanf(fp, "%u\n", &move) != 1) {
             break;
         }
 
@@ -52,46 +50,6 @@ int main(int argc, char** argv){
         }
 
         movedFEN[strlen(movedFEN) - 1] = '\0';
-
-        switch(piece){
-            case 'p':
-                move |= 0 << 16;
-                break;
-            case 'n':
-                move |= 1 << 16;
-                break;
-            case 'b':
-                move |= 2 << 16;
-                break;
-            case 'r':
-                move |= 3 << 16;
-                break;
-            case 'q':
-                move |= 4 << 16;
-                break;
-            case 'k':
-                move |= 5 << 16;
-                break;
-            case 'P':
-                move |= 6 << 16;
-                break;
-            case 'N':
-                move |= 7 << 16;
-                break;
-            case 'B':
-                move |= 8 << 16;
-                break;
-            case 'R':
-                move |= 9 << 16;
-                break;
-            case 'Q':
-                move |= 10 << 16;
-                break;
-            case 'K':
-                move |= 11 << 16;
-                break;
-
-        }
 
         processed ++;
 
@@ -105,7 +63,7 @@ int main(int argc, char** argv){
 
         if(strcmp(ourFEN, movedFEN)){
 
-            printf("Error with staring fen: %s\nmove: %hu\npiece: %c\nproduced: %s\nshould have been: %s\n\n", inputFEN, move, piece, ourFEN, movedFEN);
+            printf("Error with staring fen: %s\nmove: %hu\nproduced: %s\nshould have been: %s\n\n", inputFEN, move, ourFEN, movedFEN);
             wrong ++;
 
         }
@@ -150,7 +108,7 @@ int main(int argc, char** argv){
 
         inputBoard = fenToBitBoard(inputFEN);
 
-        Move *moves = (Move*)malloc(400 * sizeof(Move));
+        Move *moves = (Move*)malloc(200 * sizeof(Move));
 
         if(moves == NULL) continue;
 
