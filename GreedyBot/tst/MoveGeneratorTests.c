@@ -91,6 +91,7 @@ int main(int argc, char** argv){
     int numMovesReal, numMovesMine, numMovesGen;
     processed = 0;
     wrong = 0;
+    Move moves[256];
 
     while(1){
 
@@ -108,7 +109,6 @@ int main(int argc, char** argv){
 
         inputBoard = fenToBitBoard(inputFEN);
 
-        Move *moves = (Move*)malloc(200 * sizeof(Move));
 
         if(moves == NULL) continue;
 
@@ -142,8 +142,6 @@ int main(int argc, char** argv){
 
         }
 
-
-        free(moves);
         
 
     }

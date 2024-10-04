@@ -90,7 +90,7 @@ int main(int argc, char** argv){
                     else if(!strcmp(tokens[i + 1], "startpos")){
                         board = fenToBitBoard(startposFEN);
                         if(numTokens > (i + 2) && !strcmp(tokens[i + 2], "moves")){ // start processing moves
-                            for(int j = i + 2; j < numTokens; j++){
+                            for(int j = i + 3; j < numTokens; j++){
                                 Move move = uciToMove(&board, tokens[j]);
                                 makeMove(&board, move);
                             }
@@ -104,7 +104,7 @@ int main(int argc, char** argv){
                 }
                 else if(!strcmp(tokens[i], "go")){
 
-                    SearchResult result = search(board, 4);
+                    SearchResult result = search(board, 5);
                     char moveToPlay[6];
                     moveToUCI(result.bestMove, moveToPlay);
 

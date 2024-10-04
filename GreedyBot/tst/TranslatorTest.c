@@ -3,6 +3,7 @@
 #include <string.h>
 #include "../src/core/BitBoard.h"
 #include "../src/core/Translator.h"
+#include "../src/core/MoveGenerator.h"
 
 /*
     whatever FEN is at the first line of the input textfile will always fail because of txt file weirdness,
@@ -27,6 +28,8 @@ int main(int argc, char** argv){
     }
 
     int count = 0, wrong = 0;
+
+    printf("Testing board translator\n");
 
     while(fgets(fen, sizeof(fen), file) != NULL) {
         // Remove the newline character
@@ -64,10 +67,72 @@ int main(int argc, char** argv){
 
     }
 
-    printf("FENs processed: %d\nwrong: %d\n", count, wrong);
-
-
-
+    printf("FENs processed: %d\nwrong: %d\n\n", count, wrong);
     fclose(file);
+
+
+    // Open the file in read mode again
+    file = fopen("data/translator_test_data.txt", "r");
+
+    if (file == NULL) {
+        printf("Error opening the file.\n");
+        return 0;
+    }
+
+    printf("Testing move translator\n");
+
+    count = 0;
+    wrong = 0;
+
+    char UCImove[6];
+    Move tempMove;
+    BitBoard tempBoard;
+
+    while(fgets(fen, sizeof(fen), file) != NULL) {
+        // Remove the newline character
+        newline_ptr = strchr(fen, '\n');
+        if (newline_ptr != NULL) {
+            *newline_ptr = '\0';
+        }
+
+        BitBoard board = fenToBitBoard(fen);
+
+        Move moves[256];
+
+        int numMoves = board.whiteToMove ? generateMovesWhite(&board, moves) : generateMovesBlack(&board, moves);
+
+        for(int i = 0; i < numMoves; i++){
+
+            // first we check if this is a valid move
+            tempBoard = board;
+            makeMove(&tempBoard, moves[i]);
+            uint64_t king =  tempBoard.whiteToMove ? tempBoard.black.k : tempBoard.white.k;
+            uint8_t kingPos = __builtin_ctzll(king);
+
+            if(!isSquareAttacked(&(tempBoard), kingPos)){
+
+                count++;
+
+                moveToUCI(moves[i], UCImove);
+
+                tempMove = uciToMove(&board, UCImove);
+
+                if(tempMove != moves[i]){
+                    wrong++;
+                    printf("Error with FEN: %s. Move: %u\nProduced: %u, and %s\n", fen, moves[i], tempMove, UCImove);
+                }
+
+
+            }
+
+
+        }
+
+    }
+
+    printf("FENs processed: %d\nwrong: %d\n", count, wrong);
+    fclose(file);
+
+
     return 0;
 }
