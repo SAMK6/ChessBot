@@ -13,19 +13,23 @@ BitBoard board; // this will be the board for the engine, later this may become 
 int main(int argc, char** argv){
 
     printf("GreedyBot v0.0 by Sam Feldman\n\n");
-
-    char buffer[3000]; // used to store the input
+    setbuf(stdout, NULL); // idk what this does but it worked
+    static char buffer[3000]; // used to store the input
 
     // used to aid in tokenizing the input
     char *curr;
     int numTokens;
     char *tokens[300];
 
+    FILE *fp = fopen("output.txt", "w");
+
     while(1){
 
-        if(fgets(buffer, 3000, stdin)){
+        if(fgets(buffer, 3000, stdin) != NULL){
 
             buffer[strlen(buffer) - 1] = '\0';
+
+            fprintf(fp, "%s\n", buffer);
 
             // reset the token stuff
             curr = strtok(buffer, " ");
@@ -100,7 +104,7 @@ int main(int argc, char** argv){
                 }
                 else if(!strcmp(tokens[i], "go")){
 
-                    SearchResult result = search(board, 6);
+                    SearchResult result = search(board, 4);
                     char moveToPlay[6];
                     moveToUCI(result.bestMove, moveToPlay);
 
@@ -129,5 +133,7 @@ int main(int argc, char** argv){
         }
 
     }
+
+    fclose(fp);
 
 }
