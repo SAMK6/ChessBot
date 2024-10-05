@@ -7,6 +7,7 @@
 #include "Translator.h"
 #include "MoveGenerator.h"
 #include "Magics.h"
+#include "Search.h"
 
 
 int main(){
