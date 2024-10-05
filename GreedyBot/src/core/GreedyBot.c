@@ -21,15 +21,12 @@ int main(int argc, char** argv){
     int numTokens;
     char *tokens[300];
 
-    FILE *fp = fopen("output.txt", "w");
 
     while(1){
 
         if(fgets(buffer, 3000, stdin) != NULL){
 
             buffer[strlen(buffer) - 1] = '\0';
-
-            fprintf(fp, "%s\n", buffer);
 
             // reset the token stuff
             curr = strtok(buffer, " ");
@@ -134,7 +131,5 @@ int main(int argc, char** argv){
         }
 
     }
-
-    fclose(fp);
 
 }

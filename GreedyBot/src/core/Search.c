@@ -53,15 +53,11 @@ int_fast32_t search(BitBoard *board, int depth, int_fast32_t alpha, int_fast32_t
         makeMove(&newBoard, moves[i]);
 
         kingPos = __builtin_ctzll(*((uint64_t*)&newBoard + 5 + 6 * !newBoard.whiteToMove));
-
-        if(isSquareAttacked(&newBoard, kingPos)) continue;
-
-
-        eval = -search(&newBoard, depth - 1, -beta, -alpha);
-
-        if(eval >= beta) return beta;
-
-        alpha = eval > alpha ? eval : alpha;
+        if(!isSquareAttacked(&newBoard, kingPos)){
+            eval = -search(&newBoard, depth - 1, -beta, -alpha);
+            if(eval >= beta) return beta;
+            alpha = eval > alpha ? eval : alpha;
+        }
     
     }
 

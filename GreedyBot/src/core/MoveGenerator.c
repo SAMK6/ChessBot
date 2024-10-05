@@ -123,7 +123,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
 
 
     uint64_t pieces = myBoard;
-    int square = __builtin_ctzll(pieces);
+    int square = 63 - __builtin_clzll(pieces);
     uint64_t currentSquare = 1ull << square;
     while(pieces){
 
@@ -288,7 +288,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
         }
 
         pieces ^= currentSquare;
-        square = __builtin_ctzll(pieces);
+        square = 63 - __builtin_clzll(pieces);
         currentSquare = 1ull << square;
 
     }
@@ -311,7 +311,7 @@ int generateMovesBlack(BitBoard *board, Move *moves){
 
 
     uint64_t pieces = myBoard;
-    int square = 63 - __builtin_clzll(pieces);
+    int square = __builtin_ctzll(pieces);
     uint64_t currentSquare = 1ull << square;
     while(pieces){
 
@@ -476,7 +476,7 @@ int generateMovesBlack(BitBoard *board, Move *moves){
         }
 
         pieces ^= currentSquare;
-        square = 63 - __builtin_clzll(pieces);
+        square = __builtin_ctzll(pieces);
         currentSquare = 1ull << square;
 
     }
