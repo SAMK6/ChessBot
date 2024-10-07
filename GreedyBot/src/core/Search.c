@@ -40,7 +40,7 @@ int32_t quiescenceSearch(BitBoard *board, int32_t alpha, int32_t beta, int *numN
 
     }
 
-    return possibleMoves ? alpha : NEG_INFINITY;
+    return possibleMoves ? alpha : NEG_INFINITY + 1;
 
 }
 
@@ -76,7 +76,7 @@ int32_t search(BitBoard *board, int depth, int32_t alpha, int32_t beta, int *num
 
     
 
-    return possibleMoves ? alpha : NEG_INFINITY;
+    return possibleMoves ? alpha : NEG_INFINITY + 1;
 
 }
 
@@ -90,26 +90,27 @@ Move bestMove(BitBoard board, int *numNodes){
     int numMoves = board.whiteToMove ? generateMovesWhite(&board, moves) : generateMovesBlack(&board, moves);
 
     uint8_t kingPos;
-    BitBoard temp;
+    BitBoard tempBoard;
     int32_t eval, alpha = NEG_INFINITY;
 
-    Move bestMove = moves[0]; // technically this is meaningless if there are no moves but if there are no moves why are you calling this function
+    Move bestMove = 0; // technically this is meaningless if there are no moves but if there are no moves why are you calling this function
 
     for(int i = 0; i < numMoves; i++){
 
-        temp = board;
-        makeMove(&temp, moves[i]);
+        tempBoard = board;
+        makeMove(&tempBoard, moves[i]);
 
-        kingPos = __builtin_ctzll(*((uint64_t*)&temp + 5 + 6 * !temp.whiteToMove));
-        if(!isSquareAttacked(&temp, kingPos)){
-            eval = -search(&temp, 5, NEG_INFINITY, -alpha, numNodes);
+        kingPos = __builtin_ctzll(*((uint64_t*)&tempBoard + 5 + 6 * !tempBoard.whiteToMove));
+        if(!isSquareAttacked(&tempBoard, kingPos)){
+            eval = -search(&tempBoard, 5, NEG_INFINITY, -alpha, numNodes);
+            
+            if(eval >= POS_INFINITY) return bestMove;
 
             if(eval > alpha){
                 alpha = eval;
                 bestMove = moves[i];
             }
 
-            if(eval >= POS_INFINITY) return bestMove;
         }
 
     }
