@@ -28,22 +28,22 @@ char *pos5 = "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8";
 
 
 
-uint64_t perft(BitBoard board, int depth){
+uint64_t perft(BitBoard *board, int depth){
 
     if(depth == 0) return 1ull;
 
-    Move moves[100];
-    int numMoves = board.whiteToMove ? generateMovesWhite(&board, moves) : generateMovesBlack(&board, moves);
-    BitBoard newBoard = board;
+    Move moves[218];
+    int numMoves = board->whiteToMove ? generateMovesWhite(board, moves) : generateMovesBlack(board, moves);
+    BitBoard newBoard;
     uint64_t positions = 0ull;
 
     for(int i = 0; i < numMoves; i++){
-        
-        newBoard = board;
+
+        newBoard = *board;
         makeMove(&newBoard, moves[i]);
 
-        uint8_t kingPos = (uint8_t)__builtin_ctzll(newBoard.whiteToMove ? newBoard.black.k : newBoard.white.k);
-        if(!isSquareAttacked(&(newBoard), kingPos)) positions += (depth == 1) ? 1 : perft(newBoard, depth - 1);
+        uint8_t kingPos = __builtin_ctzll(*((uint64_t*)&newBoard + 5 + 6 * !newBoard.whiteToMove));
+        if(!isSquareAttacked(&newBoard, kingPos)) positions += (depth == 1) ? 1 : perft(&newBoard, depth - 1);
 
     }
   
@@ -60,7 +60,7 @@ int main(int argc, char** argv){
     printf("PERFT TESTS\n\n");
     for(int i = 0; i < 7; i++){
 
-        ans = perft(board, i);
+        ans = perft(&board, i);
        
         if(ans != startPosition[i]){
             printf("Error with start position\ninput: %d\nReturned: %lu\nShould have been: %lu\n", i, ans, startPosition[i]);
@@ -73,7 +73,7 @@ int main(int argc, char** argv){
 
     for(int i = 0; i < 6; i++){
 
-        ans = perft(board, i);
+        ans = perft(&board, i);
        
         if(ans != position2[i]){
             printf("Error with position 2\ninput: %d\nReturned: %lu\nShould have been: %lu\n", i, ans, position2[i]);
@@ -86,7 +86,7 @@ int main(int argc, char** argv){
 
     for(int i = 0; i < 7; i++){
 
-        ans = perft(board, i);
+        ans = perft(&board, i);
        
         if(ans != position3[i]){
             printf("Error with position 3\ninput: %d\nReturned: %lu\nShould have been: %lu\n", i, ans, position3[i]);
@@ -99,7 +99,7 @@ int main(int argc, char** argv){
 
     for(int i = 0; i < 7; i++){
 
-        ans = perft(board, i);
+        ans = perft(&board, i);
        
         if(ans != position4[i]){
             printf("Error with position 4\ninput: %d\nReturned: %lu\nShould have been: %lu\n", i, ans, position4[i]);
@@ -112,7 +112,7 @@ int main(int argc, char** argv){
 
     for(int i = 0; i < 6; i++){
 
-        ans = perft(board, i);
+        ans = perft(&board, i);
        
         if(ans != position5[i]){
             printf("Error with position 6\ninput: %d\nReturned: %lu\nShould have been: %lu\n", i, ans, position5[i]);

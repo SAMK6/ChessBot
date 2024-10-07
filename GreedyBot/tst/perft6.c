@@ -7,22 +7,22 @@
 
 
 
-uint64_t perft(BitBoard board, int depth){
+uint64_t perft(BitBoard *board, int depth){
 
     if(depth == 0) return 1ull;
 
-    Move moves[100];
-    int numMoves = board.whiteToMove ? generateMovesWhite(&board, moves) : generateMovesBlack(&board, moves);
-    BitBoard newBoard = board;
+    Move moves[218];
+    int numMoves = board->whiteToMove ? generateMovesWhite(board, moves) : generateMovesBlack(board, moves);
+    BitBoard newBoard;
     uint64_t positions = 0ull;
 
     for(int i = 0; i < numMoves; i++){
 
-        newBoard = board;
+        newBoard = *board;
         makeMove(&newBoard, moves[i]);
 
-        uint8_t kingPos = (uint8_t)__builtin_ctzll(newBoard.whiteToMove ? newBoard.black.k : newBoard.white.k);
-        if(!isSquareAttacked(&(newBoard), kingPos)) positions += (depth == 1) ? 1 : perft(newBoard, depth - 1);
+        uint8_t kingPos = __builtin_ctzll(*((uint64_t*)&newBoard + 5 + 6 * !newBoard.whiteToMove));
+        if(!isSquareAttacked(&newBoard, kingPos)) positions += (depth == 1) ? 1 : perft(&newBoard, depth - 1);
 
     }
   
@@ -36,7 +36,7 @@ int main(){
 
     BitBoard board = fenToBitBoard(FEN);
 
-    uint64_t perftRes = perft(board, 6);
+    uint64_t perftRes = perft(&board, 6);
 
     printf("%lu\n", perftRes);
 

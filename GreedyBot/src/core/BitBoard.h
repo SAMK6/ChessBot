@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 
-
 // define all the "squares"
 // if this part seems unclear take a look at bitboardtest.c and it will become more clear
 #define H1 1ull
@@ -204,9 +203,7 @@ typedef struct BitBoard{
 
 } BitBoard;
 
-
-int isSquareAttacked(BitBoard*, uint8_t);
-
+int isSquareAttacked(BitBoard *, uint8_t);
 
 // there are a few basic and easy checks we can do to increase confidence the bitboard is good
 // it should be noted that passing this check does NOT garuntee a valid board, only that it passed this sanity check

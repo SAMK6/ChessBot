@@ -6,15 +6,15 @@
 #include "MoveGenerator.h"
 #include "BitBoard.h"
 
-#define NEG_INFINITY (INT_FAST32_MIN + 1)
-#define POS_INFINITY INT_FAST32_MAX
+#define NEG_INFINITY (INT32_MIN + 1)
+#define POS_INFINITY INT32_MAX
 
 
-int_fast32_t quiescenceSearch(BitBoard*, int_fast32_t, int_fast32_t);
+int32_t quiescenceSearch(BitBoard*, int32_t, int32_t, int*);
 
-int_fast32_t search(BitBoard*, int, int_fast32_t, int_fast32_t);
+int32_t search(BitBoard*, int, int32_t, int32_t, int*);
 
-Move bestMove(BitBoard);
+Move bestMove(BitBoard, int*);
 
 
 
