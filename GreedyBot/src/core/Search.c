@@ -6,7 +6,7 @@
 
 
 
-int32_t quiescenceSearch(BitBoard *board, int32_t alpha, int32_t beta, int *numNodes){
+int32_t quiescenceSearch(BitBoard *board, int32_t alpha, int32_t beta, uint64_t *numNodes){
 
     (*numNodes) ++;
 
@@ -44,7 +44,7 @@ int32_t quiescenceSearch(BitBoard *board, int32_t alpha, int32_t beta, int *numN
 
 }
 
-int32_t search(BitBoard *board, int depth, int32_t alpha, int32_t beta, int *numNodes){
+int32_t search(BitBoard *board, int depth, int32_t alpha, int32_t beta, uint64_t *numNodes){
 
 
     if(depth == 0) return quiescenceSearch(board, alpha, beta, numNodes);
@@ -82,7 +82,7 @@ int32_t search(BitBoard *board, int depth, int32_t alpha, int32_t beta, int *num
 
 
 
-Move bestMove(BitBoard board, int *numNodes){
+Move bestMove(BitBoard board, int depth, uint64_t *numNodes){
 
     (*numNodes) ++;
 
@@ -102,7 +102,7 @@ Move bestMove(BitBoard board, int *numNodes){
 
         kingPos = __builtin_ctzll(*((uint64_t*)&tempBoard + 5 + 6 * !tempBoard.whiteToMove));
         if(!isSquareAttacked(&tempBoard, kingPos)){
-            eval = -search(&tempBoard, 5, NEG_INFINITY, -alpha, numNodes);
+            eval = -search(&tempBoard, depth - 1, NEG_INFINITY, -alpha, numNodes);
             
             if(eval >= POS_INFINITY) return bestMove;
 

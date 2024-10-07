@@ -30,9 +30,6 @@ void makeMove(BitBoard *board, Move move){
     friendlyPieces = ((RawBoard*)board + board->whiteToMove);
     enemyPieces = ((RawBoard*)board + !board->whiteToMove);
     
-
-    uint64_t enemyRooks = enemyPieces->r;
-
     // the move mask has a 1 on the start and end square and 0s everywhere else, 
     // so XORing it with the bitboard of the moved piece toggels off the start bit where the piece started 
     // and toggles on the end square where the piece ends
@@ -97,10 +94,10 @@ void makeMove(BitBoard *board, Move move){
 
     // update castling rights
     if(*movedPiece == friendlyPieces->k) board->castling &= ~(board->whiteToMove ? (uint8_t)12 : (uint8_t)3);
-    if((board->white.r & H1) != H1) board->castling &= ~((uint8_t)8);
-    if((board->white.r & A1) != A1) board->castling &= ~((uint8_t)4);
-    if((board->black.r & H8) != H8) board->castling &= ~((uint8_t)2);
-    if((board->black.r & A8) != A8) board->castling &= ~((uint8_t)1);
+    if(!(board->white.r & H1)) board->castling &= ~((uint8_t)8);
+    if(!(board->white.r & A1)) board->castling &= ~((uint8_t)4);
+    if(!(board->black.r & H8)) board->castling &= ~((uint8_t)2);
+    if(!(board->black.r & A8)) board->castling &= ~((uint8_t)1);
 
     
     // finally we switch the player to move

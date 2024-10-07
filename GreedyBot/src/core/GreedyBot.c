@@ -17,8 +17,8 @@ char *startposFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 // this will be the board for the engine, later this may become an engine struct that can include things like a hash table etc
 BitBoard board; 
 Move chosenMove;
-int numNodes = 0, depth = 0, doneThinking = 0, isThinking = 0;
-
+int depth = 0, doneThinking = 0, isThinking = 0;
+uint64_t numNodes = 0ull;
 
 
 // thread stuff
@@ -29,7 +29,7 @@ pthread_mutex_t lock;
 void* handleGo(void* args){
 
 
-    Move result = bestMove(board, &numNodes);
+    Move result = bestMove(board, 6, &numNodes);
 
     *((Move*)args) = result;
 
@@ -69,7 +69,7 @@ int main(int argc, char** argv){
 
             moveToUCI(chosenMove, uciMove);
 
-            printf("info nodes %d\n", numNodes);
+            printf("info nodes %lu\n", numNodes);
             printf("bestmove %s\n", uciMove);
 
             doneThinking = 0;
@@ -79,7 +79,7 @@ int main(int argc, char** argv){
         }
 
         if(isThinking){
-            printf("info nodes %d\n", numNodes);
+            printf("info nodes %lu\n", numNodes);
         }
 
         int n = read(STDIN_FILENO, buffer, sizeof(buffer) - 1);

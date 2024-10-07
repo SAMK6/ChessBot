@@ -8,16 +8,16 @@ int main(){
 
     // this is a test for time simply call with time argument to get system time
 
-    int numNodes = 0;
+    uint64_t numNodes = 0;
 
 
     char *FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     BitBoard board = fenToBitBoard(FEN);
 
-    Move irrelevent = bestMove(board, &numNodes);
+    Move irrelevent = bestMove(board, 6, &numNodes);
 
-    printf("Position: %s\nNodes %d\n", FEN, numNodes);
+    printf("Position: %s\nNodes %lu\n", FEN, numNodes);
 
 
 
@@ -25,9 +25,9 @@ int main(){
 
     board = fenToBitBoard(FEN);
 
-    irrelevent = bestMove(board, &numNodes);
+    irrelevent = bestMove(board, 6, &numNodes);
 
-    printf("Position: %s\nNodes %d\n", FEN, numNodes);
+    printf("Position: %s\nNodes %lu\n", FEN, numNodes);
 
 
 
@@ -35,9 +35,9 @@ int main(){
 
     board = fenToBitBoard(FEN);
 
-    irrelevent = bestMove(board, &numNodes);
+    irrelevent = bestMove(board, 6, &numNodes);
 
-    printf("Position: %s\nNodes %d\n", FEN, numNodes);
+    printf("Position: %s\nNodes %lu\n", FEN, numNodes);
 
 
 
@@ -45,9 +45,9 @@ int main(){
 
     board = fenToBitBoard(FEN);
 
-    irrelevent = bestMove(board, &numNodes);
+    irrelevent = bestMove(board, 6, &numNodes);
 
-    printf("Position: %s\nNodes %d\n", FEN, numNodes);
+    printf("Position: %s\nNodes %lu\n", FEN, numNodes);
 
 
 }
