@@ -1,9 +1,9 @@
 #include <stdint.h>
 #include "BitBoard.h"
 
-static inline int_fast32_t material(BitBoard *board){
+static inline int32_t material(BitBoard *board){
 
-    int_fast32_t blackMat = 0, whiteMat = 0;;
+    int32_t blackMat = 0, whiteMat = 0;;
 
     blackMat += __builtin_popcountll(board->black.p);
     blackMat += __builtin_popcountll(board->black.n) * 3;

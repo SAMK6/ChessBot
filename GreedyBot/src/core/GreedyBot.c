@@ -73,6 +73,8 @@ int main(int argc, char** argv){
             printf("bestmove %s\n", uciMove);
 
             doneThinking = 0;
+            numNodes = 0;
+            isThinking = 0;
 
         }
 
