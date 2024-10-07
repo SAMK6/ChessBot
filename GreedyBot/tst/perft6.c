@@ -9,9 +9,7 @@
 
 uint64_t perft(BitBoard *board, int depth){
 
-    if(depth == 0) return 1ull;
-
-    Move moves[218];
+    Move moves[100];
     int numMoves = board->whiteToMove ? generateMovesWhite(board, moves) : generateMovesBlack(board, moves);
     BitBoard newBoard;
     uint64_t positions = 0ull;
