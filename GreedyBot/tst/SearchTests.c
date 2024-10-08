@@ -8,46 +8,48 @@ int main(){
 
     // this is a test for time simply call with time argument to get system time
 
-    uint64_t numNodes = 0;
+    uint64_t numNodes = 0ull;
 
 
     char *FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     BitBoard board = fenToBitBoard(FEN);
 
-    Move irrelevent = bestMove(board, 6, &numNodes);
+    bestMove(board, 6, &numNodes);
 
     printf("Position: %s\nNodes %lu\n", FEN, numNodes);
 
+    numNodes = 0ull;
 
 
     FEN = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1";
 
     board = fenToBitBoard(FEN);
 
-    irrelevent = bestMove(board, 6, &numNodes);
+    bestMove(board, 6, &numNodes);
 
     printf("Position: %s\nNodes %lu\n", FEN, numNodes);
 
+    numNodes = 0ull;
 
 
-    FEN = "rn1k1b1r/pbpp1Q1p/1p2p3/7B/3PP2q/P1N5/1PP2PPP/R3K2R b KQ - 0 12";
+    FEN = "r2qk2r/p1p2ppp/1pnbpn2/3p2B1/3P2b1/1PNBPN2/P1P2PPP/R2QK2R b KQkq - 0 1";
 
     board = fenToBitBoard(FEN);
 
-    irrelevent = bestMove(board, 6, &numNodes);
+    bestMove(board, 6, &numNodes);
 
     printf("Position: %s\nNodes %lu\n", FEN, numNodes);
+    
+    numNodes = 0ull;
 
 
-
-    FEN = "r2k1b1r/pbpp1Q1p/1pn1p3/7B/3PP2q/P1N5/1PP2PPP/R3K2R w KQ - 1 13";
+    FEN = "r2qk2r/p1p2ppp/1pnbpn2/3p2B1/3P2b1/1PNBPN2/P1P2PPP/R2QK2R w KQkq - 0 1";
 
     board = fenToBitBoard(FEN);
 
-    irrelevent = bestMove(board, 6, &numNodes);
+    bestMove(board, 6, &numNodes);
 
     printf("Position: %s\nNodes %lu\n", FEN, numNodes);
-
 
 }

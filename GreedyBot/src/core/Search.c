@@ -31,12 +31,12 @@ int32_t quiescenceSearch(BitBoard *board, int32_t alpha, int32_t beta, uint64_t 
         makeMove(&newBoard, moves[i]);
 
         kingPos = __builtin_ctzll(*((uint64_t*)&newBoard + 5 + 6 * !newBoard.whiteToMove));
-        if(!isSquareAttacked(&newBoard, kingPos)){
-            eval = -quiescenceSearch(&newBoard, -beta, -alpha, numNodes);
-            if(eval >= beta) return beta;
-            alpha = eval > alpha ? eval : alpha;
-            possibleMoves ++;
-        }
+        if(isSquareAttacked(&newBoard, kingPos)) continue;
+
+        eval = -quiescenceSearch(&newBoard, -beta, -alpha, numNodes);
+        if(eval >= beta) return beta;
+        alpha = eval > alpha ? eval : alpha;
+        possibleMoves ++;
 
     }
 
@@ -65,12 +65,12 @@ int32_t search(BitBoard *board, int depth, int32_t alpha, int32_t beta, uint64_t
         makeMove(&newBoard, moves[i]);
 
         kingPos = __builtin_ctzll(*((uint64_t*)&newBoard + 5 + 6 * !newBoard.whiteToMove));
-        if(!isSquareAttacked(&newBoard, kingPos)){
-            eval = -search(&newBoard, depth - 1, -beta, -alpha, numNodes);
-            if(eval >= beta) return beta;
-            alpha = eval > alpha ? eval : alpha;
-            possibleMoves ++;
-        }
+        if(isSquareAttacked(&newBoard, kingPos)) continue;
+
+        eval = -search(&newBoard, depth - 1, -beta, -alpha, numNodes);
+        if(eval >= beta) return beta;
+        alpha = eval > alpha ? eval : alpha;
+        possibleMoves ++;
     
     }
 
@@ -97,21 +97,24 @@ Move bestMove(BitBoard board, int depth, uint64_t *numNodes){
 
     for(int i = 0; i < numMoves; i++){
 
+        // new board after making the move
         tempBoard = board;
         makeMove(&tempBoard, moves[i]);
 
+        // check if this position is legal
         kingPos = __builtin_ctzll(*((uint64_t*)&tempBoard + 5 + 6 * !tempBoard.whiteToMove));
-        if(!isSquareAttacked(&tempBoard, kingPos)){
-            eval = -search(&tempBoard, depth - 1, NEG_INFINITY, -alpha, numNodes);
+        if(isSquareAttacked(&tempBoard, kingPos)) continue;
+
+
+        eval = -search(&tempBoard, depth - 1, NEG_INFINITY, -alpha, numNodes);
             
-            if(eval >= POS_INFINITY) return bestMove;
+        if(eval >= POS_INFINITY) return bestMove;
 
-            if(eval > alpha){
-                alpha = eval;
-                bestMove = moves[i];
-            }
-
+        if(eval > alpha){
+            alpha = eval;
+            bestMove = moves[i];
         }
+
 
     }
 

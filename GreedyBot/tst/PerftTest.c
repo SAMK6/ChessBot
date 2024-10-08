@@ -30,6 +30,8 @@ char *pos5 = "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8";
 
 uint64_t perft(BitBoard *board, int depth){
 
+    if(depth == 0) return 1ull;
+
     Move moves[218];
     int numMoves = board->whiteToMove ? generateMovesWhite(board, moves) : generateMovesBlack(board, moves);
     BitBoard newBoard;
@@ -56,7 +58,7 @@ int main(int argc, char** argv){
     uint64_t ans;
 
     printf("PERFT TESTS\n\n");
-    for(int i = 1; i < 7; i++){
+    for(int i = 0; i < 7; i++){
 
         ans = perft(&board, i);
        
@@ -69,7 +71,7 @@ int main(int argc, char** argv){
 
     board = fenToBitBoard(pos2);
 
-    for(int i = 1; i < 6; i++){
+    for(int i = 0; i < 6; i++){
 
         ans = perft(&board, i);
        
@@ -82,7 +84,7 @@ int main(int argc, char** argv){
     
     board = fenToBitBoard(pos3);
 
-    for(int i = 1; i < 7; i++){
+    for(int i = 0; i < 7; i++){
 
         ans = perft(&board, i);
        
@@ -95,7 +97,7 @@ int main(int argc, char** argv){
 
     board = fenToBitBoard(pos4);
 
-    for(int i = 1; i < 7; i++){
+    for(int i = 0; i < 7; i++){
 
         ans = perft(&board, i);
        
@@ -108,7 +110,7 @@ int main(int argc, char** argv){
 
     board = fenToBitBoard(pos5);
 
-    for(int i = 1; i < 6; i++){
+    for(int i = 0; i < 6; i++){
 
         ans = perft(&board, i);
        
