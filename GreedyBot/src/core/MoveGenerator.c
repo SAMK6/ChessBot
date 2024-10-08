@@ -106,7 +106,7 @@ void makeMove(BitBoard *board, Move move){
         board->enPassant = 0ull;
     }
 
-    // update castling rights
+    // update castling rights and kingpos if king moved
     if(*movedPiece == friendlyPieces->k){
         board->castling &= ~(board->whiteToMove ? (uint8_t)12 : (uint8_t)3);
         *(&board->blackKingPos + board->whiteToMove) = __builtin_ctzll(friendlyPieces->k);
