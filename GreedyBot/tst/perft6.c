@@ -19,7 +19,7 @@ uint64_t perft(BitBoard *board, int depth){
         newBoard = *board;
         makeMove(&newBoard, moves[i]);
 
-        uint8_t kingPos = __builtin_ctzll(*((uint64_t*)&newBoard + 5 + 6 * !newBoard.whiteToMove));
+        uint8_t kingPos = *(&newBoard.blackKingPos + !newBoard.whiteToMove);
         if(!isSquareAttacked(&newBoard, kingPos)) positions += (depth == 1) ? 1 : perft(&newBoard, depth - 1);
 
     }

@@ -13,6 +13,14 @@
 */
 
 
+static inline uint64_t pinMask(uint8_t square1, uint8_t square2){
+
+
+
+
+}
+
+
 void makeMove(BitBoard *board, Move move){
 
     RawBoard *friendlyPieces, *enemyPieces;
@@ -29,19 +37,24 @@ void makeMove(BitBoard *board, Move move){
     uint64_t *movedPiece = ((uint64_t*)board + piece);
     friendlyPieces = ((RawBoard*)board + board->whiteToMove);
     enemyPieces = ((RawBoard*)board + !board->whiteToMove);
-    
+
+    uint64_t *friendlyBoard = (&(board->blackPieces) + board->whiteToMove);
+
     // the move mask has a 1 on the start and end square and 0s everywhere else, 
     // so XORing it with the bitboard of the moved piece toggels off the start bit where the piece started 
     // and toggles on the end square where the piece ends
     *movedPiece ^= startSquare | endSquare;
+    *friendlyBoard ^= startSquare | endSquare;
 
     // now if the move was a castling move we have to also move the appropriate rook
     // use the predefined masks for this since there are only 4 castling moves
     if(misc == (uint16_t)2){ // kingside castle
         friendlyPieces->r ^= board->whiteToMove ? whiteKingsideCastle : blackKingsideCastle;
+        *friendlyBoard ^= board->whiteToMove ? whiteKingsideCastle : blackKingsideCastle;
     }
     else if(misc == (uint16_t)3){ // queenside castle
         friendlyPieces->r ^= board->whiteToMove ? whiteQueensideCastle : blackQueensideCastle;
+        *friendlyBoard ^= board->whiteToMove ? whiteQueensideCastle : blackQueensideCastle;
     }
 
     if(isCapture){ // if the move is a capture we have to remove the enemy piece from the square
@@ -63,6 +76,7 @@ void makeMove(BitBoard *board, Move move){
         enemyPieces->b &= notEndSquare;
         enemyPieces->n &= notEndSquare;
         enemyPieces->p &= notEndSquare;
+        *(&board->blackPieces + !board->whiteToMove) &= notEndSquare;
 
     }
 
@@ -93,7 +107,10 @@ void makeMove(BitBoard *board, Move move){
     }
 
     // update castling rights
-    if(*movedPiece == friendlyPieces->k) board->castling &= ~(board->whiteToMove ? (uint8_t)12 : (uint8_t)3);
+    if(*movedPiece == friendlyPieces->k){
+        board->castling &= ~(board->whiteToMove ? (uint8_t)12 : (uint8_t)3);
+        *(&board->blackKingPos + board->whiteToMove) = __builtin_ctzll(friendlyPieces->k);
+    }
     if(!(board->white.r & H1)) board->castling &= ~((uint8_t)8);
     if(!(board->white.r & A1)) board->castling &= ~((uint8_t)4);
     if(!(board->black.r & H8)) board->castling &= ~((uint8_t)2);
@@ -103,16 +120,15 @@ void makeMove(BitBoard *board, Move move){
     // finally we switch the player to move
     board->whiteToMove = !board->whiteToMove;
 
+
     return;
 
 }
 
 int generateMovesWhite(BitBoard *board, Move *moves){
 
-    // a board that simply has the position of all oponnent pieces
-    uint64_t opBoard = board->black.k | board->black.q | board->black.r | board->black.b | board->black.n | board->black.p;
-    // a board that contains all friendly pieces
-    uint64_t myBoard = board->white.k | board->white.q | board->white.r | board->white.b | board->white.n | board->white.p;
+    uint64_t opBoard = board->blackPieces;
+    uint64_t myBoard = board->whitePieces;
     // a board that contains all pieces
     uint64_t wholeBoard = opBoard | myBoard;
 
@@ -279,10 +295,8 @@ int generateMovesWhite(BitBoard *board, Move *moves){
 
 int generateMovesBlack(BitBoard *board, Move *moves){
 
-    // a board that simply has the position of all oponnent pieces
-    uint64_t opBoard = board->white.k | board->white.q | board->white.r | board->white.b | board->white.n | board->white.p;
-    // a board that contains all friendly pieces
-    uint64_t myBoard = board->black.k | board->black.q | board->black.r | board->black.b | board->black.n | board->black.p;
+    uint64_t opBoard = board->whitePieces;
+    uint64_t myBoard = board->blackPieces;
     // a board that contains all pieces
     uint64_t wholeBoard = opBoard | myBoard;
 

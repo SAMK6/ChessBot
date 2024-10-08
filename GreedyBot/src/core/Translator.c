@@ -204,6 +204,12 @@ BitBoard fenToBitBoard(const char* fen){
         factor1 = factor1 * 10;
     }
 
+    position.blackPieces = position.black.p | position.black.n | position.black.b | position.black.r | position.black.q | position.black.k;
+    position.whitePieces = position.white.p | position.white.n | position.white.b | position.white.r | position.white.q | position.white.k;
+
+    position.blackKingPos = (uint8_t)__builtin_ctzll(position.black.k);
+    position.whiteKingPos = (uint8_t)__builtin_ctzll(position.white.k);
+
     return position;
 
 }

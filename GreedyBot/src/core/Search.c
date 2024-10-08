@@ -21,23 +21,22 @@ int32_t quiescenceSearch(BitBoard *board, int32_t alpha, int32_t beta, uint64_t 
     int numMoves = board->whiteToMove ? generateMovesWhite(board, moves) : generateMovesBlack(board, moves); // might need to make a generate captures function
     int possibleMoves = 0;
     uint8_t kingPos;
-    BitBoard newBoard;
+    BitBoard tempBoard;
 
     for(int i = 0; i < numMoves; i++){
 
         if(!(moves[i] & isCaptureMask)) continue; // only consider capture moves
 
-        newBoard = *board;
-        makeMove(&newBoard, moves[i]);
+        tempBoard = *board;
+        makeMove(&tempBoard, moves[i]);
 
-        kingPos = __builtin_ctzll(*((uint64_t*)&newBoard + 5 + 6 * !newBoard.whiteToMove));
-        if(isSquareAttacked(&newBoard, kingPos)) continue;
-
-        eval = -quiescenceSearch(&newBoard, -beta, -alpha, numNodes);
-        if(eval >= beta) return beta;
-        alpha = eval > alpha ? eval : alpha;
-        possibleMoves ++;
-
+        kingPos = *(&tempBoard.blackKingPos + !tempBoard.whiteToMove);
+        if(!isSquareAttacked(&tempBoard, kingPos)){
+            eval = -quiescenceSearch(&tempBoard, -beta, -alpha, numNodes);
+            if(eval >= beta) return beta;
+            alpha = eval > alpha ? eval : alpha;
+            possibleMoves ++;
+        }
     }
 
     return possibleMoves ? alpha : NEG_INFINITY + 1;
@@ -57,20 +56,20 @@ int32_t search(BitBoard *board, int depth, int32_t alpha, int32_t beta, uint64_t
     int possibleMoves = 0;
     int32_t eval;
     uint8_t kingPos;
-    BitBoard newBoard;
+    BitBoard tempBoard;
 
     for(int i = 0; i < numMoves; i++){
 
-        newBoard = *board;
-        makeMove(&newBoard, moves[i]);
+        tempBoard = *board;
+        makeMove(&tempBoard, moves[i]);
 
-        kingPos = __builtin_ctzll(*((uint64_t*)&newBoard + 5 + 6 * !newBoard.whiteToMove));
-        if(isSquareAttacked(&newBoard, kingPos)) continue;
-
-        eval = -search(&newBoard, depth - 1, -beta, -alpha, numNodes);
-        if(eval >= beta) return beta;
-        alpha = eval > alpha ? eval : alpha;
-        possibleMoves ++;
+        kingPos = *(&tempBoard.blackKingPos + !tempBoard.whiteToMove);
+        if(!isSquareAttacked(&tempBoard, kingPos)){
+            eval = -search(&tempBoard, depth - 1, -beta, -alpha, numNodes);
+            if(eval >= beta) return beta;
+            alpha = eval > alpha ? eval : alpha;
+            possibleMoves ++;
+        }
     
     }
 
@@ -102,19 +101,18 @@ Move bestMove(BitBoard board, int depth, uint64_t *numNodes){
         makeMove(&tempBoard, moves[i]);
 
         // check if this position is legal
-        kingPos = __builtin_ctzll(*((uint64_t*)&tempBoard + 5 + 6 * !tempBoard.whiteToMove));
-        if(isSquareAttacked(&tempBoard, kingPos)) continue;
+        kingPos = *(&tempBoard.blackKingPos + !tempBoard.whiteToMove);
+        if(!isSquareAttacked(&tempBoard, kingPos)){
 
+            eval = -search(&tempBoard, depth - 1, NEG_INFINITY, -alpha, numNodes);
+                
+            if(eval >= POS_INFINITY) return bestMove;
 
-        eval = -search(&tempBoard, depth - 1, NEG_INFINITY, -alpha, numNodes);
-            
-        if(eval >= POS_INFINITY) return bestMove;
-
-        if(eval > alpha){
-            alpha = eval;
-            bestMove = moves[i];
+            if(eval > alpha){
+                alpha = eval;
+                bestMove = moves[i];
+            }
         }
-
 
     }
 

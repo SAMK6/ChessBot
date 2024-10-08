@@ -18,7 +18,7 @@ int main(int argc, char** argv){
 
     FILE *fp;
 
-        printf("TESTING MOVE MAKER\n");
+    printf("TESTING MOVE MAKER\n");
 
     //fp = popen("bash -c 'source ../../test_data/chessENV/bin/activate && python3 ../../test_data/move_maker_test_data.py data/translator_test_data.txt'", "r");
     fp = fopen("data/move_maker_data.txt", "r");
@@ -61,7 +61,7 @@ int main(int argc, char** argv){
 
         bitBoardToFen(movedBoard, ourFEN);
 
-        if(strcmp(ourFEN, movedFEN)){
+        if(strcmp(ourFEN, movedFEN) || !validBitBoard(movedBoard)){
 
             printf("Error with staring fen: %s\nmove: %hu\nproduced: %s\nshould have been: %s\n\n", inputFEN, move, ourFEN, movedFEN);
             wrong ++;

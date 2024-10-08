@@ -67,6 +67,10 @@ int validBitBoard(BitBoard board){ // this function is now a full check but rath
 
     }
 
+    if(__builtin_ctzll(board.black.k) != board.blackKingPos) return 0;
+
+    if(__builtin_ctzll(board.white.k) != board.whiteKingPos) return 0;
+
 
     return 1;
 
@@ -76,9 +80,10 @@ int validBitBoard(BitBoard board){ // this function is now a full check but rath
 int isSquareAttacked(BitBoard *board, uint8_t square){
 
     RawBoard *friendlyPieces = ((RawBoard*)board + board->whiteToMove);
-    uint64_t wholeBoard = board->white.p | board->white.n | board->white.b | board->white.r | board->white.q | board->white.k | board->black.p | board->black.n | board->black.b | board->black.r | board->black.q | board->black.k;
     
-    uint64_t bishopAttacks = getBishopAttacks(square, wholeBoard), rookAttacks = getRookAttacks(square, wholeBoard), pawnAttacks = board->whiteToMove ? basicPawnMasksBlack[square] : basicPawnMasksWhite[square];
+    uint64_t bishopAttacks = getBishopAttacks(square, board->blackPieces | board->whitePieces);
+    uint64_t rookAttacks = getRookAttacks(square, board->blackPieces | board->whitePieces);
+    uint64_t pawnAttacks = board->whiteToMove ? basicPawnMasksBlack[square] : basicPawnMasksWhite[square];
 
     return ((rookAttacks | bishopAttacks) & friendlyPieces->q) || (rookAttacks & friendlyPieces->r) || (bishopAttacks & friendlyPieces->b) || (basicKnightMasks[square] & friendlyPieces->n) || (pawnAttacks & friendlyPieces->p) || (basicKingMasks[square] & friendlyPieces->k);
 

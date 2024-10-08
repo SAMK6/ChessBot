@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 
-#define getRookAttacks(squareNum, blockers) (magic_rookTable[(((blockers & basicRookMasks[squareNum]) * rookMagics[squareNum]) >> magic_rookShifts[squareNum]) + magic_rookOffSets[squareNum]])
+#define getRookAttacks(square_num, _blockers) (magic_rookTable[((((_blockers) & basicRookMasks[square_num]) * rookMagics[square_num]) >> magic_rookShifts[square_num]) + magic_rookOffSets[square_num]])
 
-#define getBishopAttacks(squareNum, blockers) (magic_bishopTable[(((blockers & basicBishopMasks[squareNum]) * bishopMagics[squareNum]) >> magic_bishopShifts[squareNum]) + magic_bishopOffSets[squareNum]])
+#define getBishopAttacks(square_num, _blockers) (magic_bishopTable[((((_blockers) & basicBishopMasks[square_num]) * bishopMagics[square_num]) >> magic_bishopShifts[square_num]) + magic_bishopOffSets[square_num]])
 
 extern const uint64_t basicKnightMasks[64];
 extern const uint64_t basicBishopMasks[64];

@@ -195,6 +195,13 @@ typedef struct BitBoard{
 
     uint16_t moves; // move counter incremented after blacks mov
 
+    // the positions of the two kings from 0-63
+    uint8_t blackKingPos;
+    uint8_t whiteKingPos;
+
+    // two more bitboards that store all black pieces and all white pieces
+    uint64_t blackPieces;
+    uint64_t whitePieces;
 
     // even though 0 is a real squre we will use 0 to mean en passant is not possible since en passant on h1 is impossible 
     // non zero values here are assumed to be valid en passant squares

@@ -32,7 +32,7 @@ uint64_t perft(BitBoard *board, int depth){
 
     if(depth == 0) return 1ull;
 
-    Move moves[218];
+    Move moves[100];
     int numMoves = board->whiteToMove ? generateMovesWhite(board, moves) : generateMovesBlack(board, moves);
     BitBoard newBoard;
     uint64_t positions = 0ull;
@@ -42,7 +42,7 @@ uint64_t perft(BitBoard *board, int depth){
         newBoard = *board;
         makeMove(&newBoard, moves[i]);
 
-        uint8_t kingPos = __builtin_ctzll(*((uint64_t*)&newBoard + 5 + 6 * !newBoard.whiteToMove));
+        uint8_t kingPos = *(&newBoard.blackKingPos + !newBoard.whiteToMove);
         if(!isSquareAttacked(&newBoard, kingPos)) positions += (depth == 1) ? 1 : perft(&newBoard, depth - 1);
 
     }
@@ -64,7 +64,6 @@ int main(int argc, char** argv){
        
         if(ans != startPosition[i]){
             printf("Error with start position\ninput: %d\nReturned: %lu\nShould have been: %lu\n", i, ans, startPosition[i]);
-            break;
         }
 
     }
@@ -77,7 +76,6 @@ int main(int argc, char** argv){
        
         if(ans != position2[i]){
             printf("Error with position 2\ninput: %d\nReturned: %lu\nShould have been: %lu\n", i, ans, position2[i]);
-            break;
         }
 
     }
@@ -90,7 +88,6 @@ int main(int argc, char** argv){
        
         if(ans != position3[i]){
             printf("Error with position 3\ninput: %d\nReturned: %lu\nShould have been: %lu\n", i, ans, position3[i]);
-            break;
         }
 
     }
@@ -103,7 +100,6 @@ int main(int argc, char** argv){
        
         if(ans != position4[i]){
             printf("Error with position 4\ninput: %d\nReturned: %lu\nShould have been: %lu\n", i, ans, position4[i]);
-            break;
         }
 
     }
@@ -116,7 +112,6 @@ int main(int argc, char** argv){
        
         if(ans != position5[i]){
             printf("Error with position 6\ninput: %d\nReturned: %lu\nShould have been: %lu\n", i, ans, position5[i]);
-            break;
         }
 
     }
