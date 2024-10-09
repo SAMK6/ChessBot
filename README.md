@@ -15,7 +15,7 @@ Learning about chess engines, and performance/optimization. Goal to eventually s
 
 
 ### References
-#### These are a list of inspirations and resources I have learned from
+These are a list of inspirations and resources I have learned from
 - https://github.com/SebLague/Chess-Coding-Adventure (UCI interface, Magic Bitboards)
 - https://www.chessprogramming.org/Main_Page (various)
 - https://github.com/jhonnold/berserk (navigating the idiosyncrasies of the C programming language)
