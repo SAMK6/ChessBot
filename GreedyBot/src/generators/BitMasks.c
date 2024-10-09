@@ -305,3 +305,52 @@ uint64_t generateRookAttacks(uint8_t square, uint64_t pieces){
 
 
 
+uint64_t generateLineMask(uint8_t square1, uint8_t square2){
+
+
+    int8_t rank1 = square1 / 8;
+    int8_t rank2 = square2 / 8;
+    int8_t file1 = square1 % 8;
+    int8_t file2 = square2 % 8;
+
+    uint64_t mask = 0ull;
+
+    if(rank1 == rank2){ // horizontal line
+        if(file2 > file1){
+            uint8_t temp = file1;
+            file1 = file2;
+            file2 = temp;
+        }
+
+        for(int8_t i = file2; i <= file1; i++){
+            mask |= (1ull << (8 * rank1 + i));
+        }
+
+    }
+    else if(file1 == file2){ // vertical line
+        if(rank2 > rank1){
+            int8_t temp = rank1;
+            rank1 = rank2;
+            rank2 = temp;
+        }
+
+        for(int8_t i = rank2; i <= rank1; i++){
+            mask |= (1ull << (8 * i + file1));
+        }
+        
+    }
+    else if(((file1 - file2) == (rank1 - rank2))){ // northwest to southeast diagonal
+
+        
+
+    }
+    else if(((file1 - file2) == (rank2 - rank1))){ // northeats to southwest diagonal
+
+    }
+    else{ // not on a line
+        return ((1ull << square1) | (1ull << square2));
+    }
+
+    return mask;
+
+}

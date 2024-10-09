@@ -3,11 +3,12 @@
 #include <string.h>
 #include <stdint.h>
 #include <stddef.h>
-#include "BitBoard.h"
-#include "Translator.h"
-#include "MoveGenerator.h"
-#include "Magics.h"
-#include "Search.h"
+#include "../src/core/BitBoard.h"
+#include "../src/core/Translator.h"
+#include "../src/core/MoveGenerator.h"
+#include "../src/core/Magics.h"
+#include "../src/core/Search.h"
+#include "../src/generators/BitMasks.h"
 
 
 int main(){
