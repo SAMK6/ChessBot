@@ -341,14 +341,44 @@ uint64_t generateLineMask(uint8_t square1, uint8_t square2){
     }
     else if(((file1 - file2) == (rank1 - rank2))){ // northwest to southeast diagonal
 
-        
+        uint8_t start, distance;
+        if(rank1 > rank2){ // file1 is the top left corner
+            start = square2;
+            distance = rank1 - rank2;
+        }
+        else{
+            start = square1;
+            distance = rank2 - rank1;
+        }
+
+        for(uint8_t i = 0; i <= distance; i++){
+
+            mask |= start << (i * 9);
+
+        }
 
     }
-    else if(((file1 - file2) == (rank2 - rank1))){ // northeats to southwest diagonal
+    else if(((file1 - file2) == (rank2 - rank1))){ // northeast to southwest diagonal
+
+        uint8_t start, distance;
+        if(rank1 > rank2){ // file1 is the top left corner
+            start = square2;
+            distance = rank1 - rank2;
+        }
+        else{
+            start = square1;
+            distance = rank2 - rank1;
+        }
+
+        for(uint8_t i = 0; i <= distance; i++){
+
+            mask |= start << (i * 7);
+
+        }
 
     }
     else{ // not on a line
-        return ((1ull << square1) | (1ull << square2));
+        mask |= ((1ull << square1) | (1ull << square2));
     }
 
     return mask;
