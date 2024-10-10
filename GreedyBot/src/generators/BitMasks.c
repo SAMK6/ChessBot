@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 #include "BitMasks.h"
 
 
@@ -353,7 +354,7 @@ uint64_t generateLineMask(uint8_t square1, uint8_t square2){
 
         for(uint8_t i = 0; i <= distance; i++){
 
-            mask |= start << (i * 9);
+            mask |= 1ull << (start + (i * 9));
 
         }
 
@@ -372,7 +373,7 @@ uint64_t generateLineMask(uint8_t square1, uint8_t square2){
 
         for(uint8_t i = 0; i <= distance; i++){
 
-            mask |= start << (i * 7);
+            mask |= 1ull << (start + (i * 7));
 
         }
 

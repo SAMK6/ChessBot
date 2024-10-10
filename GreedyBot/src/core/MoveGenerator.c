@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include "../generators/BitMasks.h"
 #include "BitBoard.h"
 #include "MoveGenerator.h"
 #include "Magics.h"
@@ -127,21 +128,21 @@ int generateMovesWhite(BitBoard *board, Move *moves){
 
     // where pieces can moved based on if the king in in check
     uint64_t kingProtectionMask;
-
     // all enempy pieces that are currently attacking the king
     uint64_t piecesAttackingKing = (getBishopAttacks(board->whiteKingPos, wholeBoard) & (board->black.q | board->black.b)) | (getRookAttacks(board->whiteKingPos, wholeBoard) & (board->black.q | board->black.r)) | (basicKnightMasks[board->whiteKingPos] & board->black.n) | (basicPawnMasksWhite[board->whiteKingPos] & board->black.p);
-
     if(piecesAttackingKing){
         if(piecesAttackingKing & (piecesAttackingKing - 1)){ // double (or more) check the king must move
             kingProtectionMask = 0ull;
         }
         else{ // single check pieces can block the check or take the piece
-            
+            kingProtectionMask = generateLineMask(board->whiteKingPos, __builtin_ctzll(piecesAttackingKing)) & ~(board->white.k);
         }
     }
     else{ // the king is not in check piece can go anywhere (unless pinned)
         kingProtectionMask = 0xFFFFFFFFFFFFFFFF;
     }
+
+
     int pos = 0; // where in the movelist to put moves
 
 
@@ -299,7 +300,6 @@ int generateMovesWhite(BitBoard *board, Move *moves){
     }
 
     return pos;
-
 
 }
 

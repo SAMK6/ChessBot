@@ -18,5 +18,6 @@ uint64_t generatePawnMaskBlack(uint8_t);
 uint64_t generateBishopAttacks(uint8_t, uint64_t);
 uint64_t generateRookAttacks(uint8_t, uint64_t);
 
+uint64_t generateLineMask(uint8_t, uint8_t);
 
 #endif
