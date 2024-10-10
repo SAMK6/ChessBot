@@ -81,6 +81,10 @@ int main(){
 
     }
 
+    uint64_t mask = generateLineMask(32, 4);
+
+    printBitBoard64(mask);
+
     return 0;
 
 }
