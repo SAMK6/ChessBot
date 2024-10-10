@@ -109,9 +109,6 @@ int main(int argc, char** argv){
 
         inputBoard = fenToBitBoard(inputFEN);
 
-
-        if(moves == NULL) continue;
-
         processed++;
 
         numMovesMine = inputBoard.whiteToMove ? generateMovesWhite(&inputBoard, moves) : generateMovesBlack(&inputBoard, moves);
