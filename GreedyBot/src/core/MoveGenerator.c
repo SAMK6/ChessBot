@@ -126,6 +126,9 @@ int generateMovesWhite(BitBoard *board, Move *moves){
     // a board that contains all pieces
     uint64_t wholeBoard = opBoard | myBoard;
 
+
+    /*
+
     // where pieces can moved based on if the king in in check
     uint64_t kingProtectionMask;
     // all enempy pieces that are currently attacking the king
@@ -142,6 +145,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
         kingProtectionMask = 0xFFFFFFFFFFFFFFFF;
     }
 
+    */
 
     int pos = 0; // where in the movelist to put moves
 
@@ -182,7 +186,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
             uint64_t pawnCaptures = basicPawnMasksWhite[square] & opBoard;
             int capturePos = 63 - __builtin_clzll(pawnCaptures);
             while(pawnCaptures){
-                if(capturePos < 56){
+                if(capturePos < H8num){
                     *(moves + pos++) = buildMove(square, capturePos, 4, 6);
                 }
                 else{ // promo captures
@@ -200,9 +204,9 @@ int generateMovesWhite(BitBoard *board, Move *moves){
             }
 
             // finally check enpassant captures
-            uint64_t enPassant = basicPawnMasksWhite[square] & board->enPassant;
-            if(enPassant){
-                *(moves + pos++) = buildMove(square, __builtin_ctzll(enPassant), 5, 6);
+            uint64_t enPassantCaps = basicPawnMasksWhite[square] & board->enPassant;
+            if(enPassantCaps){
+                *(moves + pos++) = buildMove(square, __builtin_ctzll(enPassantCaps), 5, 6);
             }
 
         }
@@ -348,7 +352,7 @@ int generateMovesBlack(BitBoard *board, Move *moves){
             uint64_t pawnCaptures = basicPawnMasksBlack[square] & opBoard;
             int capturePos = __builtin_ctzll(pawnCaptures);
             while(pawnCaptures){
-                if(capturePos > 7){
+                if(capturePos > A1num){
                     *(moves + pos++) = buildMove(square, capturePos, 4, 0);
                 }
                 else{ // promo captures
@@ -366,9 +370,9 @@ int generateMovesBlack(BitBoard *board, Move *moves){
             }
 
             // finally check enpassant captures
-            uint64_t enPassant = basicPawnMasksBlack[square] & board->enPassant;
-            if(enPassant){
-                *(moves + pos++) = buildMove(square, __builtin_ctzll(enPassant), 5, 0);
+            uint64_t enPassantCaps = basicPawnMasksBlack[square] & board->enPassant;
+            if(enPassantCaps){
+                *(moves + pos++) = buildMove(square, __builtin_ctzll(enPassantCaps), 5, 0);
             }
 
         }
