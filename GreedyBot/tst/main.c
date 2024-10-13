@@ -10,6 +10,19 @@
 #include "../src/core/Search.h"
 #include "../src/generators/BitMasks.h"
 
+static inline int myIndex(uint8_t a, uint8_t b){
+
+    return (((a ^ ((a ^ b) & -((uint8_t)(a - b) >> 7))) * ((a ^ ((a ^ b) & -((uint8_t)(a - b) >> 7))) - 1)) >> 1) + (b ^ ((a ^ b) & -((uint8_t)(a - b) >> 7)));
+
+}
+
+static inline uint8_t min8(uint8_t a, uint8_t b) {
+    return b ^ ((a ^ b) & -((uint8_t)(a - b) >> 7));
+}
+
+static inline uint8_t max8(uint8_t a, uint8_t b) {
+    return a ^ ((a ^ b) & -((uint8_t)(a - b) >> 7));
+}
 
 int main(){
 
@@ -81,9 +94,25 @@ int main(){
 
     }
 
-    uint64_t mask = generateLineMask(32, 4);
+    int taken[2016] = {0};
 
-    printBitBoard64(mask);
+    for(uint8_t i = 0; i < 64; i++){
+        for(uint8_t j = i + 1; j < 64; j++){
+
+            if(i == j){
+                continue;
+            }
+            
+            int id = myIndex(i, j);
+
+            if(taken[id]){
+                printf("fail");
+            }
+
+            taken[id] = 1;
+
+        }
+    }
 
     return 0;
 
