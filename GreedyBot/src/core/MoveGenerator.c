@@ -138,7 +138,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
             kingProtectionMask = 0ull;
         }
         else{ // single check pieces can block the check or take the piece
-            kingProtectionMask = generateLineMask(board->whiteKingPos, __builtin_ctzll(piecesAttackingKing)) & ~(board->white.k);
+            kingProtectionMask = getLineMask(board->whiteKingPos, (uint8_t)__builtin_ctzll(piecesAttackingKing)) & ~(board->white.k);
         }
     }
     else{ // the king is not in check piece can go anywhere (unless pinned)
@@ -146,6 +146,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
     }
 
     */
+    
 
     int pos = 0; // where in the movelist to put moves
 

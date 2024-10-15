@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include <stddef.h>
 #include "../src/core/BitBoard.h"
 #include "../src/core/Translator.h"
 #include "../src/core/MoveGenerator.h"
@@ -95,6 +94,7 @@ int main(){
     }
 
     int taken[2016] = {0};
+    uint64_t masks[2016];
 
     for(uint8_t i = 0; i < 64; i++){
         for(uint8_t j = i + 1; j < 64; j++){
@@ -109,9 +109,16 @@ int main(){
                 printf("fail");
             }
 
+            masks[id] = generateLineMask(i, j);
             taken[id] = 1;
 
         }
+    }
+
+    for(int i = 0; i < 2016; i++){
+
+        printf("%luull,\n", masks[i]);
+
     }
 
     return 0;
