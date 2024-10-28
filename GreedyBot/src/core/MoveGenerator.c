@@ -127,7 +127,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
     uint64_t wholeBoard = opBoard | myBoard;
 
 
-    /*
+    /* */
 
     // where pieces can moved based on if the king in in check
     uint64_t kingProtectionMask;
@@ -145,7 +145,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
         kingProtectionMask = 0xFFFFFFFFFFFFFFFF;
     }
 
-    */
+   
     
 
     int pos = 0; // where in the movelist to put moves

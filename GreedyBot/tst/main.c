@@ -93,6 +93,11 @@ int main(){
 
     }
 
+
+
+
+
+
     int taken[2016] = {0};
     uint64_t masks[2016];
 
@@ -109,7 +114,7 @@ int main(){
                 printf("fail");
             }
 
-            masks[id] = generateLineMask(i, j);
+            masks[id] = generateRankFileDiagonalMask(i, j);
             taken[id] = 1;
 
         }
@@ -117,9 +122,14 @@ int main(){
 
     for(int i = 0; i < 2016; i++){
 
-        printf("%luull,\n", masks[i]);
+        printf("%luull,\n");
 
     }
+
+
+
+
+
 
     return 0;
 

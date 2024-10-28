@@ -305,7 +305,7 @@ uint64_t generateRookAttacks(uint8_t square, uint64_t pieces){
 }
 
 
-
+// returns a line between two squares or just the two squares if they dont lie on a line
 uint64_t generateLineMask(uint8_t square1, uint8_t square2){
 
 
@@ -378,8 +378,63 @@ uint64_t generateLineMask(uint8_t square1, uint8_t square2){
         }
 
     }
-    else{ // not on a line
-        mask |= ((1ull << square1) | (1ull << square2));
+
+    return mask;
+
+}
+
+// generate a mask of the rank/file that the two squares lie on or returns 0 if they don't lie on a rank/file
+// also returns 0 if square1 == square2
+uint64_t generateRankFileDiagonalMask(uint8_t square1, uint8_t square2){
+
+    int8_t rank1 = square1 / 8;
+    int8_t rank2 = square2 / 8;
+    int8_t file1 = square1 % 8;
+    int8_t file2 = square2 % 8;
+
+    uint64_t mask = 0ull;
+
+    if(square1 == square2){
+        
+    }
+    else if(rank1 == rank2){
+
+        for(int i = 0; i < 8; i++) mask |= 1ull << ((8 * rank1) + i);
+
+    }
+    else if(file1 == file2){
+
+        for(int i = 0; i < 8; i++) mask |= 1ull << (file1 + (8 * i));
+
+    }
+    else if(((file1 - file2) == (rank1 - rank2))){ // northwest to southeast diagonal
+        
+        while(rank1 > 0 && file1 > 0){
+            rank1--;
+            file1--;
+        }
+
+        while(rank1 < 8 && file1 < 8){
+            mask |= 1ull << ((8 * rank1) + file1);
+            rank1++;
+            file1++;
+        }
+
+
+    }
+    else if(((file1 - file2) == (rank2 - rank1))){ // northeast to southwest diagonal
+
+        while(rank1 > 0 && file1 < 7){
+            rank1--;
+            file1++;
+        }
+
+        while(rank1 < 8 && file1 >= 0){
+            mask |= 1ull << ((8 * rank1) + file1);
+            rank1++;
+            file1--;
+        }
+
     }
 
     return mask;
