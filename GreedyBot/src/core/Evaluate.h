@@ -5,7 +5,7 @@
 #include "BitBoard.h"
 
 // the overall evaluation function
-int_fast32_t evaluate(BitBoard*);
+float evaluate(const BitBoard*);
 
 
 

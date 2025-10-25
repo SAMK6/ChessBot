@@ -193,7 +193,7 @@ typedef struct BitBoard{
 
     uint16_t halfMoves; // 50 move rule clock, when it reaches 100 the player whose turn it is can claim a draw
 
-    uint16_t moves; // move counter incremented after blacks mov
+    uint16_t moves; // move counter incremented after blacks move
 
     // the positions of the two kings from 0-63
     uint8_t blackKingPos;

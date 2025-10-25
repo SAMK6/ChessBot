@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <math.h>
 #include "BitBoard.h"
 #include "Search.h"
 #include "Evaluate.h"
@@ -6,11 +7,11 @@
 
 
 
-int32_t quiescenceSearch(BitBoard *board, int32_t alpha, int32_t beta, uint64_t *numNodes){
+float quiescenceSearch(BitBoard *board, float alpha, float beta, uint64_t *numNodes){
 
     (*numNodes) ++;
 
-    int32_t eval = evaluate(board);
+    float eval = evaluate(board);
 
     if(eval >= beta) return beta;
 
@@ -39,11 +40,11 @@ int32_t quiescenceSearch(BitBoard *board, int32_t alpha, int32_t beta, uint64_t 
         }
     }
 
-    return possibleMoves ? alpha : NEG_INFINITY + 1;
+    return possibleMoves ? alpha : evaluate(board);
 
 }
 
-int32_t search(BitBoard *board, int depth, int32_t alpha, int32_t beta, uint64_t *numNodes){
+float search(BitBoard *board, int depth, float alpha, float beta, uint64_t *numNodes){
 
 
     if(depth == 0) return quiescenceSearch(board, alpha, beta, numNodes);
@@ -54,7 +55,7 @@ int32_t search(BitBoard *board, int depth, int32_t alpha, int32_t beta, uint64_t
     Move moves[218];
     int numMoves = board->whiteToMove ? generateMovesWhite(board, moves) : generateMovesBlack(board, moves);
     int possibleMoves = 0;
-    int32_t eval;
+    float eval;
     uint8_t kingPos;
     BitBoard tempBoard;
 
@@ -75,7 +76,7 @@ int32_t search(BitBoard *board, int depth, int32_t alpha, int32_t beta, uint64_t
 
     
 
-    return possibleMoves ? alpha : NEG_INFINITY + 1;
+    return possibleMoves ? alpha : -INFINITY;
 
 }
 
@@ -90,7 +91,7 @@ Move bestMove(BitBoard board, int depth, uint64_t *numNodes){
 
     uint8_t kingPos;
     BitBoard tempBoard;
-    int32_t eval, alpha = NEG_INFINITY;
+    float eval, alpha = -INFINITY;
 
     Move bestMove = 0; // technically this is meaningless if there are no moves but if there are no moves why are you calling this function
 
@@ -104,9 +105,9 @@ Move bestMove(BitBoard board, int depth, uint64_t *numNodes){
         kingPos = *(&tempBoard.blackKingPos + !tempBoard.whiteToMove);
         if(!isSquareAttacked(&tempBoard, kingPos)){
 
-            eval = -search(&tempBoard, depth - 1, NEG_INFINITY, -alpha, numNodes);
+            eval = -search(&tempBoard, depth - 1, -INFINITY, -alpha, numNodes);
                 
-            if(eval >= POS_INFINITY) return bestMove;
+            if(eval >= INFINITY) return bestMove;
 
             if(eval > alpha){
                 alpha = eval;
