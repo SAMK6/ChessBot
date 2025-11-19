@@ -223,6 +223,7 @@ void printBits32(uint32_t);
 void printBits64(uint64_t);
 void printBitBoard64(uint64_t);
 void debugPrintBitBoard(BitBoard);
+void printBoard(BitBoard);
 
 
 #endif

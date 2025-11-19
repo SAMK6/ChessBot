@@ -68,7 +68,7 @@ typedef uint32_t Move;
 #define blackKingsideCastle 360287970189639680ull
 #define blackQueensideCastle 10376293541461622784ull
 
-void makeMove(BitBoard*, Move); // makes a move and returns the new bitboard
+void makeMove(BitBoard*, Move); // makes a move and puts it into the memory at the pointer
 int generateMovesBlack(BitBoard*, Move*);
 int generateMovesWhite(BitBoard*, Move*);
 

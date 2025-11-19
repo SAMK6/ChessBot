@@ -29,7 +29,7 @@ pthread_mutex_t lock;
 void* handleGo(void* args){
 
 
-    Move result = bestMove(board, 6, &numNodes);
+    Move result = bestMove(board, 7, &numNodes);
 
     *((Move*)args) = result;
 

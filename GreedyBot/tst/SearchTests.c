@@ -37,7 +37,7 @@ int main(){
 
     board = fenToBitBoard(FEN);
 
-    bestMove(board, 6, &numNodes);
+    bestMove(board, 1, &numNodes);
 
     printf("Position: %s\nNodes %lu\n", FEN, numNodes);
     

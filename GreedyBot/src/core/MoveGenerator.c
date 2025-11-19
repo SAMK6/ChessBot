@@ -161,8 +161,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
             if(!((currentSquare << 8) & wholeBoard)){ // there is nothing stopping a single pawn push
                 if(square < H7num){ // no promotion
                     
-                    *(moves + pos) = buildMove(square, (square + 8), 0, 6);
-                    pos++;
+                    *(moves + pos++) = buildMove(square, (square + 8), 0, 6);
 
                     if(square < H3num && !((currentSquare << 16) & wholeBoard)){ // generate the double pawn push
                         *(moves + pos++) = buildMove(square, (square + 16), 1, 6);
@@ -472,5 +471,4 @@ int generateMovesBlack(BitBoard *board, Move *moves){
 
     return pos;
 
-    
 }

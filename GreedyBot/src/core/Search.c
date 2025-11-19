@@ -47,7 +47,7 @@ float quiescenceSearch(BitBoard *board, float alpha, float beta, uint64_t *numNo
 float search(BitBoard *board, int depth, float alpha, float beta, uint64_t *numNodes){
 
 
-    if(depth == 0) return quiescenceSearch(board, alpha, beta, numNodes);
+    if(depth == 0) return evaluate(board);
 
     (*numNodes) ++;
 

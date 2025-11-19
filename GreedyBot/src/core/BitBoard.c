@@ -231,3 +231,63 @@ void debugPrintBitBoard(BitBoard board){
     printBitBoard64(board.enPassant);
 
 }
+
+void printBoard(BitBoard board){
+
+    printf("\nEntire Board: uppercase for black lowercase for white.\n");
+
+    for(int i = 63; i >= 0; i--){
+
+        uint64_t pos = 1ull << i;
+
+
+        if(i % 8 == 7){
+            printf("\n");
+        }
+
+        if(pos & board.black.k){
+            printf("K ");
+        }
+        else if(pos & board.black.q){
+            printf("Q ");
+        }
+        else if(pos & board.black.r){
+            printf("R ");
+        }
+        else if(pos & board.black.b){
+            printf("B ");
+        }
+        else if(pos & board.black.n){
+            printf("N ");
+        }
+        else if(pos & board.black.p){
+            printf("P ");
+        }
+        else if(pos & board.white.k){
+            printf("k ");
+        }
+        else if(pos & board.white.q){
+            printf("q ");
+        }
+        else if(pos & board.white.r){
+            printf("r ");
+        }
+        else if(pos & board.white.b){
+            printf("b ");
+        }
+        else if(pos & board.white.n){
+            printf("n ");
+        }
+        else if(pos & board.white.p){
+            printf("p ");
+        }
+        else{
+            printf("* ");
+        }
+
+
+    }
+
+    printf("\n\n");
+
+}
