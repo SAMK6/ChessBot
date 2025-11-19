@@ -9,6 +9,14 @@
 #include "../src/core/Search.h"
 #include "../src/generators/BitMasks.h"
 
+static inline int whatPiece(BitBoard* board, uint64_t square){
+
+    uint64_t* tricky = (uint64_t*)board;
+
+    return (!!(*(tricky + 0) & square) * 0) + (!!(*(tricky + 1) & square) * 1) + (!!(*(tricky + 2) & square) * 2) + (!!(*(tricky + 3) & square) * 3) + (!!(*(tricky + 4) & square) * 4) + (!!(*(tricky + 5) & square) * 5) + (!!(*(tricky + 6) & square) * 6) + (!!(*(tricky + 7) & square) * 7) + (!!(*(tricky + 8) & square) * 8) + (!!(*(tricky + 9) & square) * 9) + (!!(*(tricky + 10) & square) * 10) + (!!(*(tricky + 11) & square) * 11);
+
+}
+
 static inline int myIndex(uint8_t a, uint8_t b){
 
     return (((a ^ ((a ^ b) & -((uint8_t)(a - b) >> 7))) * ((a ^ ((a ^ b) & -((uint8_t)(a - b) >> 7))) - 1)) >> 1) + (b ^ ((a ^ b) & -((uint8_t)(a - b) >> 7)));
@@ -30,6 +38,16 @@ int main(){
     BitBoard start = fenToBitBoard(startpos);
 
     printBoard(start);
+
+    for(int i = 63; i >= 0; i--){
+
+        if(i % 8 == 7) printf("\n");
+
+        printf("%3d", whatPiece(&start, 1ull << i));
+
+    }
+
+    printf("\n");
 
     char* fen = "r3k2r/ppbn1pp1/2pqp1bp/3pNn2/3P1P2/P2BP2P/1PPBN1P1/R2Q1RK1 b kq - 2 13";
 

@@ -13,6 +13,22 @@
 
 */
 
+// builds a move from pieces of the move as specified by the move typedef and comment in MoveGenerator.h
+static inline Move buildMove(int from, int to, int code, int piece){
+
+    return ((Move)from | ((Move)to << 6) | ((Move)code << 12) | ((Move)piece << 16));
+
+}
+
+
+// tells you what piece is on a square, returns the piece code from MovGenerator.h comment
+// square should have popcount == 1
+static inline int whatPiece(BitBoard* board, uint64_t square){
+
+    return (!!(*((uint64_t*)board + 0) & square) * 0) + (!!(*((uint64_t*)board + 1) & square) * 1) + (!!(*((uint64_t*)board + 2) & square) * 2) + (!!(*((uint64_t*)board + 3) & square) * 3) + (!!(*((uint64_t*)board + 4) & square) * 4) + (!!(*((uint64_t*)board + 5) & square) * 5) + (!!(*((uint64_t*)board + 6) & square) * 6) + (!!(*((uint64_t*)board + 7) & square) * 7) + (!!(*((uint64_t*)board + 8) & square) * 8) + (!!(*((uint64_t*)board + 9) & square) * 9) + (!!(*((uint64_t*)board + 10) & square) * 10) + (!!(*((uint64_t*)board + 11) & square) * 11);
+
+}
+
 
 
 void makeMove(BitBoard *board, Move move){
@@ -34,6 +50,23 @@ void makeMove(BitBoard *board, Move move){
 
     uint64_t *friendlyBoard = (&(board->blackPieces) + board->whiteToMove);
 
+
+    if(isCapture){ // if the move is a capture we have to remove the enemy piece from the square
+        
+        uint64_t capSquare;
+
+        if(misc == (uint16_t)5){ // this is an enpassant capture
+            capSquare = board->whiteToMove ? endSquare >> 8 : endSquare << 8;
+        }
+        else{
+            capSquare = endSquare;
+        }
+
+        *((uint64_t*)board + whatPiece(board, capSquare)) ^= capSquare;
+        *(&board->blackPieces + !board->whiteToMove) ^= capSquare;
+
+    }
+
     // the move mask has a 1 on the start and end square and 0s everywhere else, 
     // so XORing it with the bitboard of the moved piece toggels off the start bit where the piece started 
     // and toggles on the end square where the piece ends
@@ -51,28 +84,7 @@ void makeMove(BitBoard *board, Move move){
         *friendlyBoard ^= board->whiteToMove ? whiteQueensideCastle : blackQueensideCastle;
     }
 
-    if(isCapture){ // if the move is a capture we have to remove the enemy piece from the square
-        
-        uint64_t notEndSquare;
 
-        if(misc == (uint16_t)5){ // this is an enpassant capture
-            notEndSquare = board->whiteToMove ? ~(endSquare >> 8) : ~(endSquare << 8);
-        }
-        else{
-            notEndSquare = ~endSquare;
-        }
-
-        // we can simply turn off this bit for every enemy piece because there cant be a piece there 
-        // and this avoids control flow which would end up being more work overall
-        enemyPieces->k &= notEndSquare;
-        enemyPieces->q &= notEndSquare;
-        enemyPieces->r &= notEndSquare;
-        enemyPieces->b &= notEndSquare;
-        enemyPieces->n &= notEndSquare;
-        enemyPieces->p &= notEndSquare;
-        *(&board->blackPieces + !board->whiteToMove) &= notEndSquare;
-
-    }
 
     if(move & isPromoMask){ // if the move is a promo we have to add a new piece and remove the pawn from the end of the board
         

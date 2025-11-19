@@ -47,7 +47,6 @@
 */
 
 
-#define buildMove(from, to, code, piece) ((Move)from | ((Move)to << 6) | ((Move)code << 12) | ((Move)piece << 16))
 
 
 typedef uint32_t Move;

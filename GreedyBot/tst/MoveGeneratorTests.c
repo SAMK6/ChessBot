@@ -63,7 +63,7 @@ int main(int argc, char** argv){
 
         if(strcmp(ourFEN, movedFEN) || !validBitBoard(movedBoard)){
 
-            printf("Error with staring fen: %s\nmove: %hu\nproduced: %s\nshould have been: %s\n\n", inputFEN, move, ourFEN, movedFEN);
+            printf("Error with starting fen: %s\nmove: %hu\nproduced:                %s\nshould have been:        %s\n\n", inputFEN, move, ourFEN, movedFEN);
             wrong ++;
 
         }

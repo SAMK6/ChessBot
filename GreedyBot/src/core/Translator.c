@@ -651,7 +651,7 @@ Move uciToMove(BitBoard* board, const char* move){
 
     if(opBoard & (1ull << toSquare)) code += 4;
 
-    return buildMove(fromSquare, toSquare, code, piece);
+    return ((Move)fromSquare | ((Move)toSquare << 6) | ((Move)code << 12) | ((Move)piece << 16));
 
 
 }
