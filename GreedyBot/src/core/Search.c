@@ -6,6 +6,7 @@
 #include "Search.h"
 #include "Evaluate.h"
 #include "MoveGenerator.h"
+#include "Translator.h"
 
 
 
@@ -61,6 +62,9 @@ float search(BitBoard *board, int depth, float alpha, float beta, uint64_t *numN
     uint8_t kingPos;
     BitBoard tempBoard;
 
+    // printf("%d\n", numMoves);
+
+
     for(int i = 0; i < numMoves; i++){
 
         tempBoard = *board;
@@ -76,7 +80,8 @@ float search(BitBoard *board, int depth, float alpha, float beta, uint64_t *numN
     
     }
 
-    
+    // printf("%d\n\n", possibleMoves);
+
 
     return possibleMoves ? alpha : -INFINITY;
 
@@ -91,6 +96,8 @@ Move bestMove(BitBoard board, int depth, uint64_t *numNodes){
     Move moves[218];
     int numMoves = board.whiteToMove ? generateMovesWhite(&board, moves) : generateMovesBlack(&board, moves);
 
+    // printf("%d\n\n", numMoves);
+
     uint8_t kingPos;
     BitBoard tempBoard;
     float eval, alpha = -INFINITY;
@@ -103,13 +110,21 @@ Move bestMove(BitBoard board, int depth, uint64_t *numNodes){
         tempBoard = board;
         makeMove(&tempBoard, moves[i]);
 
+        // char myMove[6];
+
+        // moveToUCI(moves[i], myMove);
+
+        // printf("%s\n", myMove);
+
         // check if this position is legal
         kingPos = *(&tempBoard.blackKingPos + !tempBoard.whiteToMove);
         if(!isSquareAttacked(&tempBoard, kingPos)){
 
+            // printf("%s\n\n", myMove);
+
             eval = -search(&tempBoard, depth - 1, -INFINITY, -alpha, numNodes);
                 
-            if(eval >= INFINITY) return bestMove;
+            if(eval >= INFINITY) return moves[i];
 
             if(eval > alpha){
                 alpha = eval;

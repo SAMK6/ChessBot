@@ -187,7 +187,7 @@ typedef struct BitBoard{
 
     // these next few may be amalgamated eventually
 
-    uint8_t whiteToMove; // 0 if it is blacks turn and nonzero otherwise
+    uint8_t whiteToMove; // 0 if it is blacks turn and 1 otherwise
 
     uint8_t castling;// bit 3 for white king, bit 2 for white queen, bit 1 for black king, bit 0 for black queen, (this matches FEN order) other bits unused for now
 
