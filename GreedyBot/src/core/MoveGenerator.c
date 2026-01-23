@@ -31,7 +31,7 @@ static inline int whatPiece(BitBoard* board, uint64_t square){
 
 
 
-void makeMove(BitBoard *board, Move move){
+void makeMove(BitBoard *board, const Move move){
 
     RawBoard *friendlyPieces, *enemyPieces;
 
@@ -117,6 +117,7 @@ void makeMove(BitBoard *board, Move move){
         board->castling &= ~(board->whiteToMove ? (uint8_t)12 : (uint8_t)3);
         *(&board->blackKingPos + board->whiteToMove) = __builtin_ctzll(friendlyPieces->k);
     }
+    
     if(!(board->white.r & H1)) board->castling &= ~((uint8_t)8);
     if(!(board->white.r & A1)) board->castling &= ~((uint8_t)4);
     if(!(board->black.r & H8)) board->castling &= ~((uint8_t)2);
@@ -131,7 +132,7 @@ void makeMove(BitBoard *board, Move move){
 
 }
 
-int generateMovesWhite(BitBoard *board, Move *moves){
+int generateMovesWhite(const BitBoard *board, Move *moves){
 
     uint64_t opBoard = board->blackPieces;
     uint64_t myBoard = board->whitePieces;
@@ -319,7 +320,7 @@ int generateMovesWhite(BitBoard *board, Move *moves){
 
 }
 
-int generateMovesBlack(BitBoard *board, Move *moves){
+int generateMovesBlack(const BitBoard *board, Move *moves){
 
     uint64_t opBoard = board->whitePieces;
     uint64_t myBoard = board->blackPieces;

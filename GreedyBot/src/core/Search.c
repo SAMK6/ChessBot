@@ -1,5 +1,7 @@
 #include <stdint.h>
 #include <math.h>
+#include <stdio.h>
+
 #include "BitBoard.h"
 #include "Search.h"
 #include "Evaluate.h"
@@ -93,7 +95,7 @@ Move bestMove(BitBoard board, int depth, uint64_t *numNodes){
     BitBoard tempBoard;
     float eval, alpha = -INFINITY;
 
-    Move bestMove = 0; // technically this is meaningless if there are no moves but if there are no moves why are you calling this function
+    Move bestMove = 0; // should help with debugging
 
     for(int i = 0; i < numMoves; i++){
 
