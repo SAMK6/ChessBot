@@ -15,15 +15,14 @@ float quiescenceSearch(BitBoard *board, float alpha, float beta, uint64_t *numNo
     (*numNodes) ++;
 
     float eval = evaluate(board);
+    float bestScore = eval;
 
-    if(eval >= beta) return beta;
-
-    if(eval > alpha) alpha = eval;
+    if(bestScore >= beta) return bestScore;
+    if(bestScore > alpha) alpha = bestScore;
 
     Move moves[218];
 
     int numMoves = board->whiteToMove ? generateMovesWhite(board, moves) : generateMovesBlack(board, moves); // might need to make a generate captures function
-    int possibleMoves = 0;
     uint8_t kingPos;
     BitBoard tempBoard;
 
@@ -36,14 +35,17 @@ float quiescenceSearch(BitBoard *board, float alpha, float beta, uint64_t *numNo
 
         kingPos = *(&tempBoard.blackKingPos + !tempBoard.whiteToMove);
         if(!isSquareAttacked(&tempBoard, kingPos)){
+
             eval = -quiescenceSearch(&tempBoard, -beta, -alpha, numNodes);
-            if(eval >= beta) return beta;
-            alpha = eval > alpha ? eval : alpha;
-            possibleMoves ++;
+
+            if(eval >= beta) return eval;
+            if(eval > bestScore) bestScore = eval;
+            if(eval > alpha) alpha = eval;
+
         }
     }
 
-    return possibleMoves ? alpha : evaluate(board);
+    return bestScore;
 
 }
 
@@ -57,8 +59,7 @@ float search(BitBoard *board, int depth, float alpha, float beta, uint64_t *numN
 
     Move moves[218];
     int numMoves = board->whiteToMove ? generateMovesWhite(board, moves) : generateMovesBlack(board, moves);
-    int possibleMoves = 0;
-    float eval;
+    float eval, bestScore = -INFINITY;
     uint8_t kingPos;
     BitBoard tempBoard;
 
@@ -72,10 +73,16 @@ float search(BitBoard *board, int depth, float alpha, float beta, uint64_t *numN
 
         kingPos = *(&tempBoard.blackKingPos + !tempBoard.whiteToMove);
         if(!isSquareAttacked(&tempBoard, kingPos)){
+
             eval = -search(&tempBoard, depth - 1, -beta, -alpha, numNodes);
-            if(eval >= beta) return beta;
-            alpha = eval > alpha ? eval : alpha;
-            possibleMoves ++;
+
+            if(eval >= bestScore){
+                bestScore = eval;
+                if(eval > alpha) alpha = eval;
+            }
+            
+            if(eval >= beta) return bestScore;
+
         }
     
     }
@@ -83,7 +90,7 @@ float search(BitBoard *board, int depth, float alpha, float beta, uint64_t *numN
     // printf("%d\n\n", possibleMoves);
 
 
-    return possibleMoves ? alpha : -INFINITY;
+    return bestScore;
 
 }
 
